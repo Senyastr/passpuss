@@ -1,6 +1,8 @@
  import 'dart:math';
 
 import 'package:passpuss/Database.dart';
+
+import 'main.dart';
  
  class PassEntry 
   {
@@ -11,16 +13,13 @@ import 'package:passpuss/Database.dart';
     String _iconName = "";
 
     // ignore: non_constant_identifier_names
-    static List<PassEntry> Pairs = new List<PassEntry>();
-    static initPairs() async {
-      Pairs = await DBProvider.DB.getPassEntries();
-    }
+
     PassEntry.noIcon(String username, String password, String title){
-      if (Pairs == null){
+      if (PassEntriesPage.Pairs == null){
         id = 1;
       }
       else{
-        id = Pairs.length + 1;
+        id = PassEntriesPage.Pairs.length + 1;
       }
 
         this._username = username;
@@ -28,11 +27,11 @@ import 'package:passpuss/Database.dart';
         this._title = title;
     }
     PassEntry.withIcon(String username, String password, String title, String iconName){
-      if (Pairs == null){
+      if (PassEntriesPage.Pairs == null){
         id = 1;
       }
       else{
-        id = Pairs.length + 1;
+        id = PassEntriesPage.Pairs.length + 1;
       }
 
         this._username = username;

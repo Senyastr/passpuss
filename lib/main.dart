@@ -49,12 +49,12 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  PassEntriesPage createState() => PassEntriesPage();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class PassEntriesPage extends State<MyHomePage> {
+  static List<PassEntry> Pairs = new List<PassEntry>();
   @override
-
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
@@ -62,15 +62,15 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets
-    PassEntry.Pairs.add(new PassEntry.withIcon("HELLO", "PUSSY", "kuszi", "assets/images/Instagram_logo_2016.svg"));
+    Pairs.add(new PassEntry.withIcon("HELLO", "PUSSY", "kuszi", "assets/images/Instagram_logo_2016.svg"));
     return Scaffold(
         appBar: AppBar(title: Text("HEY, THIS IS BAR")),
         body: Column(children: <Widget>[
           Expanded(
               child: ListView.builder(
-                itemCount: PassEntry.Pairs.length,
+                itemCount: Pairs.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return new PassField(PassEntry.Pairs[index]);
+                    return new PassField(Pairs[index]);
                   })),
           FloatingActionButton(
             child: Icon(Icons.add),
@@ -107,7 +107,6 @@ class PassFieldState extends State<PassField> {
 
   @override
   void initState() async{
-    PassEntry.initPairs();
     passwordShowState = Icon(Icons.lock, key: passwordStateKey);
     iconLocked = Icon(Icons.lock, key: passwordStateKey);
     iconOpened = Icon(Icons.lock_open, key: passwordStateKey);

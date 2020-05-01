@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:passpuss/passentry.dart';
-
+import 'package:passpuss/main.dart';
 import 'Database.dart';
 
 class NewPassEntryPage extends StatefulWidget {
@@ -76,12 +76,12 @@ class NewPassEntry extends State<NewPassEntryPage> {
               icon: Icon(Icons.done),
               onPressed: () async {
                 // TODO: Save entry
-                PassEntry new_entry = new PassEntry.withIcon(
+                PassEntry newEntry = new PassEntry.withIcon(
                     username,
                     password,
                     "Google",
                     "assets/images/Instagram_logo_2016.svg");
-                PassEntry.Pairs.add(new_entry); // DEBUG ONLY
+                PassEntriesPage.Pairs.add(newEntry);
                 //await DBProvider.DB.addPassEntry(new_entry);
                 Navigator.pop<NewPassEntry>(context, this);
               },
