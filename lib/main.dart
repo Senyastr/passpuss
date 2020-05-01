@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:passpuss/Database.dart';
 import "dart:math";
 import "package:passpuss/passentry.dart";
 import 'package:flutter_svg/flutter_svg.dart';
@@ -53,7 +54,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class PassEntriesPage extends State<MyHomePage> {
-  static List<PassEntry> Pairs = new List<PassEntry>();
+  static List<PassEntry> Pairs = [];
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -62,7 +63,7 @@ class PassEntriesPage extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets
-    Pairs.add(new PassEntry.withIcon("HELLO", "PUSSY", "kuszi", "assets/images/Instagram_logo_2016.svg"));
+
     return Scaffold(
         appBar: AppBar(title: Text("HEY, THIS IS BAR")),
         body: Column(children: <Widget>[
@@ -88,6 +89,14 @@ class PassEntriesPage extends State<MyHomePage> {
 //        await localAuth.authenticateWithBiometrics(
 //        localizedReason: 'Please authenticate to show account balance');
   }
+
+  @override
+  void initState() {
+    asignPairs;
+  }
+  void asignPairs() async{
+    Pairs = await DBProvider.DB.getPassEntries();
+  }
 }
 class PassField extends StatefulWidget{
   PassEntry passEntry;
@@ -106,7 +115,7 @@ class PassFieldState extends State<PassField> {
 
 
   @override
-  void initState() async{
+  void initState() {
     passwordShowState = Icon(Icons.lock, key: passwordStateKey);
     iconLocked = Icon(Icons.lock, key: passwordStateKey);
     iconOpened = Icon(Icons.lock_open, key: passwordStateKey);

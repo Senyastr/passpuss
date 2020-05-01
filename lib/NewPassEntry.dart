@@ -82,7 +82,7 @@ class NewPassEntry extends State<NewPassEntryPage> {
                     "Google",
                     "assets/images/Instagram_logo_2016.svg");
                 PassEntriesPage.Pairs.add(newEntry);
-                //await DBProvider.DB.addPassEntry(new_entry);
+                await DBProvider.DB.addPassEntry(newEntry);
                 Navigator.pop<NewPassEntry>(context, this);
               },
             )
