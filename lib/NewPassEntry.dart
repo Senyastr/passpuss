@@ -28,21 +28,28 @@ class NewPassEntry extends State<NewPassEntryPage> {
 
   @override
   void initState() {
+    selected = null;
     lockIcon = Icon(iconLocked);
     password_preview = hiddenPassword;
   }
+
   bool previewPassword = false;
   Icon lockIcon;
   var iconLocked = Icons.lock;
   var iconOpened = Icons.lock_open;
-
+  PassEntryIcon selected;
   var passwordStateKey = GlobalKey();
   var isPasswordShown = false;
   var password_txt = TextEditingController();
+  var iconsChoice = [
+    PassEntryIcon("assets/images/Instagram_logo_2016.svg"),
+    PassEntryIcon("assets/images/Facebook_logo_24x24.svg")
+  ];
+  static SvgPicture _DebugImage =
+  SvgPicture.asset("assets/images/Instagram_logo_2016.svg");
   String password_preview;
   @override
   Widget build(BuildContext context) {
-
     _usernameForm = TextFormField(
       onChanged: (String changed) {
         setState(() {
@@ -65,9 +72,8 @@ class NewPassEntry extends State<NewPassEntryPage> {
           labelText: "Your super-secure password"),
     );
     password_txt.addListener(onPasswordChange);
-    SvgPicture _DebugImage =
-        SvgPicture.asset("assets/images/Instagram_logo_2016.svg");
-
+    IconChoiceState.initOnChange(new IconChangedHandler(this));
+    IconChoiceState.icons = iconsChoice;
     return Scaffold(
         appBar: AppBar(
           title: Text("Create new password entry"),
@@ -76,11 +82,8 @@ class NewPassEntry extends State<NewPassEntryPage> {
               icon: Icon(Icons.done),
               onPressed: () async {
                 // TODO: Save entry
-                PassEntry newEntry = new PassEntry.withIcon(
-                    username,
-                    password,
-                    "Google",
-                    "assets/images/Instagram_logo_2016.svg");
+                PassEntry newEntry = new PassEntry.withIcon(username, password,
+                    "Google", selected.path);
                 PassEntriesPage.Pairs.add(newEntry);
                 await DBProvider.DB.addPassEntry(newEntry);
                 Navigator.pop<NewPassEntry>(context, this);
@@ -99,9 +102,12 @@ class NewPassEntry extends State<NewPassEntryPage> {
                     Align(
                         alignment: Alignment.topLeft,
                         child: Padding(
-                            child: _DebugImage,
+                            child: (IconChoiceState.selected != null) ?
+                            SvgPicture.asset(
+                                IconChoiceState.selected.iconInfo?.path) :
+                            _DebugImage,
                             padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10))),
+                                horizontal: 20, vertical: 10))), // ICON PREVIEW
                     Align(
                         alignment: Alignment.bottomLeft,
                         child: Row(children: <Widget>[
@@ -116,24 +122,22 @@ class NewPassEntry extends State<NewPassEntryPage> {
                                       fontSize: 20, color: Colors.white)),
                               padding: EdgeInsets.symmetric(
                                   horizontal: 18, vertical: 5))
-                        ])),
+                        ])), // USERNAME PREVIEW
                     Align(
                         alignment: Alignment.bottomLeft,
                         child: Row(children: <Widget>[
                           Padding(
                               padding: EdgeInsets.only(
-                                  left: 15, bottom: 10, top:10),
+                                  left: 15, bottom: 10, top: 10),
                               child: IconButton(
-                                icon:
-                                    lockIcon,
+                                icon: lockIcon,
                                 onPressed: () {
                                   setState(() {
-                                    if (lockIcon.icon == iconLocked){
+                                    if (lockIcon.icon == iconLocked) {
                                       lockIcon = Icon(iconOpened);
                                       password_preview = password;
                                       previewPassword = true;
-                                    }
-                                    else{
+                                    } else {
                                       lockIcon = Icon(iconLocked);
                                       password_preview = hiddenPassword;
                                       previewPassword = false;
@@ -142,10 +146,8 @@ class NewPassEntry extends State<NewPassEntryPage> {
                                 },
                               )),
                           Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 7),
-                              child: Text(
-                                  password_preview,
+                              padding: EdgeInsets.symmetric(horizontal: 7),
+                              child: Text(password_preview,
                                   style: TextStyle(
                                       fontSize: 20, color: Colors.white))),
                           Padding(
@@ -155,13 +157,11 @@ class NewPassEntry extends State<NewPassEntryPage> {
                                   onPressed: () {
                                     Clipboard.setData(
                                         ClipboardData(text: password));
-                                    Scaffold.of(context).showSnackBar(
-                                        SnackBar(content:
-                                        Text("Your password has been copied to the clipboard.")
-                                        )
-                                    );
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                        content: Text(
+                                            "Your password has been copied to the clipboard.")));
                                   }))
-                        ]))
+                        ])) // PASSWORD PREVIEW
                   ])))
             ],
           )),
@@ -192,18 +192,127 @@ class NewPassEntry extends State<NewPassEntryPage> {
                               onPressed: () {
                                 password_txt.text = PassEntry.generate_pass(8);
                               })
-                        ]),
+                        ]), // Password
+                        Padding(
+                            padding: EdgeInsets.only(bottom: 12),
+                            child:
+                            Container(
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: iconsChoice.length,
+                                    itemBuilder: (BuildContext context,
+                                        int index) {
+                                      return IconChoice(iconsChoice[index]);
+                                    }),
+                                height: 50
+                            )
+                        )
                       ],
                     )))
                   ])))
         ]));
   }
+
   void onPasswordChange() {
     setState(() {
       password = password_txt.text;
-      if (previewPassword){
+      if (previewPassword) {
         password_preview = password;
       }
     });
+  }
+}
+
+class IconChoice extends StatefulWidget {
+  PassEntryIcon iconInfo;
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return IconChoiceState(iconInfo);
+  }
+
+  IconChoice(PassEntryIcon icon) {
+    this.iconInfo = icon;
+  }
+
+}
+
+class IconChoiceState extends State<IconChoice> {
+  static List<PassEntryIcon> icons;
+  static IconChoiceState selected = null;
+  PassEntryIcon iconInfo;
+  bool isSelected = false;
+  static IconChangedHandler _onChange;
+
+  static void initOnChange(IChangedHandler<PassEntryIcon> onChanged) {
+    _onChange = onChanged;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var color = (isSelected) ? Colors.grey : Colors.transparent;
+    return GestureDetector(
+        child: Container(
+          child: SvgPicture.asset(iconInfo.path),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(
+                  color: color
+              )
+          ),
+        ),
+        onTap: () {
+          setState(() {
+            if (selected == this && this.isSelected) {
+              isSelected = false;
+              selected = null;
+            }
+            else {
+              isSelected = !isSelected;
+            }
+
+            if (selected != null) {
+              selected.setState(() {
+                selected.isSelected = false;
+              });
+            }
+            if (this.isSelected) {
+              selected = this;
+            }
+            _onChange.onChanged((selected == null) ? PassEntryIcon(
+                "assets/images/Instagram_logo_2016.svg") : selected.iconInfo);
+          });
+        });
+  }
+
+  IconChoiceState(this.iconInfo);
+
+}
+
+class IconChangedHandler implements IChangedHandler<PassEntryIcon> {
+  NewPassEntry newEntry;
+
+  @override
+  void onChanged(PassEntryIcon changed) {
+    newEntry.setState(() {
+      newEntry.selected = changed;
+    });
+  }
+
+  IconChangedHandler(this.newEntry);
+}
+
+abstract class IChangedHandler<T> {
+  void onChanged(T changed);
+}
+
+class PassEntryIcon {
+  String path;
+
+
+  PassEntryIcon(String path) {
+    this.path = path;
   }
 }
