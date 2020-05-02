@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:passpuss/Database.dart';
-import "dart:math";
 import "package:passpuss/passentry.dart";
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -57,6 +56,7 @@ class PassEntriesPage extends State<MyHomePage> {
   static List<PassEntry> Pairs = [];
   @override
   Widget build(BuildContext context) {
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -83,6 +83,20 @@ class PassEntriesPage extends State<MyHomePage> {
         ]));
   }
 
+  @override
+  void initState() {
+    setState(() {
+      assignPairs();
+    });
+  }
+
+  assignPairs() async {
+    var pairs = await DBProvider.DB.getPassEntries();
+    setState(() {
+      Pairs = pairs;
+    });
+  }
+
   void Auth() async {
 //    var localAuth = LocalAuthentication();
 //    bool didAuthenticate =
@@ -90,13 +104,7 @@ class PassEntriesPage extends State<MyHomePage> {
 //        localizedReason: 'Please authenticate to show account balance');
   }
 
-  @override
-  void initState() {
-    asignPairs;
-  }
-  void asignPairs() async{
-    Pairs = await DBProvider.DB.getPassEntries();
-  }
+
 }
 class PassField extends StatefulWidget{
   PassEntry passEntry;
@@ -161,7 +169,7 @@ class PassFieldState extends State<PassField> {
                 child: Row(
                   children: <Widget>[
                     Padding(
-                        padding: EdgeInsets.only(left: 15, bottom: 10),
+                        padding: EdgeInsets.only(left: 15,),
                         child:IconButton(
                             icon: (isPasswordShown) ?
                             iconOpened:

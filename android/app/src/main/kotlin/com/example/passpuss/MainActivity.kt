@@ -31,13 +31,11 @@ class MainActivity: FlutterActivity() {
     var CHANNEL : String = "com.flutter.myapp/myapp"
     @RequiresApi(Build.VERSION_CODES.P)
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
-        GeneratedPluginRegistrant.registerWith(flutterEngine);
+        GeneratedPluginRegistrant.registerWith(flutterEngine)
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler{ call, result ->
             if (call.method == "MYMETHOD"){
-                result.success("here we go, i'm invoked");
-
-
+                result.success("here we go, i'm invoked")
             }
         }
     }

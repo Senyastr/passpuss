@@ -20,8 +20,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_svg: ^0.17.4
-  sqflite: any
   path_provider: any
+  flutter_sqlcipher: any
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -1,16 +1,19 @@
-import 'dart:io';
 import 'dart:core';
+import 'dart:io';
 import 'package:passpuss/passentry.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:flutter_sqlcipher/sqlcipher.dart';
+import 'package:flutter_sqlcipher/sqlite.dart';
+import 'package:passpuss/main.dart';
 
 class DBProvider{
   DBProvider._();
+
   static final DBProvider DB = DBProvider._();
 
-  static Database _database;
+  static SQLiteDatabase _database;
 
-  Future<Database> get database async{
+  Future<SQLiteDatabase> get database async {
     if (_database != null){
       return _database;
     }
@@ -19,17 +22,16 @@ class DBProvider{
     return _database;
   }
 
-  Future<Database>initDB() async {
-    String databases = (await getDatabasesPath()) ;
-    String path = databases + "\\" + "PassPairs.db"; // get the path of the future database
+  Future<SQLiteDatabase> initDB() async {
+    Directory databases = await getApplicationDocumentsDirectory();
+    String path = databases.path + "\\" +
+        "PassPairs.db"; // get the path of the future database
 
-    _database = await openDatabase(path, version: 1, onCreate: (database, version) async {
-      // here we execute "create table"
-      // ID Primary key auto incremented
-      // PASSWORD
-      // TITLE
-      // ICONPATH
-      await database.execute("CREATE TABLE PassEntries("
+
+    if (!await File(path).exists()) {
+      _database =
+      await SQLiteDatabase.openOrCreateDatabase(path, password: "xgWd793VL");
+      await (await database).execSQL("CREATE TABLE PassEntries("
           "id INTEGER AUTO_INCREMENT PRIMARY KEY,"
           "USERNAME TEXT,"
           "PASSWORD TEXT,"
@@ -37,27 +39,39 @@ class DBProvider{
           "ICONPATH TEXT"
           ")"
       );
-    });
+      return _database;
+    }
+    // here we execute "create table"
+    // ID Primary key auto incremented
+    // PASSWORD
+    // TITLE
+    // ICONPATH
+    _database =
+    await SQLiteDatabase.openOrCreateDatabase(path, password: "xgWd793VL");
     return _database;
-
   }
+
   static String TABLE_NAME = "PassEntries";
+
   Future<int> addPassEntry(PassEntry entry) async{
-    Database db = await this.database;
+    SQLiteDatabase db = await this.database;
     Map map = entry.toJson();
     map.remove("id");
-    var result = await db.insert(TABLE_NAME, map);
+    var result = await db.insert(table: TABLE_NAME, values: map);
     return result;
   }
+
   Future<int> deletePassEntry(PassEntry entry) async{
-    Database db = await this.database;
-    var result = await db.delete(TABLE_NAME, where: "id = ?", whereArgs: [entry.id]);
+    var db = await this.database;
+    var result = await db.delete(
+        table: TABLE_NAME, where: "id = ?", whereArgs: [entry.id.toString()]);
     return result;
   }
+
   Future<List<PassEntry>> getPassEntries() async{
-    Database db = await this.database;
+    var db = await this.database;
     var result = await db.query(
-      TABLE_NAME,
+      table: TABLE_NAME,
       columns: [
         "id",
         "USERNAME",
@@ -69,12 +83,13 @@ class DBProvider{
     List<PassEntry> passEntries = new List<PassEntry>();
     Set set = Set.from(result); // we use set for convenience(forEach method)
     set.forEach((v) =>
-      passEntries.add(PassEntry.withIcon(
-          v["USERNAME"],
-          v["PASSWORD"],
-          v["TITLE"],
-          v["ICONPATH"])
-      ));
+        passEntries.add(PassEntry.withIcon(
+            v["USERNAME"],
+            v["PASSWORD"],
+            v["TITLE"],
+            v["ICONPATH"])
+        ));
+    PassEntriesPage.Pairs = passEntries;
     return passEntries;
   }
 }
