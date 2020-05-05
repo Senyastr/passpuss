@@ -10,8 +10,8 @@ import android.os.PersistableBundle
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyPermanentlyInvalidatedException
 import android.security.keystore.KeyProperties
-import android.support.annotation.NonNull
-import android.support.annotation.RequiresApi
+import androidx.annotation.NonNull
+import androidx.annotation.RequiresApi
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -26,7 +26,7 @@ import javax.crypto.NoSuchPaddingException
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
-
+// DON'T MIND ABOUT THIS ERROR HERE
 class MainActivity: FlutterActivity() {
     var CHANNEL : String = "com.flutter.myapp/myapp"
     @RequiresApi(Build.VERSION_CODES.P)

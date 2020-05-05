@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:passpuss/Database.dart';
+import 'package:PassPuss/Database.dart';
 
 import 'main.dart';
 
@@ -33,6 +33,16 @@ class PassEntry {
       id = PassEntriesPage.Pairs.length + 1;
     }
 
+
+    this._username = username;
+    this._password = password;
+    this._title = title;
+    this._iconName = iconName;
+  }
+
+  PassEntry.fromDB(int id, String username, String password, String title,
+      String iconName){
+    this.id = id;
     this._username = username;
     this._password = password;
     this._title = title;

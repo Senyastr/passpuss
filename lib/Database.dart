@@ -1,10 +1,10 @@
 import 'dart:core';
 import 'dart:io';
-import 'package:passpuss/passentry.dart';
+import 'package:PassPuss/passentry.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_sqlcipher/sqlcipher.dart';
 import 'package:flutter_sqlcipher/sqlite.dart';
-import 'package:passpuss/main.dart';
+import 'package:PassPuss/main.dart';
 
 class DBProvider {
   DBProvider._();
@@ -32,7 +32,7 @@ class DBProvider {
       _database = await SQLiteDatabase.openOrCreateDatabase(path,
           password: "xgWd793VL");
       await (await database).execSQL("CREATE TABLE PassEntries("
-          "id INTEGER AUTO_INCREMENT PRIMARY KEY,"
+          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
           "USERNAME TEXT,"
           "PASSWORD TEXT,"
           "TITLE TEXT,"
@@ -62,8 +62,9 @@ class DBProvider {
 
   Future<int> deletePassEntry(PassEntry entry) async {
     var db = await this.database;
+    String id = entry.id.toString();
     var result = await db.delete(
-        table: TABLE_NAME, where: "id = ?", whereArgs: [entry.id.toString()]);
+        table: TABLE_NAME, where: "id=?", whereArgs: [id]);
     return result;
   }
 
@@ -76,8 +77,12 @@ class DBProvider {
     List<PassEntry> passEntries = new List<PassEntry>();
     Set set = Set.from(result); // we use set for convenience(forEach method)
     set.forEach((v) =>
-        passEntries.add(PassEntry.withIcon(
-            v["USERNAME"], v["PASSWORD"], v["TITLE"], v["ICONPATH"])));
+        passEntries.add(PassEntry.fromDB(
+            v["id"],
+            v["USERNAME"],
+            v["PASSWORD"],
+            v["TITLE"],
+            v["ICONPATH"])));
     PassEntriesPage.Pairs = passEntries;
     return passEntries;
   }

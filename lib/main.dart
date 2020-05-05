@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:passpuss/Database.dart';
-import "package:passpuss/passentry.dart";
+import 'package:PassPuss/Database.dart';
+import "package:PassPuss/passentry.dart";
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'NewPassEntry.dart';
@@ -54,9 +54,10 @@ class MyHomePage extends StatefulWidget {
 
 class PassEntriesPage extends State<MyHomePage> {
   static List<PassEntry> Pairs = [];
+  static PassEntriesPage _page;
   @override
   Widget build(BuildContext context) {
-
+    _page = this;
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -97,6 +98,10 @@ class PassEntriesPage extends State<MyHomePage> {
     });
   }
 
+  static changeDataset(VoidCallback callback) {
+    _page.setState(callback);
+  }
+
   void Auth() async {
 //    var localAuth = LocalAuthentication();
 //    bool didAuthenticate =
@@ -119,11 +124,12 @@ class PassField extends StatefulWidget{
 
 }
 class PassFieldState extends State<PassField> {
-  PassEntry passEntry = null;
+  PassEntry passEntry;
 
 
   @override
   void initState() {
+    command = SimpleRemove(passEntry);
     passwordShowState = Icon(Icons.lock, key: passwordStateKey);
     iconLocked = Icon(Icons.lock, key: passwordStateKey);
     iconOpened = Icon(Icons.lock_open, key: passwordStateKey);
@@ -148,11 +154,24 @@ class PassFieldState extends State<PassField> {
         padding: EdgeInsets.only(left: 16, right:16, top:16),
         child: new Card(
             child: Column(children: <Widget>[
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                  child: SvgPicture.asset(imageName),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10))),
+              Align(
+                  alignment: Alignment.topLeft,
+                  child: Row(
+                      children: <Widget>[
+                        Padding(
+                            child:
+                            SvgPicture.asset(
+                                passEntry.getIconId()),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10)),
+                        Text(
+                            passEntry.getTitle(),
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white
+                            )
+                        )
+                      ])),
           Align(
               alignment: Alignment.bottomLeft,
               child: Row(children: <Widget>[
@@ -197,16 +216,59 @@ class PassFieldState extends State<PassField> {
                             content: Text("The password is copied to the clipboard.")
                           ));
                       }
-                    ))
+                        )),
+                    Padding(
+                        padding: EdgeInsets.only(left: 60),
+                        child:
+                        Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                              icon: Icon(
+                                  Icons.delete_forever,
+                                  color: Colors.redAccent,
+                                  size: 30
+                              ),
+                              onPressed: removeEntry,
+                            )
+                        )
+                    )
                   ]
-                )
-              )
+                ),
+
+              ),
+
         ])));
   }
 
 //  void printMethod() async {
-//    String result = await channel.invokeMethod("MYMETHOD");
+//    String result = await MethodChannel("com.flutter.myapp/myapp").invokeMethod("MYMETHOD");
 //    print(result);
-//  }
+// }
+  RemoveCommand command;
+
+  void removeEntry() {
+    PassEntriesPage.changeDataset(() {
+      PassEntriesPage.Pairs.remove(passEntry);
+      DBProvider.DB.deletePassEntry(passEntry);
+    });
+  }
+
+
+}
+
+abstract class RemoveCommand {
+  void remove();
+}
+
+class SimpleRemove<T extends StatefulWidget> extends RemoveCommand {
+  PassEntry entry;
+
+  SimpleRemove(this.entry);
+
+  @override
+  void remove() {
+    PassEntriesPage.Pairs.remove(entry);
+    DBProvider.DB.deletePassEntry(entry);
+  }
 
 }

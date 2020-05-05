@@ -1,5 +1,5 @@
-name: passpuss
-description: A new Flutter application.
+name: PassPuss
+description: Here you can securely store and quickly get passwords of yours.
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -46,6 +46,7 @@ flutter:
   assets:
     - assets/images/Instagram_logo_2016.svg
     - assets/images/Facebook_logo_24x24.svg
+    - assets/images/empty_icon.svg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
