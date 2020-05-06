@@ -47,6 +47,12 @@ flutter:
     - assets/images/Instagram_logo_2016.svg
     - assets/images/Facebook_logo_24x24.svg
     - assets/images/empty_icon.svg
+    - assets/images/Apple48x48.svg
+    - assets/images/Google48x48.svg
+    - assets/images/Spotify48x48.svg
+    - assets/images/Steam48x48.svg
+    - assets/images/twitter-seeklogo.svg
+    - assets/images/Microsoft48x48.svg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

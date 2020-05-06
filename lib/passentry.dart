@@ -33,7 +33,6 @@ class PassEntry {
       id = PassEntriesPage.Pairs.length + 1;
     }
 
-
     this._username = username;
     this._password = password;
     this._title = title;
@@ -41,7 +40,7 @@ class PassEntry {
   }
 
   PassEntry.fromDB(int id, String username, String password, String title,
-      String iconName){
+      String iconName) {
     this.id = id;
     this._username = username;
     this._password = password;

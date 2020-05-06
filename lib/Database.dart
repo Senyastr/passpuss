@@ -2,7 +2,6 @@ import 'dart:core';
 import 'dart:io';
 import 'package:PassPuss/passentry.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_sqlcipher/sqlcipher.dart';
 import 'package:flutter_sqlcipher/sqlite.dart';
 import 'package:PassPuss/main.dart';
 
@@ -63,8 +62,8 @@ class DBProvider {
   Future<int> deletePassEntry(PassEntry entry) async {
     var db = await this.database;
     String id = entry.id.toString();
-    var result = await db.delete(
-        table: TABLE_NAME, where: "id=?", whereArgs: [id]);
+    var result =
+    await db.delete(table: TABLE_NAME, where: "id=?", whereArgs: [id]);
     return result;
   }
 
@@ -78,11 +77,7 @@ class DBProvider {
     Set set = Set.from(result); // we use set for convenience(forEach method)
     set.forEach((v) =>
         passEntries.add(PassEntry.fromDB(
-            v["id"],
-            v["USERNAME"],
-            v["PASSWORD"],
-            v["TITLE"],
-            v["ICONPATH"])));
+            v["id"], v["USERNAME"], v["PASSWORD"], v["TITLE"], v["ICONPATH"])));
     PassEntriesPage.Pairs = passEntries;
     return passEntries;
   }

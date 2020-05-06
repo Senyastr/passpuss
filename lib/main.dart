@@ -66,11 +66,11 @@ class PassEntriesPage extends State<MyHomePage> {
     // than having to individually change instances of widgets
 
     return Scaffold(
-        appBar: AppBar(title: Text("HEY, THIS IS BAR")),
+        appBar: AppBar(title: Text("Pass Puss")),
         body: Column(children: <Widget>[
           Expanded(
               child: ListView.builder(
-                itemCount: Pairs.length,
+                  itemCount: Pairs.length,
                   itemBuilder: (BuildContext context, int index) {
                     return new PassField(Pairs[index]);
                   })),
@@ -108,24 +108,22 @@ class PassEntriesPage extends State<MyHomePage> {
 //        await localAuth.authenticateWithBiometrics(
 //        localizedReason: 'Please authenticate to show account balance');
   }
-
-
 }
-class PassField extends StatefulWidget{
+
+class PassField extends StatefulWidget {
   PassEntry passEntry;
   @override
   State<StatefulWidget> createState() {
     return PassFieldState(passEntry);
   }
 
-  PassField(PassEntry passentry){
+  PassField(PassEntry passentry) {
     this.passEntry = passentry;
   }
-
 }
+
 class PassFieldState extends State<PassField> {
   PassEntry passEntry;
-
 
   @override
   void initState() {
@@ -134,6 +132,7 @@ class PassFieldState extends State<PassField> {
     iconLocked = Icon(Icons.lock, key: passwordStateKey);
     iconOpened = Icon(Icons.lock_open, key: passwordStateKey);
   }
+
   Icon iconLocked;
   Icon iconOpened;
 
@@ -151,92 +150,76 @@ class PassFieldState extends State<PassField> {
     initState();
 
     return new Padding(
-        padding: EdgeInsets.only(left: 16, right:16, top:16),
+        padding: EdgeInsets.only(left: 16, right: 16, top: 16),
         child: new Card(
             child: Column(children: <Widget>[
               Align(
                   alignment: Alignment.topLeft,
-                  child: Row(
-                      children: <Widget>[
-                        Padding(
-                            child:
-                            SvgPicture.asset(
-                                passEntry.getIconId()),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10)),
-                        Text(
-                            passEntry.getTitle(),
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white
-                            )
-                        )
-                      ])),
+                  child: Row(children: <Widget>[
+                    Padding(
+                        child: SvgPicture.asset(passEntry.getIconId()),
+                        padding:
+                        EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
+                    Text(passEntry.getTitle(),
+                        style: TextStyle(fontSize: 20, color: Colors.white))
+                  ])),
           Align(
               alignment: Alignment.bottomLeft,
               child: Row(children: <Widget>[
                 Padding(
-                    padding: EdgeInsets.only(left: 27, top: 10, bottom: 10),
-                      child: Icon(Icons.person),
+                  padding: EdgeInsets.only(left: 27, top: 10, bottom: 10),
+                  child: Icon(Icons.person),
                 ),
                 Padding(
-                  child: Text(passEntry.getUsername(),
-                      style: TextStyle(fontSize: 20, color: Colors.white)),
-                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10))])),
+                    child: Text(passEntry.getUsername(),
+                        style: TextStyle(fontSize: 20, color: Colors.white)),
+                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10))
+              ])),
               Align(
                 alignment: Alignment.bottomLeft,
-                child: Row(
-                  children: <Widget>[
-                    Padding(
-                        padding: EdgeInsets.only(left: 15,),
-                        child:IconButton(
-                            icon: (isPasswordShown) ?
-                            iconOpened:
-                            iconLocked,
-                          onPressed: (){
-                              setState((){
-                                  isPasswordShown = !isPasswordShown;
-                              });
-                          },
-                        )
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-                        child:Text(
-                            (isPasswordShown) ? passEntry.getPassword() : "******",
-                            style: TextStyle(fontSize: 20, color: Colors.white)
-                    )),
-                    Padding(
-                        padding: EdgeInsets.all(1),
-                        child:IconButton(
+                child: Row(children: <Widget>[
+                  Padding(
+                      padding: EdgeInsets.only(
+                        left: 15,
+                      ),
+                      child: IconButton(
+                        icon: (isPasswordShown) ? iconOpened : iconLocked,
+                        onPressed: () {
+                          setState(() {
+                            isPasswordShown = !isPasswordShown;
+                          });
+                        },
+                      )),
+                  Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 10),
+                      child: Text(
+                          (isPasswordShown)
+                              ? passEntry.getPassword()
+                              : "******",
+                          style: TextStyle(fontSize: 20, color: Colors.white))),
+                  Padding(
+                      padding: EdgeInsets.all(1),
+                      child: IconButton(
                           icon: Icon(Icons.content_copy),
-                          onPressed:(){
-                          Clipboard.setData(ClipboardData(text: passEntry.getPassword()));
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text("The password is copied to the clipboard.")
-                          ));
-                      }
-                        )),
-                    Padding(
-                        padding: EdgeInsets.only(left: 60),
-                        child:
-                        Align(
-                            alignment: Alignment.centerRight,
-                            child: IconButton(
-                              icon: Icon(
-                                  Icons.delete_forever,
-                                  color: Colors.redAccent,
-                                  size: 30
-                              ),
-                              onPressed: removeEntry,
-                            )
-                        )
-                    )
-                  ]
-                ),
-
+                          onPressed: () {
+                            Clipboard.setData(
+                                ClipboardData(text: passEntry.getPassword()));
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text(
+                                    "The password is copied to the clipboard.")));
+                          })),
+                  Padding(
+                      padding: EdgeInsets.only(left: 60),
+                      child: Align(
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                            icon: Icon(Icons.delete_forever,
+                                color: Colors.redAccent, size: 30),
+                            onPressed: removeEntry,
+                          )))
+                ]),
               ),
-
         ])));
   }
 
@@ -252,8 +235,6 @@ class PassFieldState extends State<PassField> {
       DBProvider.DB.deletePassEntry(passEntry);
     });
   }
-
-
 }
 
 abstract class RemoveCommand {
@@ -270,5 +251,4 @@ class SimpleRemove<T extends StatefulWidget> extends RemoveCommand {
     PassEntriesPage.Pairs.remove(entry);
     DBProvider.DB.deletePassEntry(entry);
   }
-
 }
