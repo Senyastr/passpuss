@@ -101,6 +101,7 @@ class NewPassEntry extends State<NewPassEntryPage> {
             labelText: "Title",
             icon: Icon(Icons.title)));
     password_txt.addListener(onPasswordChange);
+    IconChoiceState.selected = null;
     IconChoiceState.initOnChange(new IconChangedHandler(this));
     IconChoiceState.icons = iconsChoice;
     return Form(
