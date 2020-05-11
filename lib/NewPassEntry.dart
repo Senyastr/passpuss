@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:PassPuss/passentry.dart';
 import 'package:PassPuss/main.dart';
 import 'Database.dart';
+import 'homePage.dart';
 
 class NewPassEntryPage extends StatefulWidget {
   @override
@@ -125,7 +126,7 @@ class NewPassEntry extends State<NewPassEntryPage> {
                     // TODO: Save entry
 
                     if (_formKey.currentState.validate()) {
-                      PassEntriesPage.Pairs.add(newEntry);
+                      HomePageState.Pairs.add(newEntry);
                       await DBProvider.DB.addPassEntry(newEntry);
                       Navigator.pop<NewPassEntry>(context, this);
                     }

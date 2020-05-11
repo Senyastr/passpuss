@@ -63,7 +63,7 @@ class PassEntriesPage extends State<MyHomePage> {
   static const TextStyle _bottomNavTextStyleEnabled = TextStyle(
       color: Colors.red);
 
-  List<Widget> pages = [HomePage(), null];
+  List<Widget> pages = <Widget>[HomePage(), null];
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +76,7 @@ class PassEntriesPage extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(title: Text("Pass Puss")),
-      body: _pages.,
+      body: pages.elementAt(_selectedPageIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -100,22 +100,7 @@ class PassEntriesPage extends State<MyHomePage> {
   }
 
   @override
-  void initState() {
-    setState(() {
-      assignPairs();
-    });
-  }
-
-  assignPairs() async {
-    var pairs = await DBProvider.DB.getPassEntries();
-    setState(() {
-      Pairs = pairs;
-    });
-  }
-
-  static changeDataset(VoidCallback callback) {
-    _page.setState(callback);
-  }
+  void initState();
 
   void Auth() async {
 //    var localAuth = LocalAuthentication();

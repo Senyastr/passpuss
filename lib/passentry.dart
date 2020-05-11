@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:PassPuss/Database.dart';
 
+import 'homePage.dart';
 import 'main.dart';
 
 class PassEntry {
@@ -14,10 +15,10 @@ class PassEntry {
   // ignore: non_constant_identifier_names
 
   PassEntry.noIcon(String username, String password, String title) {
-    if (PassEntriesPage.Pairs == null) {
+    if (HomePageState.Pairs == null) {
       id = 1;
     } else {
-      id = PassEntriesPage.Pairs.length + 1;
+      id = HomePageState.Pairs.length + 1;
     }
 
     this._username = username;
@@ -27,10 +28,10 @@ class PassEntry {
 
   PassEntry.withIcon(String username, String password, String title,
       String iconName) {
-    if (PassEntriesPage.Pairs == null) {
+    if (HomePageState.Pairs == null) {
       id = 1;
     } else {
-      id = PassEntriesPage.Pairs.length + 1;
+      id = HomePageState.Pairs.length + 1;
     }
 
     this._username = username;

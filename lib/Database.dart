@@ -5,6 +5,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter_sqlcipher/sqlite.dart';
 import 'package:PassPuss/main.dart';
 
+import 'homePage.dart';
+
+
+
 class DBProvider {
   DBProvider._();
 
@@ -78,7 +82,7 @@ class DBProvider {
     set.forEach((v) =>
         passEntries.add(PassEntry.fromDB(
             v["id"], v["USERNAME"], v["PASSWORD"], v["TITLE"], v["ICONPATH"])));
-    PassEntriesPage.Pairs = passEntries;
+    HomePageState.Pairs = passEntries;
     return passEntries;
   }
 }
