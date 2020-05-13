@@ -31,7 +31,7 @@ class HomePageState extends State<HomePage> {
           child: ListView.builder(
               itemCount: Pairs.length,
               itemBuilder: (BuildContext context, int index) {
-                return new PassField(Pairs[index]);
+                return new PassField(Pairs[index], GlobalKey());
               })),
       FloatingActionButton(
         child: Icon(Icons.add),

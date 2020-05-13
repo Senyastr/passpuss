@@ -55,13 +55,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class PassEntriesPage extends State<MyHomePage> {
-
-
   int _selectedPageIndex = 0;
-  static const TextStyle _bottomNavTextStyleDisabled = TextStyle(
-      color: Colors.white);
-  static const TextStyle _bottomNavTextStyleEnabled = TextStyle(
-      color: Colors.red);
+  static const TextStyle _bottomNavTextStyleDisabled =
+  TextStyle(color: Colors.white);
+  static const TextStyle _bottomNavTextStyleEnabled =
+  TextStyle(color: Colors.red);
 
   List<Widget> pages = <Widget>[HomePage(), null];
 
@@ -79,14 +77,9 @@ class PassEntriesPage extends State<MyHomePage> {
       body: pages.elementAt(_selectedPageIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("Home")),
           BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text("Home")
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.thumb_up),
-              title: Text("For you")
-          )
+              icon: Icon(Icons.thumb_up), title: Text("For you"))
         ],
         currentIndex: _selectedPageIndex,
         selectedItemColor: Colors.green,
@@ -94,7 +87,6 @@ class PassEntriesPage extends State<MyHomePage> {
         unselectedItemColor: Colors.grey,
         selectedLabelStyle: _bottomNavTextStyleEnabled,
         unselectedLabelStyle: _bottomNavTextStyleDisabled,
-
       ),
     );
   }
@@ -114,4 +106,3 @@ class PassEntriesPage extends State<MyHomePage> {
     setState(() {});
   }
 }
-

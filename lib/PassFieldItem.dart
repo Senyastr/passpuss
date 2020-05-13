@@ -16,7 +16,8 @@ class PassField extends StatefulWidget {
     return PassFieldState(passEntry);
   }
 
-  PassField(PassEntry passentry) {
+  PassField(PassEntry passentry, GlobalKey<State<StatefulWidget>> globalKey)
+      : super(key: globalKey) {
     this.passEntry = passentry;
   }
 }
@@ -62,7 +63,16 @@ class PassFieldState extends State<PassField> {
                     padding:
                         EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
                 Text(passEntry.getTitle(),
-                    style: TextStyle(fontSize: 20, color: Colors.white))
+                    style: TextStyle(fontSize: 20, color: Colors.white)),
+                Padding(
+                    padding: EdgeInsets.only(left: 1),
+                    child: Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: Icon(Icons.delete_forever,
+                              color: Colors.redAccent, size: 30),
+                          onPressed: removeEntry,
+                        )))
               ])),
           Align(
               alignment: Alignment.bottomLeft,
@@ -107,15 +117,6 @@ class PassFieldState extends State<PassField> {
                             content: Text(
                                 "The password is copied to the clipboard.")));
                       })),
-              Padding(
-                  padding: EdgeInsets.only(left: 60),
-                  child: Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                        icon: Icon(Icons.delete_forever,
-                            color: Colors.redAccent, size: 30),
-                        onPressed: removeEntry,
-                      )))
             ]),
           ),
         ])));
