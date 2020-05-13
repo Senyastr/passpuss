@@ -11,10 +11,12 @@ class PassEntry {
   String _password; // ""
   String _title; // e.g. google, facebook, instagram
   String _iconName = "";
+  DateTime createdTime;
 
   // ignore: non_constant_identifier_names
 
-  PassEntry.noIcon(String username, String password, String title) {
+  PassEntry.noIcon(String username, String password, String title,
+      DateTime createdTime) {
     if (HomePageState.Pairs == null) {
       id = 1;
     } else {
@@ -24,10 +26,11 @@ class PassEntry {
     this._username = username;
     this._password = password;
     this._title = title;
+    this.createdTime = createdTime;
   }
 
   PassEntry.withIcon(String username, String password, String title,
-      String iconName) {
+      String iconName, DateTime createdTime) {
     if (HomePageState.Pairs == null) {
       id = 1;
     } else {
@@ -38,15 +41,17 @@ class PassEntry {
     this._password = password;
     this._title = title;
     this._iconName = iconName;
+    this.createdTime = createdTime;
   }
 
   PassEntry.fromDB(int id, String username, String password, String title,
-      String iconName) {
+      String iconName, DateTime createdTime) {
     this.id = id;
     this._username = username;
     this._password = password;
     this._title = title;
     this._iconName = iconName;
+    this.createdTime = createdTime;
   }
 
   String getUsername() {
@@ -148,16 +153,6 @@ class PassEntry {
     return builder.toString();
   }
 
-  static PassEntry GenerateUserPass(String username, String title,
-      String iconId, int amount) {
-    String password = generate_pass(amount);
-    return new PassEntry.withIcon(username, password, title, iconId);
-  }
-
-  static String GeneratePassword(int amount) {
-    String password = generate_pass(amount);
-    return password;
-  }
 
   Map<String, dynamic> toJson() =>
       {
@@ -165,6 +160,7 @@ class PassEntry {
         "USERNAME": _username,
         "PASSWORD": _password,
         "TITLE": _title,
-        "ICONPATH": _iconName
+        "ICONPATH": _iconName,
+        "CREATEDTIME": createdTime.toString()
       };
 }

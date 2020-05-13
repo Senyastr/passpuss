@@ -144,8 +144,9 @@ class NewPassEntry extends State<NewPassEntryPage> {
                       icon = selected.path;
                     }
                     PassEntry newEntry =
-                    new PassEntry.withIcon(username, password, title, icon);
-                    // TODO: Save entry
+                    new PassEntry.withIcon(
+                        username, password, title, icon, DateTime.now());
+
 
                     if (_formKey.currentState.validate()) {
                       HomePageState.Pairs.add(newEntry);

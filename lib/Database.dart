@@ -39,7 +39,8 @@ class DBProvider {
           "USERNAME TEXT,"
           "PASSWORD TEXT,"
           "TITLE TEXT,"
-          "ICONPATH TEXT"
+          "ICONPATH TEXT,"
+          "CREATEDTIME TEXT"
           ")");
       return _database;
     }
@@ -75,14 +76,23 @@ class DBProvider {
     var db = await this.database;
     var result = await db.query(
       table: TABLE_NAME,
-      columns: ["id", "USERNAME", "PASSWORD", "TITLE", "ICONPATH"],
+      columns: [
+        "id",
+        "USERNAME",
+        "PASSWORD",
+        "TITLE",
+        "ICONPATH",
+        "CREATEDTIME"
+      ],
     );
     List<PassEntry> passEntries = new List<PassEntry>();
     Set set = Set.from(result); // we use set for convenience(forEach method)
     set.forEach((v) =>
         passEntries.add(PassEntry.fromDB(
-            v["id"], v["USERNAME"], v["PASSWORD"], v["TITLE"], v["ICONPATH"])));
+            v["id"], v["USERNAME"], v["PASSWORD"], v["TITLE"], v["ICONPATH"],
+            DateTime.parse(v["CREATEDTIME"]))));
     HomePageState.Pairs = passEntries;
     return passEntries;
   }
+
 }

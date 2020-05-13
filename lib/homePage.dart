@@ -1,4 +1,3 @@
-// TODO Implement this library.
 import 'package:PassPuss/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +12,6 @@ import 'package:flutter/material.dart';
 class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return HomePageState();
   }
 }
@@ -24,7 +22,6 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     _page = this;
     return Column(children: <Widget>[
       Expanded(
