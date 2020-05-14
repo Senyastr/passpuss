@@ -1,4 +1,5 @@
 import 'package:PassPuss/homePage.dart';
+import 'package:PassPuss/recommendation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:PassPuss/Database.dart';
@@ -61,7 +62,7 @@ class PassEntriesPage extends State<MyHomePage> {
   static const TextStyle _bottomNavTextStyleEnabled =
   TextStyle(color: Colors.red);
 
-  List<Widget> pages = <Widget>[HomePage(), null];
+  List<Widget> pages = <Widget>[HomePage(), RecommendationTab()];
 
   @override
   Widget build(BuildContext context) {
