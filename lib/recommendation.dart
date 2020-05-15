@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'localization.dart';
 import 'passentry.dart';
 
 class RecommendationTab extends StatefulWidget {
@@ -17,13 +18,12 @@ class RecommendationTabState extends State<RecommendationTab> {
 
   @override
   void initState() {
-    items = analyze();
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-
+    items = analyze(context);
     return Column(
 
         children: <Widget>[
@@ -40,14 +40,14 @@ class RecommendationTabState extends State<RecommendationTab> {
         ]);
   }
 
-  List<RecommendationItem> analyze() {
+  List<RecommendationItem> analyze(BuildContext context) {
     // TODO: Here we're getting RecommendationItems(passwords that should be changed)
     // TODO: Make a field for PassField with the date of creation
     var pairs = HomePageState.Pairs;
     var recommendItems = List<RecommendationItem>();
     // HERE WE ANALYZE THE TIME THAT HAS PASSED SINCE THE PASSENTRYIES WERE CREATED
     pairs.forEach((f) {
-      var filtered = filter(f);
+      var filtered = filter(f, context);
       if (filtered != null) {
         recommendItems.add(filtered);
       }
@@ -55,13 +55,13 @@ class RecommendationTabState extends State<RecommendationTab> {
     return recommendItems;
   }
 
-  RecommendationItem filter(PassEntry f) {
+  RecommendationItem filter(PassEntry f, BuildContext context) {
     var password = f.getPassword();
     var timeDifference = (f.createdTime.difference(DateTime.now()));
     if (timeDifference.inDays > 31) {
       return new RecommendationItem(
           f,
-          "You should consider generating another password for this entry.",
+          LocalizationTool.of(context).passwordExpired,
           MessageType.recommendation);
     }
     else {
@@ -72,14 +72,14 @@ class RecommendationTabState extends State<RecommendationTab> {
       if (password.length < 8) {
         return new RecommendationItem(
             f,
-            "This password has length less than 8 characters long. Generate another one.",
+            LocalizationTool.of(context).passwordChars,
             MessageType.higlyRecommended);
       }
       // 2. The password has repeated characters.
       if (hasRepeatedCharacters(password)) {
         return new RecommendationItem(
             f,
-            "This password has repeated characters. Generate another one.",
+            LocalizationTool.of(context).passwordRepeatChars,
             MessageType.warning);
       }
       // 3. The password is one of these:
@@ -91,14 +91,14 @@ class RecommendationTabState extends State<RecommendationTab> {
       if (hasIdiotPasswords(password)) {
         return new RecommendationItem(
             f,
-            "This password is widely used in the Internet and can be brute-forced. You should generate another one",
+            LocalizationTool.of(context).passwordIdiot,
             MessageType.higlyRecommended);
       }
       // 4. The password hasn't used any letters, but numbers
       if (hasOnlyLetters(password)) {
         return new RecommendationItem(
             f,
-            "This password contains letters only. Consider generating a new one.",
+            LocalizationTool.of(context).passwordLetters,
             MessageType.recommendation
         );
       }
@@ -106,7 +106,7 @@ class RecommendationTabState extends State<RecommendationTab> {
       if (hasOnlyNumbers(password)) {
         return new RecommendationItem(
             f,
-            "This password contains numbers only. Consider generating a new one.",
+            LocalizationTool.of(context).passwordNumbers,
             MessageType.recommendation
 
         );

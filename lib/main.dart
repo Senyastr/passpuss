@@ -28,15 +28,15 @@ class PassPuss extends StatelessWidget {
       ],
       title: 'Pass Puss',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
+          // This is the theme of your application.
+          //
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or simply save your changes to "hot reload" in a Flutter IDE).
+          // Notice that the counter didn't reset back to zero; the application
+          // is not restarted.
           primaryColor: Color.fromARGB(255, 100, 150, 100),
           accentColor: Color.fromARGB(255, 0, 142, 6),
           cardColor: Color.fromARGB(255, 70, 70, 70),
@@ -68,9 +68,9 @@ class MyHomePage extends StatefulWidget {
 class PassEntriesPage extends State<MyHomePage> {
   int _selectedPageIndex = 0;
   static const TextStyle _bottomNavTextStyleDisabled =
-  TextStyle(color: Colors.white);
+      TextStyle(color: Colors.white);
   static const TextStyle _bottomNavTextStyleEnabled =
-  TextStyle(color: Colors.red);
+      TextStyle(color: Colors.red);
 
   Text home;
   Text forYou;
@@ -112,8 +112,7 @@ class PassEntriesPage extends State<MyHomePage> {
   }
 
   @override
-  void initState() {
-  }
+  void initState() {}
 
   void Auth() async {
 //    var localAuth = LocalAuthentication();
