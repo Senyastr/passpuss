@@ -28,8 +28,11 @@ class RecommendationTabState extends State<RecommendationTab> {
 
         children: <Widget>[
           Expanded(
-              child: ListView.builder(
-                  itemCount: items.length,
+          child: ListView.separated(
+              separatorBuilder: (context, index) => Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Divider(color: Colors.white)),
+              itemCount: items.length,
                   itemBuilder: (BuildContext context, int index) {
                     return items[index];
                   }
@@ -212,11 +215,16 @@ class RecommendationItemState extends State<RecommendationItem> {
   var error_color = Colors.red;
   var recommendation_color = Colors.blue;
 
+  var error_cardColor = Color.fromARGB(255, 194, 83, 91); // dark blue
+  var warning_cardColor = Color.fromARGB(255, 151, 168, 89);
+  var recommendation_cardColor = Color.fromARGB(255, 35, 55, 82);
+
   @override
   Widget build(BuildContext context) {
     Icon messageIcon;
     double iconsize = 50;
     Color textColor;
+    Color cardColor;
     switch (messageType) {
       case MessageType.higlyRecommended:
         messageIcon = Icon(
@@ -225,6 +233,7 @@ class RecommendationItemState extends State<RecommendationItem> {
           size: iconsize,
         );
         textColor = error_color;
+        cardColor = error_cardColor;
         break;
       case MessageType.warning:
         messageIcon = Icon(
@@ -233,6 +242,7 @@ class RecommendationItemState extends State<RecommendationItem> {
             size: iconsize
         );
         textColor = warning_color;
+        cardColor = warning_cardColor;
         break;
       case MessageType.recommendation:
         messageIcon = Icon(
@@ -241,13 +251,14 @@ class RecommendationItemState extends State<RecommendationItem> {
             size: iconsize
         );
         textColor = recommendation_color;
+        cardColor = recommendation_cardColor;
         break;
     }
     return new Padding(
-        padding: EdgeInsets.only(left: 16, right: 16, top: 5),
+        padding: EdgeInsets.symmetric(horizontal: 15),
         child: Column(children: <Widget>[
           Padding(
-              padding: EdgeInsets.only(top: 20, left: 5, right: 5),
+              padding: EdgeInsets.only(left: 5, right: 5),
               child: Card(
                   child: Row(children: <Widget>[
                     Expanded(
@@ -260,11 +271,14 @@ class RecommendationItemState extends State<RecommendationItem> {
                                   fontSize: 18,
                                 ))
                         )),
-                    messageIcon
+                    Padding(
+                        padding: EdgeInsets.all(7),
+                        child: messageIcon)
                   ])
               )
           ),
           Card(
+              color: cardColor,
               child: Column(children: <Widget>[
                 Align(
                     alignment: Alignment.topLeft,
@@ -326,7 +340,9 @@ class RecommendationItemState extends State<RecommendationItem> {
                             })),
                   ]),
                 ),
-              ]))
+              ]
+              )),
+
         ]));
   }
 

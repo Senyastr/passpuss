@@ -1,4 +1,5 @@
 import 'package:PassPuss/homePage.dart';
+import 'package:PassPuss/localization.dart';
 import 'package:PassPuss/recommendation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,7 +7,7 @@ import 'package:PassPuss/Database.dart';
 import "package:PassPuss/passentry.dart";
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:PassPuss/PassFieldItem.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'NewPassEntry.dart';
 
 void main() => runApp(PassPuss());
@@ -16,7 +17,16 @@ class PassPuss extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      localizationsDelegates: [
+        const PassPussLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', 'US'),
+        const Locale('ru', 'RU'),
+      ],
+      title: 'Pass Puss',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -62,10 +72,23 @@ class PassEntriesPage extends State<MyHomePage> {
   static const TextStyle _bottomNavTextStyleEnabled =
   TextStyle(color: Colors.red);
 
+  Text home;
+  Text forYou;
   List<Widget> pages = <Widget>[HomePage(), RecommendationTab()];
+  List<BottomNavigationBarItem> bottomItems;
 
+  String currentPageTitle = "";
   @override
   Widget build(BuildContext context) {
+    home = Text(LocalizationTool.of(context).home);
+    forYou = Text(LocalizationTool.of(context).forYou);
+    bottomItems = <BottomNavigationBarItem>[
+      BottomNavigationBarItem(icon: Icon(Icons.home), title: home),
+      BottomNavigationBarItem(icon: Icon(Icons.thumb_up), title: forYou)
+    ];
+
+    this.currentPageTitle = home.data;
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -74,14 +97,10 @@ class PassEntriesPage extends State<MyHomePage> {
     // than having to individually change instances of widgets
 
     return Scaffold(
-      appBar: AppBar(title: Text("Pass Puss")),
+      appBar: AppBar(title: Text(currentPageTitle)),
       body: pages.elementAt(_selectedPageIndex),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("Home")),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.thumb_up), title: Text("For you"))
-        ],
+        items: bottomItems,
         currentIndex: _selectedPageIndex,
         selectedItemColor: Colors.green,
         onTap: _onPageTapped,
@@ -93,7 +112,8 @@ class PassEntriesPage extends State<MyHomePage> {
   }
 
   @override
-  void initState();
+  void initState() {
+  }
 
   void Auth() async {
 //    var localAuth = LocalAuthentication();
@@ -104,6 +124,7 @@ class PassEntriesPage extends State<MyHomePage> {
 
   void _onPageTapped(int value) {
     this._selectedPageIndex = value;
+    this.currentPageTitle = (bottomItems[value].title as Text).data;
     setState(() {});
   }
 }
