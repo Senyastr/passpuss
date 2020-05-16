@@ -24,6 +24,17 @@ class RecommendationTabState extends State<RecommendationTab> {
     // TODO: implement build
     items = analyze(context);
     return Column(children: <Widget>[
+      SafeArea(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                LocalizationTool.of(context).forYou,
+                style: TextStyle(fontSize: 32, color: Colors.white),
+              )),
+        ),
+      ),
       Expanded(
           child: ListView.separated(
               separatorBuilder: (context, index) => Padding(

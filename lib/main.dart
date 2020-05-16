@@ -41,8 +41,80 @@ class PassPuss extends StatelessWidget {
           accentColor: Color.fromARGB(255, 0, 142, 6),
           cardColor: Color.fromARGB(255, 70, 70, 70),
           backgroundColor: Color.fromARGB(255, 40, 40, 40),
-          canvasColor: Color.fromARGB(255, 40, 40, 40)),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+        canvasColor: Color.fromARGB(255, 40, 40, 40),
+        // APPLY THIS THEME TO EVERY TEXT ELEMENT
+        accentTextTheme: TextTheme(
+          headline1: TextStyle(
+              fontFamily: 'NotoSans',
+              inherit: true,
+              color: Colors.white70,
+              decoration: TextDecoration.none),
+          headline2: TextStyle(
+              fontFamily: 'NotoSans',
+              inherit: true,
+              color: Colors.white70,
+              decoration: TextDecoration.none),
+          headline3: TextStyle(
+              fontFamily: 'NotoSans',
+              inherit: true,
+              color: Colors.white70,
+              decoration: TextDecoration.none),
+          headline4: TextStyle(
+              fontFamily: 'NotoSans',
+              inherit: true,
+              color: Colors.white70,
+              decoration: TextDecoration.none),
+          headline5: TextStyle(
+              fontFamily: 'NotoSans',
+              inherit: true,
+              color: Colors.white,
+              decoration: TextDecoration.none),
+          headline6: TextStyle(
+              fontFamily: 'NotoSans',
+              inherit: true,
+              color: Colors.white,
+              decoration: TextDecoration.none),
+          subtitle1: TextStyle(
+              fontFamily: 'NotoSans',
+              inherit: true,
+              color: Colors.white,
+              decoration: TextDecoration.none),
+          bodyText1: TextStyle(
+              fontFamily: 'NotoSans',
+              inherit: true,
+              color: Colors.white,
+              decoration: TextDecoration.none),
+          bodyText2: TextStyle(
+              fontFamily: 'NotoSans',
+              inherit: true,
+              color: Colors.white,
+              decoration: TextDecoration.none),
+          caption: TextStyle(
+              fontFamily: 'NotoSans',
+              inherit: true,
+              color: Colors.white70,
+              decoration: TextDecoration.none),
+          button: TextStyle(
+              fontFamily: 'NotoSans',
+              inherit: true,
+              color: Colors.white,
+              decoration: TextDecoration.none),
+          subtitle2: TextStyle(
+              fontFamily: 'NotoSans',
+              inherit: true,
+              color: Colors.white,
+              decoration: TextDecoration.none),
+          overline: TextStyle(
+              fontFamily: 'NotoSans',
+              inherit: true,
+              color: Colors.white,
+              decoration: TextDecoration.none),
+        ),
+        appBarTheme: AppBarTheme(
+          color: Color.fromARGB(255, 40, 40, 40),
+        ),
+      ),
+      home: MyHomePage(),
     );
   }
 }
@@ -97,7 +169,6 @@ class PassEntriesPage extends State<MyHomePage> {
     // than having to individually change instances of widgets
 
     return Scaffold(
-      appBar: AppBar(title: Text(currentPageTitle)),
       body: pages.elementAt(_selectedPageIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: bottomItems,

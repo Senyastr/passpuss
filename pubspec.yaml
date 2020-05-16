@@ -47,6 +47,15 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  fonts:
+    - family: NotoSans
+      fonts:
+        - asset: assets/fonts/NotoSansJP-Black.otf
+        - asset: assets/fonts/NotoSansJP-Bold.otf
+        - asset: assets/fonts/NotoSansJP-Light.otf
+        - asset: assets/fonts/NotoSansJP-Medium.otf
+        - asset: assets/fonts/NotoSansJP-Regular.otf
+        - asset: assets/fonts/NotoSansJP-Thin.otf
   assets:
     - assets/images/Instagram_logo_2016.svg
     - assets/images/Facebook_logo_24x24.svg

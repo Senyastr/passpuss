@@ -1,3 +1,4 @@
+import 'package:PassPuss/localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -83,7 +84,7 @@ class NewPassEntry extends State<NewPassEntryPage> {
     _usernameForm = TextFormField(
       autovalidate: true,
       validator: (value) =>
-      username.isEmpty ? 'Username shouldn\'t be blank' : null,
+          username.isEmpty ? LocalizationTool.of(context).usernameBlank : null,
       onChanged: (String changed) {
         setState(() {
           username = changed;
@@ -92,26 +93,39 @@ class NewPassEntry extends State<NewPassEntryPage> {
       key: _usernameKey,
       decoration: InputDecoration(
           icon: Icon(Icons.person),
-          hintText: "Your username/email/login",
-          labelText: "Username/email/login"),
+          hintText: LocalizationTool
+              .of(context)
+              .newPasswordUsernameHint,
+          labelText: LocalizationTool
+              .of(context)
+              .newPasswordUsernameLabel),
     );
     _passwordForm = TextFormField(
       enabled: !generate_mode,
       autovalidate: true,
       validator: (value) =>
       password.length < 8
-          ? 'Password should have more than 8 characters'
+          ? LocalizationTool
+          .of(context)
+          .newPasswordMore8Chars
           : null,
       controller: password_txt,
       obscureText: true,
       decoration: InputDecoration(
           icon: Icon(Icons.lock),
-          hintText: "Your super-secure password",
-          labelText: "Password"),
+          hintText: LocalizationTool
+              .of(context)
+              .newPasswordFormHint,
+          labelText: LocalizationTool
+              .of(context)
+              .password),
     );
     _titleForm = TextFormField(
         autovalidate: true,
-        validator: (val) => (val.isEmpty) ? "Title shouldn't be empty." : null,
+        validator: (val) =>
+        (val.isEmpty) ? LocalizationTool
+            .of(context)
+            .newPasswordTitleNotEmpty : null,
         onChanged: (String changed) {
           setState(() {
             title = changed;
@@ -119,8 +133,12 @@ class NewPassEntry extends State<NewPassEntryPage> {
         },
         key: _titleKey,
         decoration: InputDecoration(
-            hintText: "Write something specific to this entry",
-            labelText: "Title",
+            hintText: LocalizationTool
+                .of(context)
+                .newPasswordTitleHint,
+            labelText: LocalizationTool
+                .of(context)
+                .title,
             icon: Icon(Icons.title)));
     password_txt.addListener(onPasswordChange);
 
@@ -129,7 +147,9 @@ class NewPassEntry extends State<NewPassEntryPage> {
         child: Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
-              title: Text("Create new password entry"),
+              title: Text(LocalizationTool
+                  .of(context)
+                  .createNewPassword),
               actions: <Widget>[
                 IconButton(
                   icon: Icon(Icons.done),
@@ -244,7 +264,9 @@ class NewPassEntry extends State<NewPassEntryPage> {
                                                     .showSnackBar(
                                                     SnackBar(
                                                         content: Text(
-                                                            "Your password has been copied to the clipboard.")));
+                                                            LocalizationTool
+                                                                .of(context)
+                                                                .passwordCopied)));
                                               }))
                                     ])), // PASSWORD PREVIEW
                               ])))
@@ -296,7 +318,9 @@ class NewPassEntry extends State<NewPassEntryPage> {
                                                   padding: EdgeInsets.only(
                                                       left: 17, top: 4),
                                                   child: Text(
-                                                      "Select how many characters your password is going to consist of.")),
+                                                      LocalizationTool
+                                                          .of(context)
+                                                          .passwordGenSelect)),
                                               Padding(
                                                   padding: EdgeInsets.only(
                                                       top: 4),
@@ -369,8 +393,7 @@ class NewPassEntry extends State<NewPassEntryPage> {
                                                   scrollDirection: Axis
                                                       .horizontal,
                                                   itemCount: iconsChoice.length,
-                                                  itemBuilder: (
-                                                      BuildContext context,
+                                                  itemBuilder: (BuildContext context,
                                                       int index) {
                                                     return IconChoice(
                                                         iconsChoice[index]);

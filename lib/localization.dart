@@ -23,19 +23,51 @@ class LocalizationTool {
   }
 
   String get passwordRepeatChars {
-    return _localizedValues[locale.languageCode]['passwordRepeatChars'];
+    return getValue('passwordRepeatChars');
   }
 
   String get passwordIdiot {
-    return _localizedValues[locale.languageCode]['passwordIdiot'];
+    return getValue('passwordIdiot');
   }
 
   String get passwordLetters {
-    return _localizedValues[locale.languageCode]['passwordLetters'];
+    return getValue('passwordLetters');
   }
 
   String get passwordNumbers{
-    return _localizedValues[locale.languageCode]['passwordNumbers'];
+    return getValue('passwordNumbers');
+  }
+
+  String get createNewPassword {
+    return getValue('createNewPassword');
+  }
+
+  get newPasswordUsernameHint => getValue('newPasswordUsernameHint');
+
+  get newPasswordUsernameLabel => getValue('newPasswordUsernameLabel');
+
+  get newPasswordMore8Chars => getValue('newPasswordMore8Chars');
+
+  get newPasswordFormHint => getValue('newPasswordFormHint');
+
+  get password => getValue('password');
+
+  get newPasswordTitleNotEmpty => getValue("newPasswordTitleNotEmpty");
+
+  get newPasswordTitleHint => getValue('newPasswordTitleHint');
+
+  get title => getValue("title");
+
+  String get passwordCopied => getValue("passwordCopied");
+
+  get passwordGenSelect => getValue("passwordGenSelect");
+
+  String getValue(String key) {
+    return _localizedValues[locale.languageCode][key];
+  }
+
+  String get usernameBlank {
+    return getValue("usernameBlank");
   }
 
   static LocalizationTool of(BuildContext context) {
@@ -46,6 +78,8 @@ class LocalizationTool {
     'en': {
       'home': 'Home',
       'forYou': 'For you',
+      'password': "Password",
+      'title': 'Title',
       'passwordExpired':
           "You should consider generating another password for this entry.",
       'passwordChars':
@@ -59,10 +93,23 @@ class LocalizationTool {
           "This password contains letters only. Consider generating a new one.",
       "passwordNumbers":
           "This password contains numbers only. Consider generating a new one.",
+      'createNewPassword':
+      "Create new password entry",
+      'usernameBlank': "Username shouldn't be blank",
+      'newPasswordUsernameHint': "Your username/email/login",
+      'newPasswordUsernameLabel': "Username/email/login",
+      'newPasswordMore8Chars': 'Password should have more than 8 characters',
+      'newPasswordFormHint': "Your super-secure password",
+      'newPasswordTitleNotEmpty': "Title shouldn't be empty.",
+      'newPasswordTitleHint': "Write something specific to this entry",
+      'passwordCopied': "Your password has been copied to the clipboard.",
+      'passwordGenSelect': "Select how many characters your password is going to consist of."
     },
     'ru': {
       'home': 'Главная',
       'forYou': 'Для тебя',
+      'password': "Пароль",
+      'title': 'Заголовок',
       'passwordExpired': "Лучше подумать о генерировании нового пароля.",
       'passwordChars':
           "Этот пароль содержит менше чем 8 символов. Сгенерируйте другой.",
@@ -73,11 +120,26 @@ class LocalizationTool {
       "passwordLetters":
           "Этот пароль содержит только буквы. Подумайте сгенерировать другой.",
       "passwordNumbers":
-          "Этот пароль содержит только цифры. Подумайте сгенерировать другой."
+      "Этот пароль содержит только цифры. Подумайте сгенерировать другой.",
+      'createNewPassword':
+      "Создать новую запись пароля.",
+      'usernameBlank':
+      'Имя пользователя не должно быть пустым.',
+      'newPasswordUsernameHint': "Ваше имя пользователя/email/login",
+      'newPasswordUsernameLabel': 'Имя пользователя/email/login',
+      'newPasswordMore8Chars': 'Пароль должен содержать > чем 8 символов',
+      'newPasswordFormHint': "Ваш очень безопасный пароль",
+      'newPasswordTitleNotEmpty': 'Заголовок не должен быть пустой',
+      'newPasswordTitleHint': "Напишите что-то связаное с этим паролем.",
+      'passwordCopied': "Пароль скопирован в буфер обмена.",
+      'passwordGenSelect': "Выберите со сколько символов будет складатся Ваш пароль"
+
     },
     'ua': {
       'home': "Головна",
       'forYou': 'Для тебе',
+      'password': 'Пароль',
+      'title': 'Заголовок',
       'passwordExpired': "Рекомендується подумати про зміну паролю.",
       "passwordChars":
           "Цей пароль містить менше ніж 8 символів. Згенеруйте інакший.",
@@ -89,7 +151,19 @@ class LocalizationTool {
       "passwordLetters":
           "Цей пароль містить тільки букви. Подумайте згенерувати інший.",
       "passwordNumbers":
-          "Цей пароль містить тільки цифри. Подумайте згенерувати інший."
+      "Цей пароль містить тільки цифри. Подумайте згенерувати інший.",
+      "createNewPassword":
+      "Створити новий запис пароля.",
+      "usernameBlank":
+      "Ім'я користувача не має бути порожнім.",
+      'newPasswordUsernameHint': "Ваше ім'я користувача/email/login",
+      'newPasswordUsernameLabel': "Ім'я користувача/email/login",
+      'newPasswordMore8Chars': "Новий пароль має містити більше ніж 8 символів.",
+      'newPasswordFormHint': "Ваш дуже захищиний пароль",
+      'newPasswordTitleNotEmpty': "Заголовок не має бути пустим",
+      'newPasswordTitleHint': "Напишіть щось пов'язане з цим паролем.",
+      'passwordCopied': "Пароль був зкопійований в буфер обміну.",
+      'passwordGenSelect': "Виберіть зі скільки символів буде складатися Ваш пароль."
     }
   };
 }

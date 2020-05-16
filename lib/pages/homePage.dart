@@ -1,3 +1,4 @@
+import 'package:PassPuss/localization.dart';
 import 'package:PassPuss/pages/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +25,17 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     _page = this;
     return Column(children: <Widget>[
+      SafeArea(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                LocalizationTool.of(context).home,
+                style: TextStyle(fontSize: 32, color: Colors.white),
+              )),
+        ),
+      ),
       Expanded(
           child: ListView.builder(
               itemCount: Pairs.length,
