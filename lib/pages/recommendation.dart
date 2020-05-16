@@ -1,10 +1,10 @@
-import 'package:PassPuss/homePage.dart';
+import 'package:PassPuss/pages/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'localization.dart';
-import 'passentry.dart';
+import 'package:PassPuss/localization.dart';
+import 'package:PassPuss/passentry.dart';
 
 class RecommendationTab extends StatefulWidget {
   @override
@@ -17,27 +17,23 @@ class RecommendationTabState extends State<RecommendationTab> {
   List<RecommendationItem> items;
 
   @override
-  void initState() {
-  }
+  void initState() {}
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     items = analyze(context);
-    return Column(
-
-        children: <Widget>[
-          Expanded(
+    return Column(children: <Widget>[
+      Expanded(
           child: ListView.separated(
               separatorBuilder: (context, index) => Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: Divider(color: Colors.white)),
               itemCount: items.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return items[index];
-                  }
-              ))
-        ]);
+              itemBuilder: (BuildContext context, int index) {
+                return items[index];
+              }))
+    ]);
   }
 
   List<RecommendationItem> analyze(BuildContext context) {
@@ -63,8 +59,7 @@ class RecommendationTabState extends State<RecommendationTab> {
           f,
           LocalizationTool.of(context).passwordExpired,
           MessageType.recommendation);
-    }
-    else {
+    } else {
       // HERE WE ANALYZE THE PASSWORDS(PASSWORDS SAFETY)
 
       // WE ANALYZE ONLY LOWER-CASED PASSWORDS
@@ -99,23 +94,18 @@ class RecommendationTabState extends State<RecommendationTab> {
         return new RecommendationItem(
             f,
             LocalizationTool.of(context).passwordLetters,
-            MessageType.recommendation
-        );
+            MessageType.recommendation);
       }
       // 5. Vice versa, the password used only letters.
       if (hasOnlyNumbers(password)) {
         return new RecommendationItem(
             f,
             LocalizationTool.of(context).passwordNumbers,
-            MessageType.recommendation
-
-        );
+            MessageType.recommendation);
       }
     }
     return null;
   }
-
-
 }
 
 bool hasOnlyNumbers(String password) {
@@ -172,11 +162,9 @@ bool hasRepeatedCharacters(String password) {
   }
   return false;
 }
-enum MessageType {
-  higlyRecommended,
-  warning,
-  recommendation
-}
+
+enum MessageType { higlyRecommended, warning, recommendation }
+
 class RecommendationItem extends StatefulWidget {
   String message;
   PassEntry entry;
@@ -236,20 +224,13 @@ class RecommendationItemState extends State<RecommendationItem> {
         cardColor = error_cardColor;
         break;
       case MessageType.warning:
-        messageIcon = Icon(
-            Icons.warning,
-            color: warning_color,
-            size: iconsize
-        );
+        messageIcon = Icon(Icons.warning, color: warning_color, size: iconsize);
         textColor = warning_color;
         cardColor = warning_cardColor;
         break;
       case MessageType.recommendation:
-        messageIcon = Icon(
-            Icons.warning,
-            color: recommendation_color,
-            size: iconsize
-        );
+        messageIcon =
+            Icon(Icons.warning, color: recommendation_color, size: iconsize);
         textColor = recommendation_color;
         cardColor = recommendation_cardColor;
         break;
@@ -261,22 +242,16 @@ class RecommendationItemState extends State<RecommendationItem> {
               padding: EdgeInsets.only(left: 5, right: 5),
               child: Card(
                   child: Row(children: <Widget>[
-                    Expanded(
-                        child: Padding(
-                            padding: EdgeInsets.all(15),
-                            child: Text(
-                                message,
-                                style: TextStyle(
-                                  color: textColor,
-                                  fontSize: 18,
-                                ))
-                        )),
-                    Padding(
-                        padding: EdgeInsets.all(7),
-                        child: messageIcon)
-                  ])
-              )
-          ),
+                Expanded(
+                    child: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Text(message,
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 18,
+                            )))),
+                Padding(padding: EdgeInsets.all(7), child: messageIcon)
+              ]))),
           Card(
               color: cardColor,
               child: Column(children: <Widget>[
@@ -285,12 +260,11 @@ class RecommendationItemState extends State<RecommendationItem> {
                     child: Row(children: <Widget>[
                       Padding(
                           child: SvgPicture.asset(entry.getIconId()),
-                          padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10)),
                       Text(entry.getTitle(),
                           style: TextStyle(fontSize: 20, color: Colors.white)),
                     ])),
-
                 Align(
                     alignment: Alignment.bottomLeft,
                     child: Row(children: <Widget>[
@@ -300,8 +274,8 @@ class RecommendationItemState extends State<RecommendationItem> {
                       ),
                       Padding(
                           child: Text(entry.getUsername(),
-                              style: TextStyle(fontSize: 20, color: Colors
-                                  .white)),
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white)),
                           padding: EdgeInsets.symmetric(
                               horizontal: 18, vertical: 10))
                     ])),
@@ -321,12 +295,12 @@ class RecommendationItemState extends State<RecommendationItem> {
                           },
                         )),
                     Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 10),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 6, vertical: 10),
                         child: Text(
                             (isPasswordShown) ? entry.getPassword() : "******",
-                            style: TextStyle(fontSize: 20, color: Colors
-                                .white))),
+                            style:
+                                TextStyle(fontSize: 20, color: Colors.white))),
                     Padding(
                         padding: EdgeInsets.all(1),
                         child: IconButton(
@@ -340,9 +314,7 @@ class RecommendationItemState extends State<RecommendationItem> {
                             })),
                   ]),
                 ),
-              ]
-              )),
-
+              ])),
         ]));
   }
 

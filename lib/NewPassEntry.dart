@@ -6,7 +6,7 @@ import 'package:PassPuss/passentry.dart';
 import 'package:PassPuss/main.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'Database.dart';
-import 'homePage.dart';
+import 'package:PassPuss/pages/homePage.dart';
 
 class NewPassEntryPage extends StatefulWidget {
   @override

@@ -1,4 +1,4 @@
-import 'package:PassPuss/homePage.dart';
+import 'package:PassPuss/pages/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:PassPuss/Database.dart';
@@ -6,7 +6,7 @@ import "package:PassPuss/passentry.dart";
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:PassPuss/PassFieldItem.dart';
 
-import 'NewPassEntry.dart';
+import 'package:PassPuss/NewPassEntry.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {

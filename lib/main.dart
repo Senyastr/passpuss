@@ -1,6 +1,6 @@
-import 'package:PassPuss/homePage.dart';
+import 'package:PassPuss/pages/homePage.dart';
 import 'package:PassPuss/localization.dart';
-import 'package:PassPuss/recommendation.dart';
+import 'package:PassPuss/pages/recommendation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:PassPuss/Database.dart';

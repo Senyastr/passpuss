@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:PassPuss/Database.dart';
 
-import 'homePage.dart';
+import 'package:PassPuss/pages/homePage.dart';
 import 'main.dart';
 
 class PassEntry {
