@@ -169,7 +169,10 @@ class NewPassEntry extends State<NewPassEntryPage> {
 
 
                     if (_formKey.currentState.validate()) {
-                      HomePageState.Pairs.add(newEntry);
+                      HomePageState.changeDataset(() {
+                        HomePageState.Pairs.add(newEntry);
+                      });
+
                       await DBProvider.DB.addPassEntry(newEntry);
                       Navigator.pop<NewPassEntry>(context, this);
                     }

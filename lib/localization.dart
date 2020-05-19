@@ -62,6 +62,12 @@ class LocalizationTool {
 
   get passwordGenSelect => getValue("passwordGenSelect");
 
+  String get passwordDetailsPage => getValue("passwordDetailsPage");
+
+  String get details => getValue("details");
+
+  String get time => getValue("time");
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -103,7 +109,11 @@ class LocalizationTool {
       'newPasswordTitleNotEmpty': "Title shouldn't be empty.",
       'newPasswordTitleHint': "Write something specific to this entry",
       'passwordCopied': "Your password has been copied to the clipboard.",
-      'passwordGenSelect': "Select how many characters your password is going to consist of."
+      'passwordGenSelect':
+          "Select how many characters your password is going to consist of.",
+      "passwordDetailsPage": "Password Details",
+      "details": "Details",
+      "time": "Time",
     },
     'ru': {
       'home': 'Главная',
@@ -132,7 +142,10 @@ class LocalizationTool {
       'newPasswordTitleNotEmpty': 'Заголовок не должен быть пустой',
       'newPasswordTitleHint': "Напишите что-то связаное с этим паролем.",
       'passwordCopied': "Пароль скопирован в буфер обмена.",
-      'passwordGenSelect': "Выберите со сколько символов будет складатся Ваш пароль"
+      'passwordGenSelect': "Выберите со сколько символов будет складатся Ваш пароль",
+      "passwordDetailsPage": "О пароле",
+      "details": "Подробнее",
+      "time": 'Время'
 
     },
     'ua': {
@@ -163,7 +176,10 @@ class LocalizationTool {
       'newPasswordTitleNotEmpty': "Заголовок не має бути пустим",
       'newPasswordTitleHint': "Напишіть щось пов'язане з цим паролем.",
       'passwordCopied': "Пароль був зкопійований в буфер обміну.",
-      'passwordGenSelect': "Виберіть зі скільки символів буде складатися Ваш пароль."
+      'passwordGenSelect': "Виберіть зі скільки символів буде складатися Ваш пароль.",
+      "passwordDetailsPage": "Про пароль",
+      "details": "Деталі",
+      "time": "Час",
     }
   };
 }

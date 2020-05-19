@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:PassPuss/PassFieldItem.dart';
 
 import 'NewPassEntry.dart';
+import 'PassEntryDetails.dart';
 
 class PassField extends StatefulWidget {
   PassEntry passEntry;
@@ -52,9 +53,18 @@ class PassFieldState extends State<PassField> {
 
     return new Padding(
         padding: EdgeInsets.only(left: 16, right: 16, top: 16),
-        child: new Card(
-            child: Column(children: <Widget>[
-          Align(
+        child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => PassEntryDetails(passEntry)));
+            },
+            child: Card(
+                child: Column(children: <Widget>[
+
+
+              Align(
               alignment: Alignment.topLeft,
               child: Row(children: <Widget>[
                 Padding(
@@ -118,7 +128,8 @@ class PassFieldState extends State<PassField> {
                       })),
             ]),
           ),
-        ])));
+
+            ]))));
   }
 
 //  void printMethod() async {
