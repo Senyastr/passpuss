@@ -113,8 +113,10 @@ class PassFieldState extends State<PassField> {
               Padding(
                   padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
                   child: Text(
-                      (isPasswordShown) ? passEntry.getPassword() : "******",
-                      style: TextStyle(fontSize: 20, color: Colors.white))),
+                          (isPasswordShown)
+                              ? passEntry.getPassword()
+                              : hidePassword(passEntry.getPassword()),
+                          style: TextStyle(fontSize: 20, color: Colors.white))),
               Padding(
                   padding: EdgeInsets.all(1),
                   child: IconButton(
@@ -143,6 +145,16 @@ class PassFieldState extends State<PassField> {
       HomePageState.Pairs.remove(passEntry);
       DBProvider.DB.deletePassEntry(passEntry);
     });
+  }
+
+  String hidePassword(String password) {
+    String result;
+    StringBuffer buffer = StringBuffer();
+    for (int i = 0; i < password.length; i++) {
+      buffer.write("*");
+    }
+    result = buffer.toString();
+    return result;
   }
 }
 

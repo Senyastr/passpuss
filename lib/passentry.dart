@@ -147,7 +147,7 @@ class PassEntry {
   static String generate_pass(int amount) {
     Random random = new Random();
     StringBuffer builder = new StringBuffer();
-    for (int i = 0; i <= amount; i++) {
+    for (int i = 0; i < amount; i++) {
       builder.write(charinds[random.nextInt(charinds.length)]);
     }
     return builder.toString();

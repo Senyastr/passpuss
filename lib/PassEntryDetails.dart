@@ -11,7 +11,6 @@ class PassEntryDetails extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return PassEntryDetailsState(entry);
   }
 
@@ -29,9 +28,14 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
   var passwordShowState;
   var passwordStateKey = GlobalKey();
   var isPasswordShown = false;
+  var username;
+  var password;
 
   @override
-  void initState() {}
+  void initState() {
+    username = entry.getUsername();
+    password = entry.getPassword();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,13 +86,36 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                       .accentColor),
                 ),
                 Padding(
-                    child: Text(entry.getUsername(),
-                        style: TextStyle(fontSize: 20, color: Colors.white)),
-                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10))
+                child: Text(username,
+                    style: TextStyle(fontSize: 20, color: Colors.white)),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 10)),
+
+                Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Icon(
+                      Icons.text_rotation_none,
+                      color: Theme
+                          .of(context)
+                          .accentColor,
+                    )
+                ),
+                Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Text(
+                        username.length.toString(),
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyText1
+                            .copyWith(color: Colors.white)
+                    )
+                )
               ])),
           Align(
             alignment: Alignment.bottomLeft,
-            child: Row(children: <Widget>[
+            child: Row(
+                children: <Widget>[
               Padding(
                   padding: EdgeInsets.only(
                     left: 15,
@@ -104,28 +131,52 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
               Padding(
                   padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
                   child: Text(
-                      (isPasswordShown) ? entry.getPassword() : "******",
+                      (isPasswordShown) ? password : hidePassword(password),
                       style: TextStyle(fontSize: 20, color: Colors.white))),
               Padding(
                   padding: EdgeInsets.all(1),
                   child: IconButton(
-                      icon: Icon(Icons.content_copy, color: Theme
-                          .of(context)
-                          .accentColor),
+                      icon: Icon(
+                          Icons.content_copy,
+                          color: Theme
+                              .of(context)
+                              .accentColor
+                      ),
                       onPressed: () {
                         Clipboard.setData(
-                            ClipboardData(text: entry.getPassword()));
+                            ClipboardData(text: password));
                         Scaffold.of(context).showSnackBar(SnackBar(
                             content: Text(
-                                "The password is copied to the clipboard.")));
+                                LocalizationTool
+                                    .of(context)
+                                    .passwordCopied)));
                       })),
+                  Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Icon(
+                        Icons.text_rotation_none,
+                        color: Theme
+                            .of(context)
+                            .accentColor,
+                      )
+                  ),
+                  Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Text(
+                          password.length.toString(),
+                          style: Theme
+                              .of(context)
+                              .textTheme
+                              .bodyText1
+                              .copyWith(color: Colors.white)
+                      )
+                  )
             ]),
           ),
         ]
 
     );
     timeBlock = Column(
-      // TODO: put creation time, time to expire and so on fields here
         children: <Widget>[
 
           Align(
@@ -181,6 +232,9 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
         )
     );
     return Scaffold(
+        backgroundColor: Theme
+            .of(context)
+            .cardColor,
         body: SafeArea(child: Column(
           children: <Widget>[
             Align(
@@ -221,4 +275,14 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
       ),
     );
   }
+}
+
+String hidePassword(String password) {
+  String result;
+  StringBuffer buffer = StringBuffer();
+  for (int i = 0; i < password.length; i++) {
+    buffer.write("*");
+  }
+  result = buffer.toString();
+  return result;
 }
