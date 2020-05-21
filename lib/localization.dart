@@ -34,7 +34,7 @@ class LocalizationTool {
     return getValue('passwordLetters');
   }
 
-  String get passwordNumbers{
+  String get passwordNumbers {
     return getValue('passwordNumbers');
   }
 
@@ -68,6 +68,12 @@ class LocalizationTool {
 
   String get time => getValue("time");
 
+  String get usernameCopied => getValue("usernameCopied");
+
+  String get passEntriesEmpty => getValue("passwordEmpty");
+
+  String get recommendationEmpty => getValue("recommendationEmpty");
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -99,8 +105,7 @@ class LocalizationTool {
           "This password contains letters only. Consider generating a new one.",
       "passwordNumbers":
           "This password contains numbers only. Consider generating a new one.",
-      'createNewPassword':
-      "Create new password entry",
+      'createNewPassword': "Create new password entry",
       'usernameBlank': "Username shouldn't be blank",
       'newPasswordUsernameHint': "Your username/email/login",
       'newPasswordUsernameLabel': "Username/email/login",
@@ -114,6 +119,9 @@ class LocalizationTool {
       "passwordDetailsPage": "Password Details",
       "details": "Details",
       "time": "Time",
+      "usernameCopied": "The username has been copied to the clipboard.",
+      "passwordEmpty": "There are no password entries. Fill in some passwords.",
+      "recommendationEmpty": "Your passwords are completely secure."
     },
     'ru': {
       'home': 'Главная',
@@ -130,11 +138,9 @@ class LocalizationTool {
       "passwordLetters":
           "Этот пароль содержит только буквы. Подумайте сгенерировать другой.",
       "passwordNumbers":
-      "Этот пароль содержит только цифры. Подумайте сгенерировать другой.",
-      'createNewPassword':
-      "Создать новую запись пароля.",
-      'usernameBlank':
-      'Имя пользователя не должно быть пустым.',
+          "Этот пароль содержит только цифры. Подумайте сгенерировать другой.",
+      'createNewPassword': "Создать новую запись пароля.",
+      'usernameBlank': 'Имя пользователя не должно быть пустым.',
       'newPasswordUsernameHint': "Ваше имя пользователя/email/login",
       'newPasswordUsernameLabel': 'Имя пользователя/email/login',
       'newPasswordMore8Chars': 'Пароль должен содержать > чем 8 символов',
@@ -142,11 +148,14 @@ class LocalizationTool {
       'newPasswordTitleNotEmpty': 'Заголовок не должен быть пустой',
       'newPasswordTitleHint': "Напишите что-то связаное с этим паролем.",
       'passwordCopied': "Пароль скопирован в буфер обмена.",
-      'passwordGenSelect': "Выберите со сколько символов будет складатся Ваш пароль",
+      'passwordGenSelect':
+      "Выберите со сколько символов будет складатся Ваш пароль",
       "passwordDetailsPage": "О пароле",
       "details": "Подробнее",
-      "time": 'Время'
-
+      "time": 'Время',
+      "usernameCopied": "Имя пользователя скопировано в буфер обмено.",
+      "passwordEmpty": "Записи паролей отсутсвуют. Заполните несколько.",
+      "recommendationEmpty": "Ваши пароли в безопасности.",
     },
     'ua': {
       'home': "Головна",
@@ -165,21 +174,24 @@ class LocalizationTool {
           "Цей пароль містить тільки букви. Подумайте згенерувати інший.",
       "passwordNumbers":
       "Цей пароль містить тільки цифри. Подумайте згенерувати інший.",
-      "createNewPassword":
-      "Створити новий запис пароля.",
-      "usernameBlank":
-      "Ім'я користувача не має бути порожнім.",
+      "createNewPassword": "Створити новий запис пароля.",
+      "usernameBlank": "Ім'я користувача не має бути порожнім.",
       'newPasswordUsernameHint': "Ваше ім'я користувача/email/login",
       'newPasswordUsernameLabel': "Ім'я користувача/email/login",
-      'newPasswordMore8Chars': "Новий пароль має містити більше ніж 8 символів.",
+      'newPasswordMore8Chars':
+      "Новий пароль має містити більше ніж 8 символів.",
       'newPasswordFormHint': "Ваш дуже захищиний пароль",
       'newPasswordTitleNotEmpty': "Заголовок не має бути пустим",
       'newPasswordTitleHint': "Напишіть щось пов'язане з цим паролем.",
       'passwordCopied': "Пароль був зкопійований в буфер обміну.",
-      'passwordGenSelect': "Виберіть зі скільки символів буде складатися Ваш пароль.",
+      'passwordGenSelect':
+      "Виберіть зі скільки символів буде складатися Ваш пароль.",
       "passwordDetailsPage": "Про пароль",
       "details": "Деталі",
       "time": "Час",
+      "usernameCopied": "Ім'я користувача було зкопійовано в буфер обмена.",
+      "passwordEmpty": "Записи паролей відсутні. Створіть декілька.",
+      "recommendationEmpty": "Ваші паролі в безпеці."
     }
   };
 }

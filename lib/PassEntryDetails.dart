@@ -90,8 +90,18 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                     style: TextStyle(fontSize: 20, color: Colors.white)),
                     padding: EdgeInsets.symmetric(
                         horizontal: 18, vertical: 10)),
-
-                Padding(
+            Padding(
+                padding: EdgeInsets.all(1),
+                child: IconButton(
+                    icon: Icon(Icons.content_copy,
+                        color: Theme.of(context).accentColor),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: username));
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                              LocalizationTool.of(context).usernameCopied)));
+                    })),
+            Padding(
                     padding: EdgeInsets.all(5),
                     child: Icon(
                       Icons.text_rotation_none,
@@ -100,6 +110,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                           .accentColor,
                     )
                 ),
+
                 Padding(
                     padding: EdgeInsets.all(5),
                     child: Text(

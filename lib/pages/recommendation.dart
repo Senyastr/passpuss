@@ -23,6 +23,29 @@ class RecommendationTabState extends State<RecommendationTab> {
   Widget build(BuildContext context) {
     // TODO: implement build
     items = analyze(context);
+    var emptyView = Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+            padding: EdgeInsets.only(top: 30),
+            child: Icon(Icons.verified_user,
+                size: 100, color: Theme.of(context).accentColor)),
+        Padding(
+          padding: EdgeInsets.all(15),
+          child: Center(
+            child: Text(
+              LocalizationTool.of(context).recommendationEmpty,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  .copyWith(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        )
+      ],
+    );
+
     return Column(children: <Widget>[
       SafeArea(
         child: Align(
@@ -35,7 +58,8 @@ class RecommendationTabState extends State<RecommendationTab> {
               )),
         ),
       ),
-      Expanded(
+
+      items.length == 0 ? Center(child: emptyView) : Expanded(
           child: ListView.separated(
               separatorBuilder: (context, index) => Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10),

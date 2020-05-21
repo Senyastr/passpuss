@@ -8,6 +8,7 @@ import 'package:PassPuss/PassFieldItem.dart';
 
 import 'NewPassEntry.dart';
 import 'PassEntryDetails.dart';
+import 'localization.dart';
 
 class PassField extends StatefulWidget {
   PassEntry passEntry;
@@ -93,8 +94,20 @@ class PassFieldState extends State<PassField> {
                 Padding(
                     child: Text(passEntry.getUsername(),
                         style: TextStyle(fontSize: 20, color: Colors.white)),
-                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10))
-              ])),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 18, vertical: 10)),
+                    Padding(
+                        padding: EdgeInsets.all(1),
+                        child: IconButton(
+                            icon: Icon(Icons.content_copy),
+                            onPressed: () {
+                              Clipboard.setData(
+                                  ClipboardData(text: passEntry.getUsername()));
+                              Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text(LocalizationTool.of(context)
+                                      .usernameCopied)));
+                            })),
+                  ])),
           Align(
             alignment: Alignment.bottomLeft,
             child: Row(children: <Widget>[
@@ -126,7 +139,9 @@ class PassFieldState extends State<PassField> {
                             ClipboardData(text: passEntry.getPassword()));
                         Scaffold.of(context).showSnackBar(SnackBar(
                             content: Text(
-                                "The password is copied to the clipboard.")));
+                                LocalizationTool
+                                    .of(context)
+                                    .passwordCopied)));
                       })),
             ]),
           ),
