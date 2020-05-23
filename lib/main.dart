@@ -144,6 +144,8 @@ class PassEntriesPage extends State<MyHomePage> {
   static const TextStyle _bottomNavTextStyleEnabled =
       TextStyle(color: Colors.red);
 
+  static GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   Text home;
   Text forYou;
   List<Widget> pages = <Widget>[HomePage(), RecommendationTab()];
@@ -169,6 +171,7 @@ class PassEntriesPage extends State<MyHomePage> {
     // than having to individually change instances of widgets
 
     return Scaffold(
+      key: scaffoldKey,
       body: pages.elementAt(_selectedPageIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: bottomItems,

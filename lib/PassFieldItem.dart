@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:PassPuss/PassFieldItem.dart';
 
 import 'NewPassEntry.dart';
-import 'PassEntryDetails.dart';
+import 'package:PassPuss/pages/PassEntryDetails.dart';
 import 'localization.dart';
 
 class PassField extends StatefulWidget {
@@ -63,37 +63,36 @@ class PassFieldState extends State<PassField> {
             },
             child: Card(
                 child: Column(children: <Widget>[
-
-
               Align(
-              alignment: Alignment.topLeft,
-              child: Row(children: <Widget>[
-                Padding(
-                    child: SvgPicture.asset(passEntry.getIconId()),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
-                Text(passEntry.getTitle(),
-                    style: TextStyle(fontSize: 20, color: Colors.white)),
-                Padding(
-                    padding: EdgeInsets.only(left: 1),
-                    child: Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                          icon: Icon(Icons.delete_forever,
-                              color: Colors.redAccent, size: 30),
-                          onPressed: removeEntry,
-                        )))
-              ])),
-          Align(
-              alignment: Alignment.bottomLeft,
-              child: Row(children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 27, top: 10, bottom: 10),
-                  child: Icon(Icons.person),
-                ),
-                Padding(
-                    child: Text(passEntry.getUsername(),
+                  alignment: Alignment.topLeft,
+                  child: Row(children: <Widget>[
+                    Padding(
+                        child: SvgPicture.asset(passEntry.getIconId()),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
+                    Text(passEntry.getTitle(),
                         style: TextStyle(fontSize: 20, color: Colors.white)),
+                    Padding(
+                        padding: EdgeInsets.only(left: 1),
+                        child: Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                              icon: Icon(Icons.delete_forever,
+                                  color: Colors.redAccent, size: 30),
+                              onPressed: removeEntry,
+                            )))
+                  ])),
+              Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Row(children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(left: 27, top: 10, bottom: 10),
+                      child: Icon(Icons.person),
+                    ),
+                    Padding(
+                        child: Text(passEntry.getUsername(),
+                            style:
+                                TextStyle(fontSize: 20, color: Colors.white)),
                         padding:
                             EdgeInsets.symmetric(horizontal: 18, vertical: 10)),
                     Padding(
@@ -108,44 +107,44 @@ class PassFieldState extends State<PassField> {
                                       .usernameCopied)));
                             })),
                   ])),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Row(children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.only(
-                    left: 15,
-                  ),
-                  child: IconButton(
-                    icon: (isPasswordShown) ? iconOpened : iconLocked,
-                    onPressed: () {
-                      setState(() {
-                        isPasswordShown = !isPasswordShown;
-                      });
-                    },
-                  )),
-              Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-                  child: Text(
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Row(children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.only(
+                            left: 15,
+                          ),
+                          child: IconButton(
+                            icon: (isPasswordShown) ? iconOpened : iconLocked,
+                            onPressed: () {
+                              setState(() {
+                                isPasswordShown = !isPasswordShown;
+                              });
+                            },
+                          )),
+                      Padding(
+                          padding:
+                          EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+                          child: Text(
                           (isPasswordShown)
                               ? passEntry.getPassword()
                               : hidePassword(passEntry.getPassword()),
                           style: TextStyle(fontSize: 20, color: Colors.white))),
-              Padding(
-                  padding: EdgeInsets.all(1),
-                  child: IconButton(
-                      icon: Icon(Icons.content_copy),
-                      onPressed: () {
-                        Clipboard.setData(
-                            ClipboardData(text: passEntry.getPassword()));
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                                LocalizationTool
-                                    .of(context)
+                      Padding(
+                          padding: EdgeInsets.all(1),
+                          child: IconButton(
+                              icon: Icon(Icons.content_copy),
+                              onPressed: () {
+                                Clipboard.setData(
+                                    ClipboardData(
+                                        text: passEntry.getPassword()));
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text(LocalizationTool
+                                        .of(context)
                                     .passwordCopied)));
-                      })),
-            ]),
-          ),
-
+                              })),
+                    ]),
+                  ),
             ]))));
   }
 
