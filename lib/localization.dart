@@ -74,6 +74,8 @@ class LocalizationTool {
 
   String get recommendationEmpty => getValue("recommendationEmpty");
 
+  String get editPasswordPage => getValue("editPasswordPage");
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -121,7 +123,8 @@ class LocalizationTool {
       "time": "Time",
       "usernameCopied": "The username has been copied to the clipboard.",
       "passwordEmpty": "There are no password entries. Fill in some passwords.",
-      "recommendationEmpty": "Your passwords are completely secure."
+      "recommendationEmpty": "Your passwords are completely secure.",
+      "editPasswordPage" : "Edit password"
     },
     'ru': {
       'home': 'Главная',
@@ -156,6 +159,7 @@ class LocalizationTool {
       "usernameCopied": "Имя пользователя скопировано в буфер обмено.",
       "passwordEmpty": "Записи паролей отсутсвуют. Заполните несколько.",
       "recommendationEmpty": "Ваши пароли в безопасности.",
+      "editPasswordPage": "Редактировать пароль"
     },
     'ua': {
       'home': "Головна",
@@ -191,7 +195,8 @@ class LocalizationTool {
       "time": "Час",
       "usernameCopied": "Ім'я користувача було зкопійовано в буфер обмена.",
       "passwordEmpty": "Записи паролей відсутні. Створіть декілька.",
-      "recommendationEmpty": "Ваші паролі в безпеці."
+      "recommendationEmpty": "Ваші паролі в безпеці.",
+      "editPasswordPage": "Редагувати пароль"
     }
   };
 }

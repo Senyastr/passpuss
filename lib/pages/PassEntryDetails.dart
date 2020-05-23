@@ -1,3 +1,4 @@
+import 'package:PassPuss/pages/editEntryPage.dart';
 import 'package:PassPuss/passentry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -189,6 +190,9 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
         onPressed: () {
           // TODO: implement the turn to the edit page
           // TODO: implement edit page
+          
+          Navigator.push(context, new MaterialPageRoute(builder: (context) => EditEntryPage(entry)));
+          
         },
         child: Icon(Icons.edit));
     return Scaffold(

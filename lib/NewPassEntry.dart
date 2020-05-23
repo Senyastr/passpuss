@@ -1,4 +1,5 @@
 import 'package:PassPuss/localization.dart';
+import 'package:PassPuss/pages/editEntryPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +17,7 @@ class NewPassEntryPage extends StatefulWidget {
   }
 }
 
-class NewPassEntry extends State<NewPassEntryPage> {
+class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
   final _formKey = GlobalKey<FormState>();
   final _usernameKey = GlobalKey();
   final _passwordKey = GlobalKey();
@@ -84,7 +85,7 @@ class NewPassEntry extends State<NewPassEntryPage> {
     _usernameForm = TextFormField(
       autovalidate: true,
       validator: (value) =>
-          username.isEmpty ? LocalizationTool.of(context).usernameBlank : null,
+      username.isEmpty ? LocalizationTool.of(context).usernameBlank : null,
       onChanged: (String changed) {
         setState(() {
           username = changed;
@@ -164,7 +165,7 @@ class NewPassEntry extends State<NewPassEntryPage> {
                       icon = selected.path;
                     }
                     PassEntry newEntry =
-                    new PassEntry.withIcon(
+                      PassEntry.withIcon(
                         username, password, title, icon, DateTime.now());
 
 
@@ -399,7 +400,7 @@ class NewPassEntry extends State<NewPassEntryPage> {
                                                   itemBuilder: (BuildContext context,
                                                       int index) {
                                                     return IconChoice(
-                                                        iconsChoice[index]);
+                                                        iconsChoice[index], false);
                                                   }),
                                               height: 50)) // ICONS
                                     ],
@@ -421,15 +422,18 @@ class NewPassEntry extends State<NewPassEntryPage> {
 
 class IconChoice extends StatefulWidget {
   PassEntryIcon iconInfo;
+  IconChoiceState state;
 
+  bool _selected;
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return IconChoiceState(iconInfo);
+    return IconChoiceState(iconInfo, _selected);
   }
 
-  IconChoice(PassEntryIcon icon) {
+  IconChoice(PassEntryIcon icon, bool selected) {
     this.iconInfo = icon;
+    this._selected = selected;
   }
 }
 
@@ -447,6 +451,9 @@ class IconChoiceState extends State<IconChoice> {
 
   @override
   Widget build(BuildContext context) {
+    if (this.isSelected){
+      IconChoiceState.selected = this;
+    }
     var color = (isSelected) ? Colors.grey : Colors.transparent;
     return GestureDetector(
         child: Container(
@@ -479,11 +486,14 @@ class IconChoiceState extends State<IconChoice> {
         });
   }
 
-  IconChoiceState(this.iconInfo);
+  IconChoiceState(PassEntryIcon icon, bool selected){
+    this.iconInfo = icon;
+    this.isSelected = selected;
+  }
 }
 
 class IconChangedHandler implements IChangedHandler<PassEntryIcon> {
-  NewPassEntry newEntry;
+  IconChoiced newEntry;
 
   @override
   void onChanged(PassEntryIcon changed) {
