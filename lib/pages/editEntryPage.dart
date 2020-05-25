@@ -13,7 +13,6 @@ class EditEntryPage extends StatefulWidget {
   PassEntry entry;
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return EditEntryState(entry);
   }
 }
@@ -26,7 +25,6 @@ abstract class IconChoiced {
 class EditEntryState extends State<EditEntryPage> implements IconChoiced {
   final _formKey = GlobalKey<FormState>();
   final _usernameKey = GlobalKey();
-  final _passwordKey = GlobalKey();
   final _titleKey = GlobalKey();
   TextFormField _passwordForm;
   TextFormField _usernameForm;
@@ -50,6 +48,7 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
 
   @override
   void initState() {
+    super.initState();
     selected = null;
     lockIcon = Icon(iconLocked);
     password_preview = hiddenPassword;
@@ -119,10 +118,6 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
           return iconWidget;
         });
 
-    BorderRadiusGeometry radius = BorderRadius.only(
-      topLeft: Radius.circular(24.0),
-      topRight: Radius.circular(24.0),
-    );
 
     _usernameForm = TextFormField(
       controller: username_txt,
@@ -175,11 +170,7 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
                   icon: Icon(Icons.save),
                   onPressed: () async {
                     if (_formKey.currentState.validate()){
-                      // TODO: Fix the problem with the Database:
-                      // When u change it and go back to the homepage, it's chcanged
-                      // the entry is not added nor removed from db
                       HomePageState.Pairs.remove(entry);
-                      var result = await DBProvider.DB.deletePassEntry(entry);
                       var newEntry = PassEntry.withIcon(username, password, title, selected.path, entry.createdTime);
                       await DBProvider.DB.addPassEntry(newEntry);
                       HomePageState.changeDataset(() { HomePageState.Pairs.add(newEntry);});

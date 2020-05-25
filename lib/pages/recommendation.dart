@@ -21,7 +21,6 @@ class RecommendationTabState extends State<RecommendationTab> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     items = analyze(context);
     var emptyView = Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,8 +71,7 @@ class RecommendationTabState extends State<RecommendationTab> {
   }
 
   List<RecommendationItem> analyze(BuildContext context) {
-    // TODO: Here we're getting RecommendationItems(passwords that should be changed)
-    // TODO: Make a field for PassField with the date of creation
+    // Here we're getting RecommendationItems(passwords that should be changed)
     var pairs = HomePageState.Pairs;
     var recommendItems = List<RecommendationItem>();
     // HERE WE ANALYZE THE TIME THAT HAS PASSED SINCE THE PASSENTRYIES WERE CREATED
@@ -208,7 +206,6 @@ class RecommendationItem extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return RecommendationItemState(entry, message, messageType);
   }
 

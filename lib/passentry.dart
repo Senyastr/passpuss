@@ -1,9 +1,7 @@
 import 'dart:math';
 
-import 'package:PassPuss/Database.dart';
 
 import 'package:PassPuss/pages/homePage.dart';
-import 'main.dart';
 
 class PassEntry {
   int id;
@@ -144,7 +142,7 @@ class PassEntry {
     '0'
   ];
 
-  static String generate_pass(int amount) {
+  static String generatePass(int amount) {
     Random random = new Random();
     StringBuffer builder = new StringBuffer();
     for (int i = 0; i < amount; i++) {

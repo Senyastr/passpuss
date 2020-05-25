@@ -2,13 +2,7 @@ import 'package:PassPuss/pages/homePage.dart';
 import 'package:PassPuss/localization.dart';
 import 'package:PassPuss/pages/recommendation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:PassPuss/Database.dart';
-import "package:PassPuss/passentry.dart";
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:PassPuss/PassFieldItem.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'NewPassEntry.dart';
 
 void main() => runApp(PassPuss());
 
@@ -186,7 +180,7 @@ class PassEntriesPage extends State<MyHomePage> {
   }
 
   @override
-  void initState() {}
+  void initState() {super.initState();}
 
   void Auth() async {
 //    var localAuth = LocalAuthentication();

@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:PassPuss/passentry.dart';
-import 'package:PassPuss/main.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'Database.dart';
 import 'package:PassPuss/pages/homePage.dart';
 
@@ -20,7 +18,6 @@ class NewPassEntryPage extends StatefulWidget {
 class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
   final _formKey = GlobalKey<FormState>();
   final _usernameKey = GlobalKey();
-  final _passwordKey = GlobalKey();
   final _titleKey = GlobalKey();
   TextFormField _passwordForm;
   TextFormField _usernameForm;
@@ -29,7 +26,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
 
   String username = "";
   String password = "";
-  String preview_password = "";
+  String previewPass = "";
   String title = "";
 
   String hiddenPassword = "*******";
@@ -44,7 +41,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
   void initState() {
     selected = null;
     lockIcon = Icon(iconLocked);
-    password_preview = hiddenPassword;
+    passwordPreview = hiddenPassword;
     IconChoiceState.initOnChange(new IconChangedHandler(this));
     IconChoiceState.icons = iconsChoice;
     IconChoiceState.selected = null;
@@ -73,7 +70,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
     PassEntryIcon("assets/images/twitter-seeklogo.svg"),
     PassEntryIcon("assets/images/Microsoft48x48.svg"),
   ];
-  String password_preview;
+  String passwordPreview;
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +154,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
                   onPressed: () async {
                     String icon;
                     password = generate_mode
-                        ? PassEntry.generate_pass(_genChars.toInt())
+                        ? PassEntry.generatePass(_genChars.toInt())
                         : password_txt.text;
                     if (selected == null) {
                       icon = IconChoiceState.emptyIconPath;
@@ -238,11 +235,11 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
                                                 if (lockIcon.icon ==
                                                     iconLocked) {
                                                   lockIcon = Icon(iconOpened);
-                                                  password_preview = password;
+                                                  passwordPreview = password;
                                                   previewPassword = true;
                                                 } else {
                                                   lockIcon = Icon(iconLocked);
-                                                  password_preview =
+                                                  passwordPreview =
                                                       hiddenPassword;
                                                   previewPassword = false;
                                                 }
@@ -252,7 +249,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
                                       Padding(
                                           padding:
                                           EdgeInsets.symmetric(horizontal: 7),
-                                          child: Text(password_preview,
+                                          child: Text(passwordPreview,
                                               style: TextStyle(
                                                   fontSize: 20,
                                                   color: Colors.white))),
@@ -414,7 +411,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
     setState(() {
       password = password_txt.text;
       if (previewPassword) {
-        password_preview = password;
+        passwordPreview = password;
       }
     });
   }
@@ -427,7 +424,6 @@ class IconChoice extends StatefulWidget {
   bool _selected;
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return IconChoiceState(iconInfo, _selected);
   }
 

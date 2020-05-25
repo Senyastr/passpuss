@@ -4,9 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:PassPuss/Database.dart';
 import "package:PassPuss/passentry.dart";
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:PassPuss/PassFieldItem.dart';
 
-import 'NewPassEntry.dart';
 import 'package:PassPuss/pages/PassEntryDetails.dart';
 import 'localization.dart';
 
@@ -29,6 +27,7 @@ class PassFieldState extends State<PassField> {
 
   @override
   void initState() {
+    super.initState();
     command = SimpleRemove(passEntry);
     passwordShowState = Icon(Icons.lock, key: passwordStateKey);
     iconLocked = Icon(Icons.lock, key: passwordStateKey);

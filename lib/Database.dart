@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:PassPuss/passentry.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_sqlcipher/sqlite.dart';
-import 'package:PassPuss/main.dart';
 
 import 'package:PassPuss/pages/homePage.dart';
 
