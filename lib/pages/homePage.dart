@@ -90,7 +90,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    initState();
+    super.initState();
     setState(() {
       assignPairs();
     });
