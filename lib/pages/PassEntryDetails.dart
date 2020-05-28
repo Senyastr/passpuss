@@ -36,6 +36,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
   DateFormat timeCreated;
   @override
   void initState() {
+    super.initState();
     username = entry.getUsername();
     password = entry.getPassword();
   }
@@ -189,8 +190,6 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
     ]);
     var editButton = FloatingActionButton(
         onPressed: () {
-          // TODO: implement the turn to the edit page
-          // TODO: implement edit page
 
           Navigator.push(context, new MaterialPageRoute(builder: (context) => EditEntryPage(entry)));
         },
