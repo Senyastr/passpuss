@@ -15,7 +15,7 @@ class NewPassEntryPage extends StatefulWidget {
   }
 }
 
-class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
+class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
   final _formKey = GlobalKey<FormState>();
   final _usernameKey = GlobalKey();
   final _titleKey = GlobalKey();
@@ -49,7 +49,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
 
   void update() {
     setState(
-            () {}); // here we can invoke it from the outside code and update the widget
+        () {}); // here we can invoke it from the outside code and update the widget
   }
 
   bool previewPassword = false;
@@ -82,7 +82,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
     _usernameForm = TextFormField(
       autovalidate: true,
       validator: (value) =>
-      username.isEmpty ? LocalizationTool.of(context).usernameBlank : null,
+          username.isEmpty ? LocalizationTool.of(context).usernameBlank : null,
       onChanged: (String changed) {
         setState(() {
           username = changed;
@@ -91,39 +91,27 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
       key: _usernameKey,
       decoration: InputDecoration(
           icon: Icon(Icons.person),
-          hintText: LocalizationTool
-              .of(context)
-              .newPasswordUsernameHint,
-          labelText: LocalizationTool
-              .of(context)
-              .newPasswordUsernameLabel),
+          hintText: LocalizationTool.of(context).newPasswordUsernameHint,
+          labelText: LocalizationTool.of(context).newPasswordUsernameLabel),
     );
     _passwordForm = TextFormField(
       enabled: !generate_mode,
       autovalidate: true,
-      validator: (value) =>
-      password.length < 8
-          ? LocalizationTool
-          .of(context)
-          .newPasswordMore8Chars
+      validator: (value) => password.length < 8
+          ? LocalizationTool.of(context).newPasswordMore8Chars
           : null,
       controller: password_txt,
       obscureText: true,
       decoration: InputDecoration(
           icon: Icon(Icons.lock),
-          hintText: LocalizationTool
-              .of(context)
-              .newPasswordFormHint,
-          labelText: LocalizationTool
-              .of(context)
-              .password),
+          hintText: LocalizationTool.of(context).newPasswordFormHint,
+          labelText: LocalizationTool.of(context).password),
     );
     _titleForm = TextFormField(
         autovalidate: true,
-        validator: (val) =>
-        (val.isEmpty) ? LocalizationTool
-            .of(context)
-            .newPasswordTitleNotEmpty : null,
+        validator: (val) => (val.isEmpty)
+            ? LocalizationTool.of(context).newPasswordTitleNotEmpty
+            : null,
         onChanged: (String changed) {
           setState(() {
             title = changed;
@@ -131,12 +119,8 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
         },
         key: _titleKey,
         decoration: InputDecoration(
-            hintText: LocalizationTool
-                .of(context)
-                .newPasswordTitleHint,
-            labelText: LocalizationTool
-                .of(context)
-                .title,
+            hintText: LocalizationTool.of(context).newPasswordTitleHint,
+            labelText: LocalizationTool.of(context).title,
             icon: Icon(Icons.title)));
     password_txt.addListener(onPasswordChange);
 
@@ -145,9 +129,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
         child: Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
-              title: Text(LocalizationTool
-                  .of(context)
-                  .createNewPassword),
+              title: Text(LocalizationTool.of(context).createNewPassword),
               actions: <Widget>[
                 IconButton(
                   icon: Icon(Icons.done),
@@ -161,10 +143,8 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
                     } else {
                       icon = selected.path;
                     }
-                    PassEntry newEntry =
-                      PassEntry.withIcon(
+                    PassEntry newEntry = PassEntry.withIcon(
                         username, password, title, icon, DateTime.now());
-
 
                     if (_formKey.currentState.validate()) {
                       HomePageState.changeDataset(() {
@@ -181,98 +161,92 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
             body: Column(children: <Widget>[
               Expanded(
                   child: Wrap(
-                    children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              child: Column(children: <Widget>[
-                                Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Row(children: <Widget>[
-                                      Padding(
-                                          child: (IconChoiceState.selected !=
-                                              null)
-                                              ? SvgPicture.asset(IconChoiceState
+                children: <Widget>[
+                  Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Column(children: <Widget>[
+                            Align(
+                                alignment: Alignment.topLeft,
+                                child: Row(children: <Widget>[
+                                  Padding(
+                                      child: (IconChoiceState.selected != null)
+                                          ? SvgPicture.asset(IconChoiceState
                                               .selected.iconInfo?.path)
-                                              : SvgPicture.asset(
+                                          : SvgPicture.asset(
                                               IconChoiceState.emptyIconPath),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 10)),
-                                      Text("$title",
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 10)),
+                                  Text("$title",
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.white))
+                                ])), // ICON PREVIEW
+                            Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Row(children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 27, top: 10, bottom: 10),
+                                    child: Icon(Icons.person),
+                                  ),
+                                  Padding(
+                                      child: Text(username,
                                           style: TextStyle(
                                               fontSize: 20,
-                                              color: Colors.white))
-                                    ])), // ICON PREVIEW
-                                Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Row(children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 27, top: 10, bottom: 10),
-                                        child: Icon(Icons.person),
-                                      ),
-                                      Padding(
-                                          child: Text(username,
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  color: Colors.white)),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 18, vertical: 5))
-                                    ])), // USERNAME PREVIEW
-                                Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Row(children: <Widget>[
-                                      Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 15, bottom: 10, top: 10),
-                                          child: IconButton(
-                                            icon: lockIcon,
-                                            onPressed: () {
-                                              setState(() {
-                                                if (lockIcon.icon ==
-                                                    iconLocked) {
-                                                  lockIcon = Icon(iconOpened);
-                                                  passwordPreview = password;
-                                                  previewPassword = true;
-                                                } else {
-                                                  lockIcon = Icon(iconLocked);
-                                                  passwordPreview =
-                                                      hiddenPassword;
-                                                  previewPassword = false;
-                                                }
-                                              });
-                                            },
-                                          )),
-                                      Padding(
-                                          padding:
+                                              color: Colors.white)),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 18, vertical: 5))
+                                ])), // USERNAME PREVIEW
+                            Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Row(children: <Widget>[
+                                  Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 15, bottom: 10, top: 10),
+                                      child: IconButton(
+                                        icon: lockIcon,
+                                        onPressed: () {
+                                          setState(() {
+                                            if (lockIcon.icon == iconLocked) {
+                                              lockIcon = Icon(iconOpened);
+                                              passwordPreview = password;
+                                              previewPassword = true;
+                                            } else {
+                                              lockIcon = Icon(iconLocked);
+                                              passwordPreview = hiddenPassword;
+                                              previewPassword = false;
+                                            }
+                                          });
+                                        },
+                                      )),
+                                  Padding(
+                                      padding:
                                           EdgeInsets.symmetric(horizontal: 7),
-                                          child: Text(passwordPreview,
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  color: Colors.white))),
-                                      Padding(
-                                          padding: EdgeInsets.only(),
-                                          child: IconButton(
-                                              icon: Icon(Icons.content_copy),
-                                              onPressed: () {
-                                                Clipboard.setData(
-                                                    ClipboardData(
-                                                        text: password));
-                                                Scaffold.of(context)
-                                                    .showSnackBar(
-                                                    SnackBar(
-                                                        content: Text(
-                                                            LocalizationTool
-                                                                .of(context)
-                                                                .passwordCopied)));
-                                              }))
-                                    ])), // PASSWORD PREVIEW
-                              ])))
-                    ],
-                  )),
+                                      child: Text(passwordPreview,
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.white))),
+                                  Padding(
+                                      padding: EdgeInsets.only(),
+                                      child: IconButton(
+                                          icon: Icon(Icons.content_copy),
+                                          onPressed: () {
+                                            Clipboard.setData(
+                                                ClipboardData(text: password));
+                                            Scaffold.of(context).showSnackBar(
+                                                SnackBar(
+                                                    content: Text(
+                                                        LocalizationTool.of(
+                                                                context)
+                                                            .passwordCopied)));
+                                          }))
+                                ])), // PASSWORD PREVIEW
+                          ])))
+                ],
+              )),
               Expanded(
                 child: SingleChildScrollView(
                     child: Align(
@@ -281,127 +255,124 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced{
                           Card(
                               child: Center(
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Row(// Username
+                                  children: <Widget>[
+                                Expanded(
+                                    child: Padding(
+                                        padding: EdgeInsets.all(14),
+                                        child: _usernameForm))
+                              ]), // Username Field,
+                              Row(children: <Widget>[
+                                Expanded(
+                                    child: Padding(
+                                        padding: EdgeInsets.all(14),
+                                        child: _passwordForm)),
+                                IconButton(
+                                    icon: Icon(Icons.lightbulb_outline,
+                                        color: generate_mode
+                                            ? Colors.yellow
+                                            : Colors.black),
+                                    onPressed: () {
+                                      setState(() {
+                                        generate_mode = !generate_mode;
+                                        _sliderHeight =
+                                            generate_mode ? 100.0 : 0.0;
+                                      });
+                                    })
+                              ]),
+                              AnimatedContainer(
+                                  duration: Duration(milliseconds: 200),
+                                  height: _sliderHeight,
+                                  child: Column(
                                     children: <Widget>[
-                                      Row( // Username
-                                          children: <Widget>[
-                                            Expanded(
-                                                child: Padding(
-                                                    padding: EdgeInsets.all(14),
-                                                    child: _usernameForm))
-                                          ]), // Username Field,
-                                      Row(children: <Widget>[
-                                        Expanded(
-                                            child: Padding(
-                                                padding: EdgeInsets.all(14),
-                                                child: _passwordForm)),
-                                        IconButton(
-                                            icon: Icon(Icons.lightbulb_outline,
-                                                color: generate_mode
-                                                    ? Colors.yellow
-                                                    : Colors.black),
-                                            onPressed: () {
-                                              setState(() {
-                                                generate_mode = !generate_mode;
-                                                _sliderHeight =
-                                                generate_mode ? 100.0 : 0.0;
-                                              });
-                                            })
-                                      ]),
-                                      AnimatedContainer(
-                                          duration: Duration(milliseconds: 200),
-                                          height: _sliderHeight,
-                                          child: Column(
-                                            children: <Widget>[
-                                              Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: 17, top: 4),
-                                                  child: Text(
-                                                      LocalizationTool
-                                                          .of(context)
-                                                          .passwordGenSelect)),
-                                              Padding(
-                                                  padding: EdgeInsets.only(
-                                                      top: 4),
-                                                  child: SliderTheme(
-                                                      data: SliderTheme.of(
-                                                          context)
-                                                          .copyWith(
-                                                        activeTrackColor:
-                                                        Colors.red[700],
-                                                        inactiveTrackColor:
-                                                        Colors.red[100],
-                                                        trackShape:
-                                                        RoundedRectSliderTrackShape(),
-                                                        trackHeight: 4.0,
-                                                        thumbShape:
-                                                        RoundSliderThumbShape(
-                                                            enabledThumbRadius:
-                                                            12.0),
-                                                        thumbColor: Colors
-                                                            .redAccent,
-                                                        overlayColor:
-                                                        Colors.red.withAlpha(
-                                                            32),
-                                                        overlayShape:
-                                                        RoundSliderOverlayShape(
-                                                            overlayRadius: 28.0),
-                                                        tickMarkShape:
-                                                        RoundSliderTickMarkShape(),
-                                                        activeTickMarkColor:
-                                                        Colors.red[700],
-                                                        inactiveTickMarkColor:
-                                                        Colors.red[100],
-                                                        valueIndicatorShape:
-                                                        PaddleSliderValueIndicatorShape(),
-                                                        valueIndicatorColor:
-                                                        Colors.redAccent,
-                                                        valueIndicatorTextStyle:
-                                                        TextStyle(
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                      child: Slider(
-                                                          value: _genChars,
-                                                          min: 8,
-                                                          max: 16,
-                                                          label: '$_genChars',
-                                                          divisions: 8,
-                                                          onChanged: (val) {
-                                                            setState(() {
-                                                              _genChars = val;
-                                                            });
-                                                          }))
-                                              ),
-
-                                            ],
-                                          )),
-                                      // Password
-                                      Row(children: <Widget>[
-                                        Expanded(
-                                            child: Padding(
-                                                padding: EdgeInsets.all(14),
-                                                child: _titleForm)),
-                                      ]), // TITLE
                                       Padding(
-                                          padding: EdgeInsets.only(
-                                              bottom: 30, left: 14, right: 14),
-                                          child: Container(
-                                              child: ListView.builder(
-                                                  shrinkWrap: true,
-                                                  scrollDirection: Axis
-                                                      .horizontal,
-                                                  itemCount: iconsChoice.length,
-                                                  itemBuilder: (BuildContext context,
-                                                      int index) {
-                                                    return IconChoice(
-                                                        iconsChoice[index], false);
-                                                  }),
-                                              height: 50)) // ICONS
+                                        padding:
+                                            EdgeInsets.only(left: 17, top: 4),
+                                        child: Text(
+                                          LocalizationTool.of(context)
+                                              .passwordGenSelect,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText2
+                                              .copyWith(color: Colors.white),
+                                        ),
+                                      ),
+                                      Padding(
+                                          padding: EdgeInsets.only(top: 4),
+                                          child: SliderTheme(
+                                              data: SliderTheme.of(context)
+                                                  .copyWith(
+                                                activeTrackColor:
+                                                    Colors.yellow[300],
+                                                inactiveTrackColor:
+                                                    Colors.yellow[500],
+                                                trackShape:
+                                                    RoundedRectSliderTrackShape(),
+                                                trackHeight: 4.0,
+                                                thumbShape:
+                                                    RoundSliderThumbShape(
+                                                        enabledThumbRadius:
+                                                            12.0),
+                                                thumbColor: Colors.yellow,
+                                                overlayColor:
+                                                    Colors.yellow.withAlpha(24),
+                                                overlayShape:
+                                                    RoundSliderOverlayShape(
+                                                        overlayRadius: 28.0),
+                                                tickMarkShape:
+                                                    RoundSliderTickMarkShape(),
+                                                activeTickMarkColor:
+                                                    Colors.yellowAccent,
+                                                inactiveTickMarkColor:
+                                                    Colors.yellow,
+                                                valueIndicatorShape:
+                                                    PaddleSliderValueIndicatorShape(),
+                                                valueIndicatorColor:
+                                                    Colors.yellowAccent,
+                                                valueIndicatorTextStyle:
+                                                    TextStyle(
+                                                  color: Colors.black45
+                                                ),
+                                              ),
+                                              child: Slider(
+                                                  value: _genChars,
+                                                  min: 8,
+                                                  max: 16,
+                                                  label: '$_genChars',
+                                                  divisions: 8,
+                                                  onChanged: (val) {
+                                                    setState(() {
+                                                      _genChars = val;
+                                                    });
+                                                  }))),
                                     ],
-                                  )))
+                                  )),
+                              // Password
+                              Row(children: <Widget>[
+                                Expanded(
+                                    child: Padding(
+                                        padding: EdgeInsets.all(14),
+                                        child: _titleForm)),
+                              ]), // TITLE
+                              Padding(
+                                  padding: EdgeInsets.only(
+                                      bottom: 30, left: 14, right: 14),
+                                  child: Container(
+                                      child: ListView.builder(
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: iconsChoice.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return IconChoice(
+                                                iconsChoice[index], false);
+                                          }),
+                                      height: 50)) // ICONS
+                            ],
+                          )))
                         ]))),
               )
             ])));
@@ -447,7 +418,7 @@ class IconChoiceState extends State<IconChoice> {
 
   @override
   Widget build(BuildContext context) {
-    if (this.isSelected){
+    if (this.isSelected) {
       IconChoiceState.selected = this;
     }
     var color = (isSelected) ? Colors.grey : Colors.transparent;
@@ -482,7 +453,7 @@ class IconChoiceState extends State<IconChoice> {
         });
   }
 
-  IconChoiceState(PassEntryIcon icon, bool selected){
+  IconChoiceState(PassEntryIcon icon, bool selected) {
     this.iconInfo = icon;
     this.isSelected = selected;
   }
