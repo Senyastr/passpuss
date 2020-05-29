@@ -22,6 +22,12 @@ class DBProvider {
     return _database;
   }
 
+  static const String idColumn = "id";
+  static const String usernameColumn = "USERNAME";
+  static const String passwordColumn = "PASSWORD";
+  static const String titleColumn = "TITLE";
+  static const String iconPathColumn = "ICONPATH";
+  static const String createdTimeColumn = "CREATEDTIME";
   Future<SQLiteDatabase> initDB() async {
     Directory databases = await getApplicationDocumentsDirectory();
     String path = databases.path +
@@ -57,8 +63,22 @@ class DBProvider {
     SQLiteDatabase db = await this.database;
     Map map = entry.toJson();
     map.remove("id");
-    var result = await db.insert(table: TABLE_NAME, values: map);
-    return result;
+    var username = map[usernameColumn];
+    var password = map[passwordColumn];
+    var title = map[titleColumn];
+    var iconPath = map[iconPathColumn];
+    var createdTime = map[createdTimeColumn];
+    await db.execSQL("INSERT INTO $TABLE_NAME ($usernameColumn,"
+        "$passwordColumn,"
+        "$titleColumn,"
+        "$iconPathColumn,"
+        "$createdTimeColumn) "
+        "VALUES ('$username',"
+        "'$password',"
+        "'$title',"
+        "'$iconPath',"
+        "'$createdTime');");
+    return 1;
   }
 
   Future<int> deletePassEntry(PassEntry entry) async {

@@ -308,8 +308,22 @@ class RecommendationItemState extends State<RecommendationItem> {
                           child: Text(entry.getUsername(),
                               style:
                                   TextStyle(fontSize: 20, color: Colors.white)),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 10))
+                          padding: EdgeInsets.only(
+                            left: 18,
+                            top: 10,
+                            bottom: 10,
+                          )),
+                      Padding(
+                          padding: EdgeInsets.all(1),
+                          child: IconButton(
+                              icon: Icon(Icons.content_copy),
+                              onPressed: () {
+                                Clipboard.setData(
+                                    ClipboardData(text: entry.getUsername()));
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        "The password is copied to the clipboard.")));
+                              })),
                     ])),
                 Align(
                   alignment: Alignment.bottomLeft,
@@ -327,8 +341,7 @@ class RecommendationItemState extends State<RecommendationItem> {
                           },
                         )),
                     Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+                        padding: EdgeInsets.only(left: 6, top: 10, bottom: 10),
                         child: Text(
                             (isPasswordShown) ? entry.getPassword() : "******",
                             style:

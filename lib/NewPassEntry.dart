@@ -197,8 +197,22 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                                           style: TextStyle(
                                               fontSize: 20,
                                               color: Colors.white)),
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 18, vertical: 5))
+                                      padding: EdgeInsets.only(
+                                          left: 18, top: 10, bottom: 10)),
+                                  Padding(
+                                      padding: EdgeInsets.all(1),
+                                      child: IconButton(
+                                          icon: Icon(Icons.content_copy),
+                                          onPressed: () {
+                                            Clipboard.setData(
+                                                ClipboardData(text: username));
+                                            Scaffold.of(context).showSnackBar(
+                                                SnackBar(
+                                                    content: Text(
+                                                        LocalizationTool.of(
+                                                                context)
+                                                            .usernameCopied)));
+                                          })),
                                 ])), // USERNAME PREVIEW
                             Align(
                                 alignment: Alignment.bottomLeft,
@@ -224,7 +238,8 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                                       )),
                                   Padding(
                                       padding:
-                                          EdgeInsets.symmetric(horizontal: 7),
+                                      EdgeInsets.only(
+                                          left: 6, top: 10, bottom: 10),
                                       child: Text(passwordPreview,
                                           style: TextStyle(
                                               fontSize: 20,

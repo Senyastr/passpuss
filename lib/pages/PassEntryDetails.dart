@@ -83,7 +83,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
             Padding(
                 child: Text(username,
                     style: TextStyle(fontSize: 20, color: Colors.white)),
-                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10)),
+                padding: EdgeInsets.only(top: 10, bottom: 10, left: 18)),
             Padding(
                 padding: EdgeInsets.all(1),
                 child: IconButton(
@@ -126,7 +126,11 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                 },
               )),
           Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+              padding: EdgeInsets.only(
+                left: 6,
+                top: 10,
+                bottom: 10,
+              ),
               child: Text((isPasswordShown) ? password : hidePassword(password),
                   style: TextStyle(fontSize: 20, color: Colors.white))),
           Padding(

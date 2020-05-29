@@ -27,7 +27,6 @@ class PassFieldState extends State<PassField> {
 
   @override
   void initState() {
-    super.initState();
     command = SimpleRemove(passEntry);
     passwordShowState = Icon(Icons.lock, key: passwordStateKey);
     iconLocked = Icon(Icons.lock, key: passwordStateKey);
@@ -93,7 +92,7 @@ class PassFieldState extends State<PassField> {
                             style:
                                 TextStyle(fontSize: 20, color: Colors.white)),
                         padding:
-                            EdgeInsets.symmetric(horizontal: 18, vertical: 10)),
+                            EdgeInsets.only(left: 18, top: 10, bottom: 10)),
                     Padding(
                         padding: EdgeInsets.all(1),
                         child: IconButton(
@@ -123,7 +122,7 @@ class PassFieldState extends State<PassField> {
                           )),
                       Padding(
                           padding:
-                          EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+                          EdgeInsets.only(left: 6, top: 10, bottom: 10),
                           child: Text(
                           (isPasswordShown)
                               ? passEntry.getPassword()
