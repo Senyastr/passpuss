@@ -3,114 +3,133 @@ import 'package:PassPuss/localization.dart';
 import 'package:PassPuss/pages/recommendation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:package_info/package_info.dart';
 
 void main() => runApp(PassPuss());
 
 class PassPuss extends StatelessWidget {
   // This widget is the root of your application.
+
+  static String packageName;
+  static String appName;
+  static String appVersion;
+  static String appBuildNumber;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      localizationsDelegates: [
-        const PassPussLocalizationsDelegate(),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: [
-        const Locale('en', 'US'),
-        const Locale('ru', 'RU'),
-      ],
-      title: 'Pass Puss',
-      theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
-          primaryColor: Color.fromARGB(255, 100, 150, 100),
-          accentColor: Color.fromARGB(255, 0, 142, 6),
-          cardColor: Color.fromARGB(255, 70, 70, 70),
-          backgroundColor: Color.fromARGB(255, 40, 40, 40),
-        canvasColor: Color.fromARGB(255, 40, 40, 40),
-        // APPLY THIS THEME TO EVERY TEXT ELEMENT
-        accentTextTheme: TextTheme(
-          headline1: TextStyle(
-              fontFamily: 'NotoSans',
-              inherit: true,
-              color: Colors.white70,
-              decoration: TextDecoration.none),
-          headline2: TextStyle(
-              fontFamily: 'NotoSans',
-              inherit: true,
-              color: Colors.white70,
-              decoration: TextDecoration.none),
-          headline3: TextStyle(
-              fontFamily: 'NotoSans',
-              inherit: true,
-              color: Colors.white70,
-              decoration: TextDecoration.none),
-          headline4: TextStyle(
-              fontFamily: 'NotoSans',
-              inherit: true,
-              color: Colors.white70,
-              decoration: TextDecoration.none),
-          headline5: TextStyle(
-              fontFamily: 'NotoSans',
-              inherit: true,
-              color: Colors.white,
-              decoration: TextDecoration.none),
-          headline6: TextStyle(
-              fontFamily: 'NotoSans',
-              inherit: true,
-              color: Colors.white,
-              decoration: TextDecoration.none),
-          subtitle1: TextStyle(
-              fontFamily: 'NotoSans',
-              inherit: true,
-              color: Colors.white,
-              decoration: TextDecoration.none),
-          bodyText1: TextStyle(
-              fontFamily: 'NotoSans',
-              inherit: true,
-              color: Colors.white,
-              decoration: TextDecoration.none),
-          bodyText2: TextStyle(
-              fontFamily: 'NotoSans',
-              inherit: true,
-              color: Colors.white,
-              decoration: TextDecoration.none),
-          caption: TextStyle(
-              fontFamily: 'NotoSans',
-              inherit: true,
-              color: Colors.white70,
-              decoration: TextDecoration.none),
-          button: TextStyle(
-              fontFamily: 'NotoSans',
-              inherit: true,
-              color: Colors.white,
-              decoration: TextDecoration.none),
-          subtitle2: TextStyle(
-              fontFamily: 'NotoSans',
-              inherit: true,
-              color: Colors.white,
-              decoration: TextDecoration.none),
-          overline: TextStyle(
-              fontFamily: 'NotoSans',
-              inherit: true,
-              color: Colors.white,
-              decoration: TextDecoration.none),
-        ),
-        appBarTheme: AppBarTheme(
-          color: Color.fromARGB(255, 40, 40, 40),
-        ),
-      ),
-      home: MyHomePage(),
-    );
-  }
+    assignInfo();
+    
+    
+        return MaterialApp(
+          localizationsDelegates: [
+            const PassPussLocalizationsDelegate(),
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('en', 'US'),
+            const Locale('ru', 'RU'),
+          ],
+          title: 'Pass Puss',
+          theme: ThemeData(
+            // This is the theme of your application.
+            //
+            // Try running your application with "flutter run". You'll see the
+            // application has a blue toolbar. Then, without quitting the app, try
+            // changing the primarySwatch below to Colors.green and then invoke
+            // "hot reload" (press "r" in the console where you ran "flutter run",
+            // or simply save your changes to "hot reload" in a Flutter IDE).
+            // Notice that the counter didn't reset back to zero; the application
+            // is not restarted.
+            primaryColor: Color.fromARGB(255, 100, 150, 100),
+            accentColor: Color.fromARGB(255, 0, 142, 6),
+            cardColor: Color.fromARGB(255, 70, 70, 70),
+            backgroundColor: Color.fromARGB(255, 40, 40, 40),
+            canvasColor: Color.fromARGB(255, 40, 40, 40),
+            // APPLY THIS THEME TO EVERY TEXT ELEMENT
+            accentTextTheme: TextTheme(
+              headline1: TextStyle(
+                  fontFamily: 'NotoSans',
+                  inherit: true,
+                  color: Colors.white70,
+                  decoration: TextDecoration.none),
+              headline2: TextStyle(
+                  fontFamily: 'NotoSans',
+                  inherit: true,
+                  color: Colors.white70,
+                  decoration: TextDecoration.none),
+              headline3: TextStyle(
+                  fontFamily: 'NotoSans',
+                  inherit: true,
+                  color: Colors.white70,
+                  decoration: TextDecoration.none),
+              headline4: TextStyle(
+                  fontFamily: 'NotoSans',
+                  inherit: true,
+                  color: Colors.white70,
+                  decoration: TextDecoration.none),
+              headline5: TextStyle(
+                  fontFamily: 'NotoSans',
+                  inherit: true,
+                  color: Colors.white,
+                  decoration: TextDecoration.none),
+              headline6: TextStyle(
+                  fontFamily: 'NotoSans',
+                  inherit: true,
+                  color: Colors.white,
+                  decoration: TextDecoration.none),
+              subtitle1: TextStyle(
+                  fontFamily: 'NotoSans',
+                  inherit: true,
+                  color: Colors.white,
+                  decoration: TextDecoration.none),
+              bodyText1: TextStyle(
+                  fontFamily: 'NotoSans',
+                  inherit: true,
+                  color: Colors.white,
+                  decoration: TextDecoration.none),
+              bodyText2: TextStyle(
+                  fontFamily: 'NotoSans',
+                  inherit: true,
+                  color: Colors.white,
+                  decoration: TextDecoration.none),
+              caption: TextStyle(
+                  fontFamily: 'NotoSans',
+                  inherit: true,
+                  color: Colors.white70,
+                  decoration: TextDecoration.none),
+              button: TextStyle(
+                  fontFamily: 'NotoSans',
+                  inherit: true,
+                  color: Colors.white,
+                  decoration: TextDecoration.none),
+              subtitle2: TextStyle(
+                  fontFamily: 'NotoSans',
+                  inherit: true,
+                  color: Colors.white,
+                  decoration: TextDecoration.none),
+              overline: TextStyle(
+                  fontFamily: 'NotoSans',
+                  inherit: true,
+                  color: Colors.white,
+                  decoration: TextDecoration.none),
+            ),
+            appBarTheme: AppBarTheme(
+              color: Color.fromARGB(255, 40, 40, 40),
+            ),
+          ),
+          home: MyHomePage(),
+        );
+      }
+    
+      void assignInfo() async {
+        PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+        appName = packageInfo.appName;
+        packageName = packageInfo.packageName;
+        appVersion = packageInfo.version;
+        appBuildNumber = packageInfo.buildNumber;
+      }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -156,6 +175,39 @@ class PassEntriesPage extends State<MyHomePage> {
     ];
 
     this.currentPageTitle = home.data;
+    var drawer = Drawer(
+        child: Align(
+            alignment: Alignment.centerLeft,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Center(
+                    child: GestureDetector(
+                      onTap: ()=> showAboutDialog(
+                        context: context,
+                        applicationVersion: PassPuss.appVersion,
+                        ),
+                        child: ListTile(
+                            title: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.info,
+                      color: Colors.white,
+                    ),
+                    VerticalDivider(),
+                    Text(
+                      LocalizationTool.of(context).aboutApp,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5
+                          .copyWith(color: Colors.white),
+                    )
+                  ],
+                ))))
+              ],
+            )));
 
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
@@ -163,8 +215,8 @@ class PassEntriesPage extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets
-
-    return Scaffold(
+    var scaffold = Scaffold(
+      appBar: AppBar(),
       key: scaffoldKey,
       body: pages.elementAt(_selectedPageIndex),
       bottomNavigationBar: BottomNavigationBar(
@@ -176,11 +228,21 @@ class PassEntriesPage extends State<MyHomePage> {
         selectedLabelStyle: _bottomNavTextStyleEnabled,
         unselectedLabelStyle: _bottomNavTextStyleDisabled,
       ),
+      drawer: drawer,
     );
+    return GestureDetector(
+        onPanUpdate: (details) {
+          if (details.delta.dx > 0) {
+            scaffoldKey.currentState.openDrawer();
+          }
+        },
+        child: scaffold);
   }
 
   @override
-  void initState() {super.initState();}
+  void initState() {
+    super.initState();
+  }
 
   void Auth() async {
 //    var localAuth = LocalAuthentication();

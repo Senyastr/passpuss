@@ -170,8 +170,9 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
                   icon: Icon(Icons.save),
                   onPressed: () async {
                     if (_formKey.currentState.validate()){
-                      HomePageState.Pairs.remove(entry);
                       var newEntry = PassEntry.withIcon(username, password, title, selected.path, entry.createdTime);
+                      await DBProvider.DB.deletePassEntry(entry);
+                      HomePageState.Pairs.remove(entry);
                       await DBProvider.DB.addPassEntry(newEntry);
                       HomePageState.changeDataset(() { HomePageState.Pairs.add(newEntry);});
                       Navigator.popUntil(context, (route) => route.isFirst);

@@ -76,6 +76,10 @@ class LocalizationTool {
 
   String get editPasswordPage => getValue("editPasswordPage");
 
+  String get settings => getValue("settings");
+
+  String get aboutApp => getValue("aboutApp");
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -124,7 +128,9 @@ class LocalizationTool {
       "usernameCopied": "The username has been copied to the clipboard.",
       "passwordEmpty": "There are no password entries. Fill in some passwords.",
       "recommendationEmpty": "Your passwords are completely secure.",
-      "editPasswordPage" : "Edit password"
+      "editPasswordPage" : "Edit password",
+      "settings" : "Settings",
+      "aboutApp" : "About"
     },
     'ru': {
       'home': 'Главная',
@@ -159,7 +165,9 @@ class LocalizationTool {
       "usernameCopied": "Имя пользователя скопировано в буфер обмено.",
       "passwordEmpty": "Записи паролей отсутсвуют. Заполните несколько.",
       "recommendationEmpty": "Ваши пароли в безопасности.",
-      "editPasswordPage": "Редактировать пароль"
+      "editPasswordPage": "Редактировать пароль",
+      "settings" : "Настройки",
+      "aboutApp" : "Об приложении"
     },
     'ua': {
       'home': "Головна",
@@ -196,7 +204,9 @@ class LocalizationTool {
       "usernameCopied": "Ім'я користувача було зкопійовано в буфер обмена.",
       "passwordEmpty": "Записи паролей відсутні. Створіть декілька.",
       "recommendationEmpty": "Ваші паролі в безпеці.",
-      "editPasswordPage": "Редагувати пароль"
+      "editPasswordPage": "Редагувати пароль",
+      "settings" : "Налаштування",
+      "aboutApp" : "Про додаток",
     }
   };
 }
