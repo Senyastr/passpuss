@@ -17,18 +17,18 @@ class DBProvider {
     if (_database != null) {
       return _database;
     }
-    
+
     _database = await initDB();
     return _database;
   }
-  Future<bool> closeDb() async{
-    if (_database != null){
-      try{
+
+  Future<bool> closeDb() async {
+    if (_database != null) {
+      try {
         await _database.close();
         _database = null;
         return true;
-      }
-      catch(x){
+      } catch (x) {
         print(x.toString());
         return false;
       }
@@ -66,7 +66,7 @@ class DBProvider {
     // TITLE
     // ICONPATH
     _database =
-    await SQLiteDatabase.openOrCreateDatabase(path, password: "xgWd793VL");
+        await SQLiteDatabase.openOrCreateDatabase(path, password: "xgWd793VL");
     return _database;
   }
 
@@ -99,7 +99,7 @@ class DBProvider {
     var db = await this.database;
     String id = entry.id.toString();
     var result =
-    await db.delete(table: TABLE_NAME, where: "id=?", whereArgs: [id]);
+        await db.delete(table: TABLE_NAME, where: "id=?", whereArgs: [id]);
     await this.closeDb();
     return result;
   }
@@ -119,13 +119,15 @@ class DBProvider {
     );
     List<PassEntry> passEntries = new List<PassEntry>();
     Set set = Set.from(result); // we use set for convenience(forEach method)
-    set.forEach((v) =>
-        passEntries.add(PassEntry.fromDB(
-            v["id"], v["USERNAME"], v["PASSWORD"], v["TITLE"], v["ICONPATH"],
-            DateTime.parse(v["CREATEDTIME"]))));
+    set.forEach((v) => passEntries.add(PassEntry.fromDB(
+        v["id"],
+        v["USERNAME"],
+        v["PASSWORD"],
+        v["TITLE"],
+        v["ICONPATH"],
+        DateTime.parse(v["CREATEDTIME"]))));
     HomePageState.Pairs = passEntries;
     await this.closeDb();
     return passEntries;
   }
-
 }

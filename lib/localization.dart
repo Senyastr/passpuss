@@ -128,9 +128,9 @@ class LocalizationTool {
       "usernameCopied": "The username has been copied to the clipboard.",
       "passwordEmpty": "There are no password entries. Fill in some passwords.",
       "recommendationEmpty": "Your passwords are completely secure.",
-      "editPasswordPage" : "Edit password",
-      "settings" : "Settings",
-      "aboutApp" : "About"
+      "editPasswordPage": "Edit password",
+      "settings": "Settings",
+      "aboutApp": "About"
     },
     'ru': {
       'home': 'Главная',
@@ -158,7 +158,7 @@ class LocalizationTool {
       'newPasswordTitleHint': "Напишите что-то связаное с этим паролем.",
       'passwordCopied': "Пароль скопирован в буфер обмена.",
       'passwordGenSelect':
-      "Выберите со сколько символов будет складатся Ваш пароль",
+          "Выберите со сколько символов будет складатся Ваш пароль",
       "passwordDetailsPage": "О пароле",
       "details": "Подробнее",
       "time": 'Время',
@@ -166,8 +166,8 @@ class LocalizationTool {
       "passwordEmpty": "Записи паролей отсутсвуют. Заполните несколько.",
       "recommendationEmpty": "Ваши пароли в безопасности.",
       "editPasswordPage": "Редактировать пароль",
-      "settings" : "Настройки",
-      "aboutApp" : "Об приложении"
+      "settings": "Настройки",
+      "aboutApp": "Об приложении"
     },
     'ua': {
       'home': "Головна",
@@ -185,19 +185,19 @@ class LocalizationTool {
       "passwordLetters":
           "Цей пароль містить тільки букви. Подумайте згенерувати інший.",
       "passwordNumbers":
-      "Цей пароль містить тільки цифри. Подумайте згенерувати інший.",
+          "Цей пароль містить тільки цифри. Подумайте згенерувати інший.",
       "createNewPassword": "Створити новий запис пароля.",
       "usernameBlank": "Ім'я користувача не має бути порожнім.",
       'newPasswordUsernameHint': "Ваше ім'я користувача/email/login",
       'newPasswordUsernameLabel': "Ім'я користувача/email/login",
       'newPasswordMore8Chars':
-      "Новий пароль має містити більше ніж 8 символів.",
+          "Новий пароль має містити більше ніж 8 символів.",
       'newPasswordFormHint': "Ваш дуже захищиний пароль",
       'newPasswordTitleNotEmpty': "Заголовок не має бути пустим",
       'newPasswordTitleHint': "Напишіть щось пов'язане з цим паролем.",
       'passwordCopied': "Пароль був зкопійований в буфер обміну.",
       'passwordGenSelect':
-      "Виберіть зі скільки символів буде складатися Ваш пароль.",
+          "Виберіть зі скільки символів буде складатися Ваш пароль.",
       "passwordDetailsPage": "Про пароль",
       "details": "Деталі",
       "time": "Час",
@@ -205,8 +205,8 @@ class LocalizationTool {
       "passwordEmpty": "Записи паролей відсутні. Створіть декілька.",
       "recommendationEmpty": "Ваші паролі в безпеці.",
       "editPasswordPage": "Редагувати пароль",
-      "settings" : "Налаштування",
-      "aboutApp" : "Про додаток",
+      "settings": "Налаштування",
+      "aboutApp": "Про додаток",
     }
   };
 }

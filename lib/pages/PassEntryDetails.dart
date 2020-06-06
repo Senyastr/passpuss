@@ -179,8 +179,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
             Icon(Icons.edit, color: Theme.of(context).accentColor),
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: Text(
-                  timeCreated.format(entry.createdTime),
+              child: Text(timeCreated.format(entry.createdTime),
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1
@@ -194,46 +193,44 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
     ]);
     var editButton = FloatingActionButton(
         onPressed: () {
-
-          Navigator.push(context, new MaterialPageRoute(builder: (context) => EditEntryPage(entry)));
+          Navigator.push(
+              context,
+              new MaterialPageRoute(
+                  builder: (context) => EditEntryPage(entry)));
         },
         child: Icon(Icons.edit));
     return Scaffold(
         backgroundColor: Theme.of(context).cardColor,
         body: SafeArea(
             child: Column(
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Text(
-                        LocalizationTool
-                            .of(context)
-                            .passwordDetailsPage,
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .headline5
-                            .copyWith(color: Colors.white),
-                      )),
-                ),
-                mainInfo,
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Divider(color: Colors.white),
-                ),
-
-                Expanded(child: timeBlock),
-                SafeArea(
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child:
+          children: <Widget>[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Text(
+                    LocalizationTool.of(context).passwordDetailsPage,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5
+                        .copyWith(color: Colors.white),
+                  )),
+            ),
+            mainInfo,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Divider(color: Colors.white),
+            ),
+            Expanded(child: timeBlock),
+            SafeArea(
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child:
                     Align(alignment: Alignment.bottomRight, child: editButton),
-                  ),
-                )
-              ],
-            )));
+              ),
+            )
+          ],
+        )));
   }
 
   PassEntryDetailsState(this.entry);
