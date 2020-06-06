@@ -57,11 +57,11 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
     IconChoiceState.selected = null;
 
     username = entry.getUsername();
-  password = entry.getPassword();
+    password = entry.getPassword();
     title = entry.getTitle();
     this.selected =
         iconsChoice.where((e) => e.path == entry.getIconId()).toList()[0];
-            username_txt.text = entry.getUsername();
+    username_txt.text = entry.getUsername();
     password_txt.text = entry.getPassword();
     title_txt.text = entry.getTitle();
   }
@@ -100,9 +100,6 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
 
   @override
   Widget build(BuildContext context) {
-
-
-
     iconChoices = ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
@@ -118,13 +115,11 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
           return iconWidget;
         });
 
-
     _usernameForm = TextFormField(
       controller: username_txt,
       autovalidate: true,
       validator: (value) =>
           value.isEmpty ? LocalizationTool.of(context).usernameBlank : null,
-    
       key: _usernameKey,
       decoration: InputDecoration(
           icon: Icon(Icons.person),
@@ -145,7 +140,7 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
           labelText: LocalizationTool.of(context).password),
     );
     _titleForm = TextFormField(
-      controller: title_txt,
+        controller: title_txt,
         autovalidate: true,
         validator: (val) => (val.isEmpty)
             ? LocalizationTool.of(context).newPasswordTitleNotEmpty
@@ -169,12 +164,15 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
                 IconButton(
                   icon: Icon(Icons.save),
                   onPressed: () async {
-                    if (_formKey.currentState.validate()){
-                      var newEntry = PassEntry.withIcon(username, password, title, selected.path, entry.createdTime);
+                    if (_formKey.currentState.validate()) {
+                      var newEntry = PassEntry.withIcon(username, password,
+                          title, selected.path, entry.createdTime);
                       await DBProvider.DB.deletePassEntry(entry);
                       HomePageState.Pairs.remove(entry);
                       await DBProvider.DB.addPassEntry(newEntry);
-                      HomePageState.changeDataset(() { HomePageState.Pairs.add(newEntry);});
+                      HomePageState.changeDataset(() {
+                        HomePageState.Pairs.add(newEntry);
+                      });
                       Navigator.popUntil(context, (route) => route.isFirst);
                     }
                   },
@@ -234,11 +232,12 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
                                           setState(() {
                                             if (lockIcon.icon == iconLocked) {
                                               lockIcon = Icon(iconOpened);
-                                              password_preview = password_txt.text;
+                                              password_preview =
+                                                  password_txt.text;
                                               previewPassword = true;
                                             } else {
                                               lockIcon = Icon(iconLocked);
-                                              password_preview = hiddenPassword;
+                                              password_preview = hidePassword(password_txt.text);
                                               previewPassword = false;
                                             }
                                           });
@@ -256,8 +255,8 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
                                       child: IconButton(
                                           icon: Icon(Icons.content_copy),
                                           onPressed: () {
-                                            Clipboard.setData(
-                                                ClipboardData(text: password_txt.text));
+                                            Clipboard.setData(ClipboardData(
+                                                text: password_txt.text));
                                             Scaffold.of(context).showSnackBar(
                                                 SnackBar(
                                                     content: Text(
@@ -391,18 +390,29 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
       if (previewPassword) {
         password_preview = password_txt.text;
       }
+      else{
+        password_preview = hidePassword(password_txt.text);
+      }
     });
   }
-  void onUsernameChanged(){
-    
-        setState(() {
-           username = username_txt.text;
-        });
-      
+   String hidePassword(String password) {
+    String result;
+    StringBuffer buffer = StringBuffer();
+    for (int i = 0; i < password.length; i++) {
+      buffer.write("*");
+    }
+    result = buffer.toString();
+    return result;
   }
 
-  void onTitleChanged(){
-    setState((){
+  void onUsernameChanged() {
+    setState(() {
+      username = username_txt.text;
+    });
+  }
+
+  void onTitleChanged() {
+    setState(() {
       title = title_txt.text;
     });
   }

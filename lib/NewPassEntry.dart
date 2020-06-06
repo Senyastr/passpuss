@@ -29,7 +29,6 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
   String previewPass = "";
   String title = "";
 
-  String hiddenPassword = "*******";
 
   bool generate_mode = false;
 
@@ -41,7 +40,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
   void initState() {
     selected = null;
     lockIcon = Icon(iconLocked);
-    passwordPreview = hiddenPassword;
+    passwordPreview = "";
     IconChoiceState.initOnChange(new IconChangedHandler(this));
     IconChoiceState.icons = iconsChoice;
     IconChoiceState.selected = null;
@@ -230,7 +229,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                                               previewPassword = true;
                                             } else {
                                               lockIcon = Icon(iconLocked);
-                                              passwordPreview = hiddenPassword;
+                                              passwordPreview = hidePassword(password_txt.text);
                                               previewPassword = false;
                                             }
                                           });
@@ -392,12 +391,24 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
               )
             ])));
   }
+  String hidePassword(String password) {
+    String result;
+    StringBuffer buffer = StringBuffer();
+    for (int i = 0; i < password.length; i++) {
+      buffer.write("*");
+    }
+    result = buffer.toString();
+    return result;
+  }
 
   void onPasswordChange() {
     setState(() {
       password = password_txt.text;
       if (previewPassword) {
         passwordPreview = password;
+      }
+      else{
+        passwordPreview = hidePassword(password_txt.text);
       }
     });
   }
