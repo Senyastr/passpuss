@@ -80,6 +80,10 @@ class LocalizationTool {
 
   String get aboutApp => getValue("aboutApp");
 
+  get shareWarningTitle => getValue("shareWarningTitle");
+
+  String get shareWarningContent => getValue("shareWarningContent");
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -130,7 +134,11 @@ class LocalizationTool {
       "recommendationEmpty": "Your passwords are completely secure.",
       "editPasswordPage": "Edit password",
       "settings": "Settings",
-      "aboutApp": "About"
+      "aboutApp": "About",
+      "shareWarningTitle": "Are you sure about sharing your password?",
+      "shareWarningContent":
+          "Sharing your password with other people is UNSAFE. " +
+              "Our app strictly doesn't recommend you to do so."
     },
     'ru': {
       'home': 'Главная',
@@ -167,7 +175,9 @@ class LocalizationTool {
       "recommendationEmpty": "Ваши пароли в безопасности.",
       "editPasswordPage": "Редактировать пароль",
       "settings": "Настройки",
-      "aboutApp": "Об приложении"
+      "aboutApp": "Об приложении",
+      "shareWarningTitle": "Вы уверенны, что хотите отправить пароль?",
+      "shareWarningContent": "Делиться паролем НЕБЕЗОПАСНО. Мы Вам насоятельно рекомендуем воздержатся от этого."
     },
     'ua': {
       'home': "Головна",
@@ -207,6 +217,8 @@ class LocalizationTool {
       "editPasswordPage": "Редагувати пароль",
       "settings": "Налаштування",
       "aboutApp": "Про додаток",
+      "shareWarningTitle": "Ви впевнені, що хочете відправити пароль?",
+      "shareWarningContent": "Поширити пароль занадто НЕБЕЗПЕСНО. Ми Вам не рекомендуємо відправляти пароль."
     }
   };
 }

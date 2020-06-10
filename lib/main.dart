@@ -116,6 +116,7 @@ class PassPuss extends StatelessWidget {
         appBarTheme: AppBarTheme(
           color: Color.fromARGB(255, 40, 40, 40),
         ),
+        dialogBackgroundColor: Color.fromARGB(255, 40, 40, 40),
       ),
       home: MyHomePage(),
     );

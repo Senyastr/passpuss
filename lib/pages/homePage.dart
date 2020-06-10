@@ -13,10 +13,29 @@ class HomePage extends StatefulWidget {
   }
 }
 
-class HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   static List<PassEntry> Pairs = [];
   static HomePageState _page;
   static Widget emptyList;
+
+  AnimationController _controller;
+
+  Animation<Offset> _offsetAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      assignPairs();
+    });
+
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+    _offsetAnimation = Tween<Offset>(
+            begin: Offset.zero, end: const Offset(1.5, 0.0))
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,14 +89,15 @@ class HomePageState extends State<HomePage> {
         ),
       ),
       Expanded(
-          child: Pairs.length == 0 ? emptyList :
-          ListView.builder(
-              itemCount: Pairs.length,
-              itemBuilder: (BuildContext context, int index) {
-                return new PassField(Pairs[index], GlobalKey());
-              })
-      ),
-
+          child: Pairs.length == 0
+              ? emptyList
+              : AnimatedList(
+                  initialItemCount: Pairs.length,
+                  itemBuilder: (BuildContext context, int index, animation) {
+                    return SlideTransition(
+                        position: _offsetAnimation,
+                        child: PassField(Pairs[index], GlobalKey()));
+                  })),
       FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
@@ -86,14 +106,6 @@ class HomePageState extends State<HomePage> {
         },
       )
     ]);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      assignPairs();
-    });
   }
 
   assignPairs() async {

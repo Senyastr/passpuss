@@ -1,12 +1,18 @@
+import 'dart:io';
+
 import 'package:PassPuss/pages/editEntryPage.dart';
 import 'package:PassPuss/passentry.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 
 import 'package:PassPuss/localization.dart';
 
+import '../PassFieldItem.dart';
 import '../main.dart';
 
 class PassEntryDetails extends StatefulWidget {
@@ -41,8 +47,14 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
     password = entry.getPassword();
   }
 
+  var _context;
   @override
   Widget build(BuildContext context) {
+    _context = context;
+    Widget shotItem = Container(
+        width: 400,
+        height: 200,
+        child: PassField(entry, GlobalKey())); // remove optionally
     timeCreated = DateFormat(DateFormat.YEAR_MONTH_DAY,
             LocalizationTool.of(context).locale.toLanguageTag())
         .add_Hm();
@@ -97,7 +109,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                                   .usernameCopied)));
                     })),
             Padding(
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.all(2),
                 child: Icon(
                   Icons.text_rotation_none,
                   color: Theme.of(context).accentColor,
@@ -146,7 +158,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                                 LocalizationTool.of(context).passwordCopied)));
                   })),
           Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(2),
               child: Icon(
                 Icons.text_rotation_none,
                 color: Theme.of(context).accentColor,
@@ -200,6 +212,18 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
         },
         child: Icon(Icons.edit));
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).cardColor,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.share,
+                color: Theme.of(context).accentColor,
+              ),
+              onPressed: _share,
+            ),
+          ],
+        ),
         backgroundColor: Theme.of(context).cardColor,
         body: SafeArea(
             child: Column(
@@ -216,7 +240,10 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                         .copyWith(color: Colors.white),
                   )),
             ),
-            mainInfo,
+            Screenshot(
+                controller: screenshotController,
+                child:
+                    Card(color: Theme.of(context).cardColor, child: mainInfo)),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Divider(color: Colors.white),
@@ -228,7 +255,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                 child:
                     Align(alignment: Alignment.bottomRight, child: editButton),
               ),
-            )
+            ),
           ],
         )));
   }
@@ -241,6 +268,79 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
       child: Align(alignment: Alignment.centerLeft, child: text),
     );
   }
+
+  var screenshotController = ScreenshotController();
+
+  void _share() {
+    // TODO: Implement a share mechanism
+    // depces:
+    // esys_flutter_share
+    // screenshot
+
+    showDialog(
+        context: _context,
+        builder: (context) => AlertDialog(
+              title: Text(
+                LocalizationTool.of(context).shareWarningTitle,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    .copyWith(color: Colors.white),
+              ),
+              content:
+                  Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                Text(
+                  LocalizationTool.of(context).shareWarningContent,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      .copyWith(color: Colors.white),
+                ),
+                Icon(
+                  Icons.warning,
+                  color: Colors.redAccent,
+                  size: 100,
+                ),
+              ]),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Yes, I'm risky.",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          .copyWith(color: Colors.lightGreenAccent)),
+                  onPressed: () {
+                    setState(() {
+                      isPasswordShown = true;
+                    });
+                    screenshotController
+                        .capture(pixelRatio: 4)
+                        .then((File image) async {
+                      await Share.file(entry.getUsername(), "password.png",
+                          await image.readAsBytes(), 'image/png');
+                      setState(() {
+                        isPasswordShown = false;
+                      });
+                    });
+                  },
+                ),
+                FlatButton(
+                  child: Text("No, I want to my mummy.",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          .copyWith(color: Colors.redAccent)),
+                  onPressed: () {
+                    Navigator.pop<AlertDialog>(_context);
+                  },
+                ),
+              ],
+            ));
+
+    removeShareFile();
+  }
+
+  void removeShareFile() {}
 }
 
 String hidePassword(String password) {
@@ -251,4 +351,15 @@ String hidePassword(String password) {
   }
   result = buffer.toString();
   return result;
+}
+
+class ImageDialog extends StatelessWidget {
+  var widget;
+  ImageDialog(this.widget);
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: widget,
+    );
+  }
 }

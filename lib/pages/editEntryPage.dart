@@ -59,8 +59,14 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
     username = entry.getUsername();
     password = entry.getPassword();
     title = entry.getTitle();
-    this.selected =
-        iconsChoice.where((e) => e.path == entry.getIconId()).toList()[0];
+    var iconId = entry.getIconId();
+    if (iconId != IconChoiceState.emptyIconPath){
+      this.selected =
+        iconsChoice.where((e) {
+          return  e.path == entry.getIconId();
+        }).toList()[0] ;
+    }
+    
     username_txt.text = entry.getUsername();
     password_txt.text = entry.getPassword();
     title_txt.text = entry.getTitle();
@@ -84,16 +90,7 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
   final password_txt = TextEditingController();
   final username_txt = TextEditingController();
   final title_txt = TextEditingController();
-  final iconsChoice = [
-    PassEntryIcon("assets/images/Instagram_logo_2016.svg"),
-    PassEntryIcon("assets/images/Facebook_logo_24x24.svg"),
-    PassEntryIcon("assets/images/Apple48x48.svg"),
-    PassEntryIcon("assets/images/Google48x48.svg"),
-    PassEntryIcon("assets/images/Spotify48x48.svg"),
-    PassEntryIcon("assets/images/Steam48x48.svg"),
-    PassEntryIcon("assets/images/twitter-seeklogo.svg"),
-    PassEntryIcon("assets/images/Microsoft48x48.svg"),
-  ];
+  final iconsChoice = NewPassEntry.iconsChoice;
   String password_preview;
 
   ListView iconChoices;

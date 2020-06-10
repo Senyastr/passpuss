@@ -28,6 +28,9 @@ dependencies:
   tuple: ^1.0.3
   intl: ^0.16.1
   package_info: ^0.4.0+16
+  esys_flutter_share: ^1.0.2
+  screenshot: ^0.2.0
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -74,6 +77,10 @@ flutter:
     - assets/images/Steam48x48.svg
     - assets/images/twitter-seeklogo.svg
     - assets/images/Microsoft48x48.svg
+    - assets/images/Yandex_Browser_logo.svg
+    - assets/images/Creative_Cloud.svg
+    - assets/images/reddit copy.svg
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

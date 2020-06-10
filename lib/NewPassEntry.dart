@@ -29,7 +29,6 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
   String previewPass = "";
   String title = "";
 
-
   bool generate_mode = false;
 
   double _sliderHeight = 0.0;
@@ -59,15 +58,18 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
   var passwordStateKey = GlobalKey();
   var isPasswordShown = false;
   var password_txt = TextEditingController();
-  var iconsChoice = [
+  static var iconsChoice = [
+    PassEntryIcon("assets/images/Google48x48.svg"),
     PassEntryIcon("assets/images/Instagram_logo_2016.svg"),
     PassEntryIcon("assets/images/Facebook_logo_24x24.svg"),
+    PassEntryIcon("assets/images/reddit copy.svg"),
     PassEntryIcon("assets/images/Apple48x48.svg"),
-    PassEntryIcon("assets/images/Google48x48.svg"),
     PassEntryIcon("assets/images/Spotify48x48.svg"),
     PassEntryIcon("assets/images/Steam48x48.svg"),
     PassEntryIcon("assets/images/twitter-seeklogo.svg"),
     PassEntryIcon("assets/images/Microsoft48x48.svg"),
+    PassEntryIcon("assets/images/Yandex_Browser_logo.svg"),
+    PassEntryIcon("assets/images/Creative_Cloud.svg"),
   ];
   String passwordPreview;
 
@@ -229,15 +231,15 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                                               previewPassword = true;
                                             } else {
                                               lockIcon = Icon(iconLocked);
-                                              passwordPreview = hidePassword(password_txt.text);
+                                              passwordPreview = hidePassword(
+                                                  password_txt.text);
                                               previewPassword = false;
                                             }
                                           });
                                         },
                                       )),
                                   Padding(
-                                      padding:
-                                      EdgeInsets.only(
+                                      padding: EdgeInsets.only(
                                           left: 6, top: 10, bottom: 10),
                                       child: Text(passwordPreview,
                                           style: TextStyle(
@@ -348,8 +350,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                                                     Colors.yellowAccent,
                                                 valueIndicatorTextStyle:
                                                     TextStyle(
-                                                  color: Colors.black45
-                                                ),
+                                                        color: Colors.black45),
                                               ),
                                               child: Slider(
                                                   value: _genChars,
@@ -391,6 +392,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
               )
             ])));
   }
+
   String hidePassword(String password) {
     String result;
     StringBuffer buffer = StringBuffer();
@@ -406,8 +408,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
       password = password_txt.text;
       if (previewPassword) {
         passwordPreview = password;
-      }
-      else{
+      } else {
         passwordPreview = hidePassword(password_txt.text);
       }
     });
