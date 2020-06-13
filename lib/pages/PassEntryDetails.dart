@@ -304,7 +304,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
               ]),
               actions: <Widget>[
                 FlatButton(
-                  child: Text("Yes, I'm risky.",
+                  child: Text(LocalizationTool.of(context).shareWarningPositive, // Yes, I'm risky.
                       style: Theme.of(context)
                           .textTheme
                           .bodyText2
@@ -325,7 +325,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                   },
                 ),
                 FlatButton(
-                  child: Text("No, I want to my mummy.",
+                  child: Text(LocalizationTool.of(context).shareWarningNegative, // "No, I want to my mummy."
                       style: Theme.of(context)
                           .textTheme
                           .bodyText2

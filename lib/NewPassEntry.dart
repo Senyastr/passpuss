@@ -70,6 +70,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
     PassEntryIcon("assets/images/Microsoft48x48.svg"),
     PassEntryIcon("assets/images/Yandex_Browser_logo.svg"),
     PassEntryIcon("assets/images/Creative_Cloud.svg"),
+    PassEntryIcon("assets/images/Netflix_icon.svg")
   ];
   String passwordPreview;
 
@@ -147,12 +148,15 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                     PassEntry newEntry = PassEntry.withIcon(
                         username, password, title, icon, DateTime.now());
 
+                      
                     if (_formKey.currentState.validate()) {
-                      HomePageState.changeDataset(() {
+                      
+                      await DBProvider.DB.addPassEntry(newEntry);
+                      HomePageState.changeDataset(() {  
                         HomePageState.Pairs.add(newEntry);
                       });
 
-                      await DBProvider.DB.addPassEntry(newEntry);
+                      
                       Navigator.pop<NewPassEntry>(context, this);
                     }
                   },

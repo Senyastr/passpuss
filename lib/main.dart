@@ -117,6 +117,15 @@ class PassPuss extends StatelessWidget {
           color: Color.fromARGB(255, 40, 40, 40),
         ),
         dialogBackgroundColor: Color.fromARGB(255, 40, 40, 40),
+        dialogTheme: DialogTheme(
+            titleTextStyle: Theme.of(context)
+                .textTheme
+                .headline6
+                .copyWith(color: Colors.white),
+            contentTextStyle: Theme.of(context)
+                .textTheme
+                .bodyText2
+                .copyWith(color: Colors.white)),
       ),
       home: MyHomePage(),
     );
@@ -186,6 +195,7 @@ class PassEntriesPage extends State<MyHomePage> {
                 Center(
                     child: GestureDetector(
                         onTap: () => showAboutDialog(
+                          
                               context: context,
                               applicationVersion: PassPuss.appVersion,
                             ),

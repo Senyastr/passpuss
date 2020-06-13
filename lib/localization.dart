@@ -84,6 +84,10 @@ class LocalizationTool {
 
   String get shareWarningContent => getValue("shareWarningContent");
 
+  String get shareWarningPositive => getValue("shareWarningPositive");
+
+  String get shareWarningNegative => getValue("shareWarningNegative");
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -138,7 +142,9 @@ class LocalizationTool {
       "shareWarningTitle": "Are you sure about sharing your password?",
       "shareWarningContent":
           "Sharing your password with other people is UNSAFE. " +
-              "Our app strictly doesn't recommend you to do so."
+              "Our app strictly doesn't recommend you to do so.",
+      "shareWarningPositive": "Yes, I'm risky.",
+      "shareWarningNegative": "No, I want to my mummy."
     },
     'ru': {
       'home': 'Главная',
@@ -177,7 +183,10 @@ class LocalizationTool {
       "settings": "Настройки",
       "aboutApp": "Об приложении",
       "shareWarningTitle": "Вы уверенны, что хотите отправить пароль?",
-      "shareWarningContent": "Делиться паролем НЕБЕЗОПАСНО. Мы Вам насоятельно рекомендуем воздержатся от этого."
+      "shareWarningContent":
+          "Делиться паролем НЕБЕЗОПАСНО. Мы Вам насоятельно рекомендуем воздержатся от этого.",
+      "shareWarningPositive": "Да, я опасный.",
+      "shareWarningNegative": "Нет, я хочу к маме."
     },
     'ua': {
       'home': "Головна",
@@ -218,7 +227,10 @@ class LocalizationTool {
       "settings": "Налаштування",
       "aboutApp": "Про додаток",
       "shareWarningTitle": "Ви впевнені, що хочете відправити пароль?",
-      "shareWarningContent": "Поширити пароль занадто НЕБЕЗПЕСНО. Ми Вам не рекомендуємо відправляти пароль."
+      "shareWarningContent":
+          "Поширити пароль занадто НЕБЕЗПЕСНО. Ми Вам не рекомендуємо відправляти пароль.",
+      "shareWarningPositive": "Так, я небезпечний.",
+      "shareWarningNegative": "Ні, я хочу до матусі."
     }
   };
 }

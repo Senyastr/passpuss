@@ -91,12 +91,10 @@ class HomePageState extends State<HomePage>
       Expanded(
           child: Pairs.length == 0
               ? emptyList
-              : AnimatedList(
-                  initialItemCount: Pairs.length,
-                  itemBuilder: (BuildContext context, int index, animation) {
-                    return SlideTransition(
-                        position: _offsetAnimation,
-                        child: PassField(Pairs[index], GlobalKey()));
+              : ListView.builder(
+                  itemCount: Pairs.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return PassField(Pairs[index], GlobalKey());
                   })),
       FloatingActionButton(
         child: Icon(Icons.add),
