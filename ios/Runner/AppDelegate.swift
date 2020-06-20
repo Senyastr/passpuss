@@ -10,4 +10,6 @@ import Flutter
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
+  // TODO: HERE WE HAVE TO ADD https://pub.dev/packages/flutter_local_notifications#-readme-tab-
+  // SETUP
 }

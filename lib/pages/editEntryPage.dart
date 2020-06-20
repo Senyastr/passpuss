@@ -60,13 +60,12 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
     password = entry.getPassword();
     title = entry.getTitle();
     var iconId = entry.getIconId();
-    if (iconId != IconChoiceState.emptyIconPath){
-      this.selected =
-        iconsChoice.where((e) {
-          return  e.path == entry.getIconId();
-        }).toList()[0] ;
+    if (iconId != IconChoiceState.emptyIconPath) {
+      this.selected = iconsChoice.where((e) {
+        return e.path == entry.getIconId();
+      }).toList()[0];
     }
-    
+
     username_txt.text = entry.getUsername();
     password_txt.text = entry.getPassword();
     title_txt.text = entry.getTitle();
@@ -215,7 +214,21 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
                                               fontSize: 20,
                                               color: Colors.white)),
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: 18, vertical: 5))
+                                          horizontal: 18, vertical: 5)),
+                                  Padding(
+                                      padding: EdgeInsets.all(1),
+                                      child: IconButton(
+                                          icon: Icon(Icons.content_copy),
+                                          onPressed: () {
+                                            Clipboard.setData(
+                                                ClipboardData(text: username));
+                                            Scaffold.of(context).showSnackBar(
+                                                SnackBar(
+                                                    content: Text(
+                                                        LocalizationTool.of(
+                                                                context)
+                                                            .usernameCopied)));
+                                          })),
                                 ])), // USERNAME PREVIEW
                             Align(
                                 alignment: Alignment.bottomLeft,
@@ -234,7 +247,8 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
                                               previewPassword = true;
                                             } else {
                                               lockIcon = Icon(iconLocked);
-                                              password_preview = hidePassword(password_txt.text);
+                                              password_preview = hidePassword(
+                                                  password_txt.text);
                                               previewPassword = false;
                                             }
                                           });
@@ -386,13 +400,13 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
       password = password_txt.text;
       if (previewPassword) {
         password_preview = password_txt.text;
-      }
-      else{
+      } else {
         password_preview = hidePassword(password_txt.text);
       }
     });
   }
-   String hidePassword(String password) {
+
+  String hidePassword(String password) {
     String result;
     StringBuffer buffer = StringBuffer();
     for (int i = 0; i < password.length; i++) {

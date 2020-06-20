@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:PassPuss/localization.dart';
 import 'package:PassPuss/passentry.dart';
+import 'package:tuple/tuple.dart';
 
 class RecommendationTab extends StatefulWidget {
   @override
@@ -16,12 +17,24 @@ class RecommendationTab extends StatefulWidget {
 class RecommendationTabState extends State<RecommendationTab> {
   List<RecommendationItem> items;
 
-  @override
-  void initState() {}
+  List<Tuple3<PassEntry, String, MessageType>>
+      recSet; // passEntry, message, messageType
 
   @override
+  void initState() {
+    analyzing = true;
+    analyze(context).then((recSet) {
+      this.recSet = recSet;
+      items = buildItems();
+      setState(() {
+        analyzing = false;
+      });
+    });
+  }
+
+  bool analyzing;
+  @override
   Widget build(BuildContext context) {
-    items = analyze(context);
     var emptyView = Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
@@ -57,40 +70,43 @@ class RecommendationTabState extends State<RecommendationTab> {
               )),
         ),
       ),
-
-      items.length == 0 ? Center(child: emptyView) : Expanded(
-          child: ListView.separated(
-              separatorBuilder: (context, index) => Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Divider(color: Colors.white)),
-              itemCount: items.length,
-              itemBuilder: (BuildContext context, int index) {
-                return items[index];
-              }))
+      !analyzing
+          ? items.length == 0
+              ? Center(child: emptyView)
+              : Expanded(
+                  child: ListView.separated(
+                      separatorBuilder: (context, index) => Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: Divider(color: Colors.white)),
+                      itemCount: items.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return items[index];
+                      }))
+          : CircularProgressIndicator()
     ]);
   }
 
-  List<RecommendationItem> analyze(BuildContext context) {
+  Future<List<Tuple3<PassEntry, String, MessageType>>> analyze(
+      BuildContext context) async {
     // Here we're getting RecommendationItems(passwords that should be changed)
     var pairs = HomePageState.Pairs;
-    var recommendItems = List<RecommendationItem>();
+    var recommendSet = List<Tuple3<PassEntry, String, MessageType>>();
     // HERE WE ANALYZE THE TIME THAT HAS PASSED SINCE THE PASSENTRYIES WERE CREATED
     pairs.forEach((f) {
       var filtered = filter(f, context);
       if (filtered != null) {
-        recommendItems.add(filtered);
+        recommendSet.add(filtered);
       }
     });
-    return recommendItems;
+    return recommendSet;
   }
 
-  RecommendationItem filter(PassEntry f, BuildContext context) {
+  Tuple3<PassEntry, String, MessageType> filter(
+      PassEntry f, BuildContext context) {
     var password = f.getPassword();
     var timeDifference = (f.createdTime.difference(DateTime.now()));
     if (timeDifference.inDays > 31) {
-      return new RecommendationItem(
-          f,
-          LocalizationTool.of(context).passwordExpired,
+      return new Tuple3(f, LocalizationTool.of(context).passwordExpired,
           MessageType.recommendation);
     } else {
       // HERE WE ANALYZE THE PASSWORDS(PASSWORDS SAFETY)
@@ -98,16 +114,12 @@ class RecommendationTabState extends State<RecommendationTab> {
       // WE ANALYZE ONLY LOWER-CASED PASSWORDS
       // 1. The password has the length less than 8 characters.
       if (password.length < 8) {
-        return new RecommendationItem(
-            f,
-            LocalizationTool.of(context).passwordChars,
+        return new Tuple3(f, LocalizationTool.of(context).passwordChars,
             MessageType.higlyRecommended);
       }
       // 2. The password has repeated characters.
       if (hasRepeatedCharacters(password)) {
-        return new RecommendationItem(
-            f,
-            LocalizationTool.of(context).passwordRepeatChars,
+        return new Tuple3(f, LocalizationTool.of(context).passwordRepeatChars,
             MessageType.warning);
       }
       // 3. The password is one of these:
@@ -117,27 +129,30 @@ class RecommendationTabState extends State<RecommendationTab> {
       // 87654321
 
       if (hasIdiotPasswords(password)) {
-        return new RecommendationItem(
-            f,
-            LocalizationTool.of(context).passwordIdiot,
+        return new Tuple3(f, LocalizationTool.of(context).passwordIdiot,
             MessageType.higlyRecommended);
       }
       // 4. The password hasn't used any letters, but numbers
       if (hasOnlyLetters(password)) {
-        return new RecommendationItem(
-            f,
-            LocalizationTool.of(context).passwordLetters,
+        return new Tuple3(f, LocalizationTool.of(context).passwordLetters,
             MessageType.recommendation);
       }
       // 5. Vice versa, the password used only letters.
       if (hasOnlyNumbers(password)) {
-        return new RecommendationItem(
-            f,
-            LocalizationTool.of(context).passwordNumbers,
+        return new Tuple3(f, LocalizationTool.of(context).passwordNumbers,
             MessageType.recommendation);
       }
     }
     return null;
+  }
+
+  List<RecommendationItem> buildItems() {
+    var result = List<RecommendationItem>();
+    for (int i = 0; i < this.recSet.length; i++) {
+      result.add(RecommendationItem(
+          recSet[i].item1, recSet[i].item2, recSet[i].item3));
+    }
+    return result;
   }
 }
 

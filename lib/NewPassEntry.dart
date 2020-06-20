@@ -8,6 +8,8 @@ import 'package:PassPuss/passentry.dart';
 import 'Database.dart';
 import 'package:PassPuss/pages/homePage.dart';
 
+import 'notifications.dart';
+
 class NewPassEntryPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -148,15 +150,15 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                     PassEntry newEntry = PassEntry.withIcon(
                         username, password, title, icon, DateTime.now());
 
-                      
                     if (_formKey.currentState.validate()) {
-                      
                       await DBProvider.DB.addPassEntry(newEntry);
-                      HomePageState.changeDataset(() {  
+                      HomePageState.changeDataset(() {
                         HomePageState.Pairs.add(newEntry);
                       });
+                      PassEntryExpiration(newEntry,
+                              newEntry.createdTime.add(Duration(days: 30)))
+                          .scheduleNotification(context);
 
-                      
                       Navigator.pop<NewPassEntry>(context, this);
                     }
                   },

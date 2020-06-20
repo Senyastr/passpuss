@@ -14,6 +14,7 @@ import 'package:PassPuss/localization.dart';
 
 import '../PassFieldItem.dart';
 import '../main.dart';
+import '../notifications.dart';
 
 class PassEntryDetails extends StatefulWidget {
   PassEntry entry;
@@ -39,6 +40,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
   var isPasswordShown = false;
   var username;
   var password;
+  var expiration;
   DateFormat timeCreated;
   @override
   void initState() {
@@ -304,7 +306,9 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
               ]),
               actions: <Widget>[
                 FlatButton(
-                  child: Text(LocalizationTool.of(context).shareWarningPositive, // Yes, I'm risky.
+                  child: Text(
+                      LocalizationTool.of(context)
+                          .shareWarningPositive, // Yes, I'm risky.
                       style: Theme.of(context)
                           .textTheme
                           .bodyText2
@@ -313,6 +317,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                     setState(() {
                       isPasswordShown = true;
                     });
+                    Navigator.pop<AlertDialog>(_context);
                     screenshotController
                         .capture(pixelRatio: 4)
                         .then((File image) async {
@@ -325,7 +330,9 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                   },
                 ),
                 FlatButton(
-                  child: Text(LocalizationTool.of(context).shareWarningNegative, // "No, I want to my mummy."
+                  child: Text(
+                      LocalizationTool.of(context)
+                          .shareWarningNegative, // "No, I want to my mummy."
                       style: Theme.of(context)
                           .textTheme
                           .bodyText2

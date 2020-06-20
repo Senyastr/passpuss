@@ -88,6 +88,10 @@ class LocalizationTool {
 
   String get shareWarningNegative => getValue("shareWarningNegative");
 
+  String get notificationExpiredTitle => getValue("notificationExpiredTitle");
+
+  String get notificationExpiredContent => getValue("notificationExpiredContent");
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -144,7 +148,9 @@ class LocalizationTool {
           "Sharing your password with other people is UNSAFE. " +
               "Our app strictly doesn't recommend you to do so.",
       "shareWarningPositive": "Yes, I'm risky.",
-      "shareWarningNegative": "No, I want to my mummy."
+      "shareWarningNegative": "No, I want to my mummy.",
+      "notificationExpiredTitle": "One of your passwords should be CHANGED",
+      "notificationExpiredContent": "The password for %s should be changed." // #SPRINTF 
     },
     'ru': {
       'home': 'Главная',
@@ -186,7 +192,10 @@ class LocalizationTool {
       "shareWarningContent":
           "Делиться паролем НЕБЕЗОПАСНО. Мы Вам насоятельно рекомендуем воздержатся от этого.",
       "shareWarningPositive": "Да, я опасный.",
-      "shareWarningNegative": "Нет, я хочу к маме."
+      "shareWarningNegative": "Нет, я хочу к маме.",
+      "notificationExpiredTitle": "Один с ваших паролей следует СМЕНИТЬ",
+      "notificationExpiredContent": "Пароль к %s следует сменить" // #SPRINTF 
+
     },
     'ua': {
       'home': "Головна",
@@ -230,7 +239,9 @@ class LocalizationTool {
       "shareWarningContent":
           "Поширити пароль занадто НЕБЕЗПЕСНО. Ми Вам не рекомендуємо відправляти пароль.",
       "shareWarningPositive": "Так, я небезпечний.",
-      "shareWarningNegative": "Ні, я хочу до матусі."
+      "shareWarningNegative": "Ні, я хочу до матусі.",
+      "notificationExpiredTitle": "Один з ваших паролів слід ЗМІНИТИ",
+      "notificationExpiredContent": "Пароль до %s слід змінити" // #SPRINTF 
     }
   };
 }

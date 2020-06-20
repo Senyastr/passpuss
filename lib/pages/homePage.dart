@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:PassPuss/localization.dart';
 import 'package:flutter/material.dart';
 import 'package:PassPuss/Database.dart';
@@ -22,13 +24,11 @@ class HomePageState extends State<HomePage>
   AnimationController _controller;
 
   Animation<Offset> _offsetAnimation;
-
+  List<PassField> passFieldsWidgets;
   @override
   void initState() {
     super.initState();
-    setState(() {
-      assignPairs();
-    });
+    assignPairs();
 
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
@@ -37,8 +37,11 @@ class HomePageState extends State<HomePage>
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
   }
 
+  bool loading = true;
   @override
   Widget build(BuildContext context) {
+    
+    
     emptyList = SafeArea(
         child: Align(
             alignment: Alignment.bottomCenter,
@@ -88,32 +91,43 @@ class HomePageState extends State<HomePage>
               )),
         ),
       ),
-      Expanded(
-          child: Pairs.length == 0
-              ? emptyList
-              : ListView.builder(
-                  itemCount: Pairs.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return PassField(Pairs[index], GlobalKey());
-                  })),
-      FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => NewPassEntryPage()));
-        },
-      )
+      Pairs.length == 0
+          ? Expanded(child: emptyList)
+          : !loading
+              ? Expanded(
+                  child: ListView.builder(
+                      itemCount: Pairs.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return PassField(Pairs[index], GlobalKey());
+                      }))
+              : Center(child: CircularProgressIndicator()),
+      loading
+          ? Container()
+          : FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NewPassEntryPage()));
+              },
+            )
     ]);
   }
 
+  
+
   assignPairs() async {
+    loading = true;
     var pairs = await DBProvider.DB.getPassEntries();
     setState(() {
       Pairs = pairs;
+      loading = false;
     });
   }
 
   static changeDataset(VoidCallback callback) {
+    _page.loading = true;
     _page.setState(callback);
   }
 }
