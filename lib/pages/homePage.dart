@@ -128,6 +128,8 @@ class HomePageState extends State<HomePage>
 
   static changeDataset(VoidCallback callback) {
     _page.loading = true;
-    _page.setState(callback);
+    callback();
+    _page.setState(()=> _page.loading = false);
+    
   }
 }

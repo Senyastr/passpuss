@@ -6,6 +6,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:package_info/package_info.dart';
 
+import 'pages/settings.dart';
+
 void main() => runApp(PassPuss());
 
 class PassPuss extends StatelessWidget {
@@ -170,7 +172,10 @@ class PassEntriesPage extends State<MyHomePage> {
 
   Text home;
   Text forYou;
-  List<Widget> pages = <Widget>[HomePage(), RecommendationTab()];
+  List<Widget> pages = <Widget>[
+    HomePage(),
+    RecommendationTab(),
+  ];
   List<BottomNavigationBarItem> bottomItems;
 
   String currentPageTitle = "";
@@ -184,6 +189,8 @@ class PassEntriesPage extends State<MyHomePage> {
     ];
 
     this.currentPageTitle = home.data;
+    var drawerTextStyle =
+        Theme.of(context).textTheme.headline5.copyWith(color: Colors.white);
     var drawer = Drawer(
         child: Align(
             alignment: Alignment.centerLeft,
@@ -194,8 +201,29 @@ class PassEntriesPage extends State<MyHomePage> {
               children: <Widget>[
                 Center(
                     child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                  builder: (context) => SettingsPage()));
+                        },
+                        child: ListTile(
+                            title: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.settings,
+                              color: Colors.white,
+                            ),
+                            VerticalDivider(),
+                            Text(
+                              LocalizationTool.of(context).settings,
+                              style: drawerTextStyle,
+                            ),
+                          ],
+                        )))),
+                Center(
+                    child: GestureDetector(
                         onTap: () => showAboutDialog(
-                          
                               context: context,
                               applicationVersion: PassPuss.appVersion,
                             ),
@@ -209,13 +237,10 @@ class PassEntriesPage extends State<MyHomePage> {
                             VerticalDivider(),
                             Text(
                               LocalizationTool.of(context).aboutApp,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  .copyWith(color: Colors.white),
+                              style: drawerTextStyle,
                             )
                           ],
-                        ))))
+                        )))),
               ],
             )));
 

@@ -41,6 +41,7 @@ class DBProvider {
   static const String titleColumn = "TITLE";
   static const String iconPathColumn = "ICONPATH";
   static const String createdTimeColumn = "CREATEDTIME";
+  static const String emailColumn = "EMAIL";
   Future<SQLiteDatabase> initDB() async {
     Directory databases = await getApplicationDocumentsDirectory();
     String path = databases.path +
@@ -56,8 +57,8 @@ class DBProvider {
           "PASSWORD TEXT,"
           "TITLE TEXT,"
           "ICONPATH TEXT,"
-          "CREATEDTIME TEXT"
-          ")");
+          "CREATEDTIME TEXT,"
+          "EMAIL TEXT)");
       return _database;
     }
     // here we execute "create table"
@@ -81,16 +82,19 @@ class DBProvider {
     var title = map[titleColumn];
     var iconPath = map[iconPathColumn];
     var createdTime = map[createdTimeColumn];
+    var email = map[emailColumn];
     await db.execSQL("INSERT INTO $TABLE_NAME ($usernameColumn,"
         "$passwordColumn,"
         "$titleColumn,"
         "$iconPathColumn,"
-        "$createdTimeColumn) "
+        "$createdTimeColumn,"
+        "$emailColumn) "
         "VALUES ('$username',"
         "'$password',"
         "'$title',"
         "'$iconPath',"
-        "'$createdTime');");
+        "'$createdTime',"
+        "'$email');");
     await this.closeDb();
     return 1;
   }
@@ -109,23 +113,25 @@ class DBProvider {
     var result = await db.query(
       table: TABLE_NAME,
       columns: [
-        "id",
-        "USERNAME",
-        "PASSWORD",
-        "TITLE",
-        "ICONPATH",
-        "CREATEDTIME"
+        idColumn,
+        usernameColumn,
+        passwordColumn,
+        titleColumn,
+        iconPathColumn,
+        createdTimeColumn,
+        emailColumn,
       ],
     );
     List<PassEntry> passEntries = new List<PassEntry>();
     Set set = Set.from(result); // we use set for convenience(forEach method)
     set.forEach((v) => passEntries.add(PassEntry.fromDB(
-        v["id"],
-        v["USERNAME"],
-        v["PASSWORD"],
-        v["TITLE"],
-        v["ICONPATH"],
-        DateTime.parse(v["CREATEDTIME"]))));
+        v[idColumn],
+        v[usernameColumn],
+        v[passwordColumn],
+        v[titleColumn],
+        v[iconPathColumn],
+        DateTime.parse(v[createdTimeColumn]),
+        v[emailColumn])));
     HomePageState.Pairs = passEntries;
     await this.closeDb();
     return passEntries;

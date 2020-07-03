@@ -40,6 +40,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
   var isPasswordShown = false;
   var username;
   var password;
+  var email;
   var expiration;
   DateFormat timeCreated;
   @override
@@ -47,6 +48,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
     super.initState();
     username = entry.getUsername();
     password = entry.getPassword();
+    email = entry.getEmail();
   }
 
   var _context;
@@ -174,6 +176,43 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                       .copyWith(color: Colors.white)))
         ]),
       ),
+      Align(
+          alignment: Alignment.bottomLeft,
+          child: Row(children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(left: 27, top: 10, bottom: 10),
+              child: Icon(Icons.email, color: Theme.of(context).accentColor),
+            ),
+            Padding(
+                child: Text(email,
+                    style: TextStyle(fontSize: 20, color: Colors.white)),
+                padding: EdgeInsets.only(top: 10, bottom: 10, left: 18)),
+            Padding(
+                padding: EdgeInsets.all(1),
+                child: IconButton(
+                    icon: Icon(Icons.content_copy,
+                        color: Theme.of(context).accentColor),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: email));
+                      PassEntriesPage.scaffoldKey.currentState.showSnackBar(
+                          SnackBar(
+                              content: Text(
+                                  LocalizationTool.of(context).emailCopied)));
+                    })),
+            Padding(
+                padding: EdgeInsets.all(2),
+                child: Icon(
+                  Icons.text_rotation_none,
+                  color: Theme.of(context).accentColor,
+                )),
+            Padding(
+                padding: EdgeInsets.all(5),
+                child: Text(email.length.toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1
+                        .copyWith(color: Colors.white)))
+          ])),
     ]);
     timeBlock = Column(children: <Widget>[
       Align(

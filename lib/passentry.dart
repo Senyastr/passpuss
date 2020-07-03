@@ -1,19 +1,19 @@
 import 'dart:math';
 
-
 import 'package:PassPuss/pages/homePage.dart';
 
 class PassEntry {
   int id;
   String _username;
   String _password; // ""
+  String _email;
   String _title; // e.g. google, facebook, instagram
   String _iconName = "";
   DateTime createdTime;
 
   // ignore: non_constant_identifier_names
 
-  PassEntry.noIcon(String username, String password, String title,
+  PassEntry.noIcon(String username, String password, String title, String email,
       DateTime createdTime) {
     if (HomePageState.Pairs == null) {
       id = 1;
@@ -25,10 +25,11 @@ class PassEntry {
     this._password = password;
     this._title = title;
     this.createdTime = createdTime;
+    this._email = email;
   }
 
   PassEntry.withIcon(String username, String password, String title,
-      String iconName, DateTime createdTime) {
+      String email, String iconName, DateTime createdTime) {
     if (HomePageState.Pairs == null) {
       id = 1;
     } else {
@@ -40,16 +41,18 @@ class PassEntry {
     this._title = title;
     this._iconName = iconName;
     this.createdTime = createdTime;
+    this._email = email;
   }
 
   PassEntry.fromDB(int id, String username, String password, String title,
-      String iconName, DateTime createdTime) {
+      String iconName, DateTime createdTime, String email) {
     this.id = id;
     this._username = username;
     this._password = password;
     this._title = title;
     this._iconName = iconName;
     this.createdTime = createdTime;
+    this._email = email;
   }
 
   String getUsername() {
@@ -70,6 +73,10 @@ class PassEntry {
 
   String getIconId() {
     return _iconName;
+  }
+
+  String getEmail() {
+    return _email;
   }
 
   void setIconId(String iconId) {
@@ -151,14 +158,13 @@ class PassEntry {
     return builder.toString();
   }
 
-
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "USERNAME": _username,
         "PASSWORD": _password,
         "TITLE": _title,
         "ICONPATH": _iconName,
-        "CREATEDTIME": createdTime.toString()
+        "CREATEDTIME": createdTime.toString(),
+        "EMAIL": _email
       };
 }

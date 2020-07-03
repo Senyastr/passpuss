@@ -6,7 +6,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:PassPuss/localization.dart';
 import 'package:PassPuss/passentry.dart';
 import 'package:tuple/tuple.dart';
-
+enum PasswordProblem{
+  Expired, OnlyLetters, OnlyNumbers, LessThan8, RepeatChars, Idiot
+}
 class RecommendationTab extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -17,15 +19,15 @@ class RecommendationTab extends StatefulWidget {
 class RecommendationTabState extends State<RecommendationTab> {
   List<RecommendationItem> items;
 
-  List<Tuple3<PassEntry, String, MessageType>>
+  List<Tuple3<PassEntry, PasswordProblem, MessageType>>
       recSet; // passEntry, message, messageType
 
   @override
   void initState() {
     analyzing = true;
-    analyze(context).then((recSet) {
+    analyze()
+    .then((recSet) {
       this.recSet = recSet;
-      items = buildItems();
       setState(() {
         analyzing = false;
       });
@@ -35,6 +37,9 @@ class RecommendationTabState extends State<RecommendationTab> {
   bool analyzing;
   @override
   Widget build(BuildContext context) {
+    if (analyzing == false){
+      items = buildItems();
+    }
     var emptyView = Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
@@ -86,14 +91,13 @@ class RecommendationTabState extends State<RecommendationTab> {
     ]);
   }
 
-  Future<List<Tuple3<PassEntry, String, MessageType>>> analyze(
-      BuildContext context) async {
+  Future<List<Tuple3<PassEntry, PasswordProblem, MessageType>>> analyze() async {
     // Here we're getting RecommendationItems(passwords that should be changed)
     var pairs = HomePageState.Pairs;
-    var recommendSet = List<Tuple3<PassEntry, String, MessageType>>();
+    var recommendSet = List<Tuple3<PassEntry, PasswordProblem, MessageType>>();
     // HERE WE ANALYZE THE TIME THAT HAS PASSED SINCE THE PASSENTRYIES WERE CREATED
     pairs.forEach((f) {
-      var filtered = filter(f, context);
+      var filtered = filter(f);
       if (filtered != null) {
         recommendSet.add(filtered);
       }
@@ -101,12 +105,12 @@ class RecommendationTabState extends State<RecommendationTab> {
     return recommendSet;
   }
 
-  Tuple3<PassEntry, String, MessageType> filter(
-      PassEntry f, BuildContext context) {
+  Tuple3<PassEntry, PasswordProblem, MessageType> filter(
+      PassEntry f) {
     var password = f.getPassword();
     var timeDifference = (f.createdTime.difference(DateTime.now()));
     if (timeDifference.inDays > 31) {
-      return new Tuple3(f, LocalizationTool.of(context).passwordExpired,
+      return new Tuple3(f, PasswordProblem.Expired,
           MessageType.recommendation);
     } else {
       // HERE WE ANALYZE THE PASSWORDS(PASSWORDS SAFETY)
@@ -114,12 +118,12 @@ class RecommendationTabState extends State<RecommendationTab> {
       // WE ANALYZE ONLY LOWER-CASED PASSWORDS
       // 1. The password has the length less than 8 characters.
       if (password.length < 8) {
-        return new Tuple3(f, LocalizationTool.of(context).passwordChars,
+        return new Tuple3(f, PasswordProblem.LessThan8,
             MessageType.higlyRecommended);
       }
       // 2. The password has repeated characters.
       if (hasRepeatedCharacters(password)) {
-        return new Tuple3(f, LocalizationTool.of(context).passwordRepeatChars,
+        return new Tuple3(f, PasswordProblem.RepeatChars,
             MessageType.warning);
       }
       // 3. The password is one of these:
@@ -129,17 +133,17 @@ class RecommendationTabState extends State<RecommendationTab> {
       // 87654321
 
       if (hasIdiotPasswords(password)) {
-        return new Tuple3(f, LocalizationTool.of(context).passwordIdiot,
+        return new Tuple3(f, PasswordProblem.Idiot,
             MessageType.higlyRecommended);
       }
       // 4. The password hasn't used any letters, but numbers
       if (hasOnlyLetters(password)) {
-        return new Tuple3(f, LocalizationTool.of(context).passwordLetters,
+        return new Tuple3(f, PasswordProblem.OnlyLetters,
             MessageType.recommendation);
       }
       // 5. Vice versa, the password used only letters.
       if (hasOnlyNumbers(password)) {
-        return new Tuple3(f, LocalizationTool.of(context).passwordNumbers,
+        return new Tuple3(f, PasswordProblem.OnlyNumbers,
             MessageType.recommendation);
       }
     }
@@ -214,7 +218,7 @@ bool hasRepeatedCharacters(String password) {
 enum MessageType { higlyRecommended, warning, recommendation }
 
 class RecommendationItem extends StatefulWidget {
-  String message;
+  PasswordProblem message;
   PassEntry entry;
 
   MessageType messageType;
@@ -228,7 +232,7 @@ class RecommendationItem extends StatefulWidget {
 }
 
 class RecommendationItemState extends State<RecommendationItem> {
-  String message;
+  PasswordProblem message;
   PassEntry entry;
   MessageType messageType;
 
@@ -256,6 +260,34 @@ class RecommendationItemState extends State<RecommendationItem> {
 
   @override
   Widget build(BuildContext context) {
+
+    String textMessage;
+
+    switch(message){
+      
+      case PasswordProblem.Expired:
+        textMessage = LocalizationTool.of(context).passwordExpired;
+        break;
+      case PasswordProblem.OnlyLetters:
+        textMessage = LocalizationTool.of(context).passwordLetters;
+        break;
+      case PasswordProblem.OnlyNumbers:
+        
+        textMessage = LocalizationTool.of(context).passwordNumbers;
+        break;
+      case PasswordProblem.LessThan8:
+        
+        textMessage = LocalizationTool.of(context).passwordChars;
+        break;
+      case PasswordProblem.RepeatChars:
+        
+        textMessage = LocalizationTool.of(context).passwordRepeatChars;
+        break;
+      case PasswordProblem.Idiot:
+        
+        textMessage = LocalizationTool.of(context).passwordIdiot;
+        break;
+    }
     Icon messageIcon;
     double iconsize = 50;
     Color textColor;
@@ -292,7 +324,7 @@ class RecommendationItemState extends State<RecommendationItem> {
                 Expanded(
                     child: Padding(
                         padding: EdgeInsets.all(15),
-                        child: Text(message,
+                        child: Text(textMessage,
                             style: TextStyle(
                               color: textColor,
                               fontSize: 18,

@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:PassPuss/passentry.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Database.dart';
 import 'package:PassPuss/pages/homePage.dart';
-
+import 'package:PassPuss/pages/settings.dart';
 import 'notifications.dart';
 
 class NewPassEntryPage extends StatefulWidget {
@@ -21,6 +22,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
   final _formKey = GlobalKey<FormState>();
   final _usernameKey = GlobalKey();
   final _titleKey = GlobalKey();
+  final _emailKey = GlobalKey();
   TextFormField _passwordForm;
   TextFormField _usernameForm;
   TextFormField _titleForm;
@@ -30,12 +32,17 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
   String password = "";
   String previewPass = "";
   String title = "";
+  String email = "";
 
   bool generate_mode = false;
-
+  bool emailAcceptable = false;
   double _sliderHeight = 0.0;
 
   double _genChars = 8;
+
+  TextFormField _emailForm;
+
+  double emailWarningHeight = 0;
 
   @override
   void initState() {
@@ -78,11 +85,6 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
 
   @override
   Widget build(BuildContext context) {
-    BorderRadiusGeometry radius = BorderRadius.only(
-      topLeft: Radius.circular(24.0),
-      topRight: Radius.circular(24.0),
-    );
-
     _usernameForm = TextFormField(
       autovalidate: true,
       validator: (value) =>
@@ -111,6 +113,25 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
           hintText: LocalizationTool.of(context).newPasswordFormHint,
           labelText: LocalizationTool.of(context).password),
     );
+    _emailForm = TextFormField(
+        autovalidate: true,
+        onChanged: (String changed) {
+          email = changed;
+
+          if (!email.contains("@")) {
+            emailAcceptable = false;
+            emailWarningHeight = 30;
+          } else {
+            emailAcceptable = true;
+            emailWarningHeight = 0;
+          }
+          setState(() {});
+        },
+        key: _emailKey,
+        decoration: InputDecoration(
+            hintText: LocalizationTool.of(context).newPasswordEmailHint,
+            labelText: LocalizationTool.of(context).newPassswordEmailLabel,
+            icon: Icon(Icons.email)));
     _titleForm = TextFormField(
         autovalidate: true,
         validator: (val) => (val.isEmpty)
@@ -137,30 +158,8 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
               actions: <Widget>[
                 IconButton(
                   icon: Icon(Icons.done),
-                  onPressed: () async {
-                    String icon;
-                    password = generate_mode
-                        ? PassEntry.generatePass(_genChars.toInt())
-                        : password_txt.text;
-                    if (selected == null) {
-                      icon = IconChoiceState.emptyIconPath;
-                    } else {
-                      icon = selected.path;
-                    }
-                    PassEntry newEntry = PassEntry.withIcon(
-                        username, password, title, icon, DateTime.now());
-
-                    if (_formKey.currentState.validate()) {
-                      await DBProvider.DB.addPassEntry(newEntry);
-                      HomePageState.changeDataset(() {
-                        HomePageState.Pairs.add(newEntry);
-                      });
-                      PassEntryExpiration(newEntry,
-                              newEntry.createdTime.add(Duration(days: 30)))
-                          .scheduleNotification(context);
-
-                      Navigator.pop<NewPassEntry>(context, this);
-                    }
+                  onPressed: () {
+                    createEntry(context);
                   },
                 )
               ],
@@ -376,6 +375,34 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                                 Expanded(
                                     child: Padding(
                                         padding: EdgeInsets.all(14),
+                                        child: _emailForm)),
+                              ]), // EMAIL
+
+                              AnimatedContainer(
+                                  duration: Duration(milliseconds: 200),
+                                  height: emailWarningHeight,
+                                  child: !emailAcceptable
+                                      ? ListTile(
+                                          contentPadding: EdgeInsets.only(
+                                              left: 15, right: 15),
+                                          trailing: Icon(
+                                            Icons.warning,
+                                            color: Colors.amber,
+                                          ),
+                                          title: Text(
+                                            LocalizationTool.of(context)
+                                                .emailWarning,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1
+                                                .copyWith(color: Colors.amber),
+                                          ),
+                                        )
+                                      : Container()),
+                              Row(children: <Widget>[
+                                Expanded(
+                                    child: Padding(
+                                        padding: EdgeInsets.all(14),
                                         child: _titleForm)),
                               ]), // TITLE
                               Padding(
@@ -418,6 +445,42 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
         passwordPreview = hidePassword(password_txt.text);
       }
     });
+  }
+
+  void createEntry(BuildContext context) async {
+    String icon;
+    password = generate_mode
+        ? PassEntry.generatePass(_genChars.toInt())
+        : password_txt.text;
+    if (selected == null) {
+      icon = IconChoiceState.emptyIconPath;
+    } else {
+      icon = selected.path;
+    }
+    PassEntry newEntry = PassEntry.withIcon(
+        username, password, title, email, icon, DateTime.now());
+
+    if (_formKey.currentState.validate()) {
+      await DBProvider.DB.addPassEntry(newEntry);
+      HomePageState.changeDataset(() {
+        HomePageState.Pairs.add(newEntry);
+      });
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var daysDelay =
+          prefs.getInt(NotificationSettingsTabState.passwordEntryExpiration);
+      if (daysDelay == null) {
+        daysDelay = 30;
+      }
+      var enabledNotifcations = await SettingsManager.getPref(
+          NotificationSettingsTabState.notifcationsOn) as bool;
+      if (enabledNotifcations != null && enabledNotifcations) {
+        PassEntryExpiration(
+                newEntry, newEntry.createdTime.add(Duration(days: daysDelay)))
+            .scheduleNotification(context);
+      }
+
+      Navigator.pop<NewPassEntry>(context, this);
+    }
   }
 }
 

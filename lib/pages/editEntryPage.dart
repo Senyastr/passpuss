@@ -26,15 +26,18 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
   final _formKey = GlobalKey<FormState>();
   final _usernameKey = GlobalKey();
   final _titleKey = GlobalKey();
+  final _emailKey = GlobalKey();
   TextFormField _passwordForm;
   TextFormField _usernameForm;
   TextFormField _titleForm;
+  TextFormField _emailForm;
   ListView icons;
 
   String username = "";
   String password = "";
   String preview_password = "";
   String title = "";
+  String email = "";
 
   String hiddenPassword = "*******";
 
@@ -135,6 +138,18 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
           hintText: LocalizationTool.of(context).newPasswordFormHint,
           labelText: LocalizationTool.of(context).password),
     );
+    _emailForm = TextFormField(
+        autovalidate: true,
+        onChanged: (String changed) {
+          setState(() {
+            email = changed;
+          });
+        },
+        key: _emailKey,
+        decoration: InputDecoration(
+            hintText: LocalizationTool.of(context).newPasswordEmailHint,
+            labelText: LocalizationTool.of(context).newPassswordEmailLabel,
+            icon: Icon(Icons.email)));
     _titleForm = TextFormField(
         controller: title_txt,
         autovalidate: true,
@@ -162,7 +177,7 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
                       var newEntry = PassEntry.withIcon(username, password,
-                          title, selected.path, entry.createdTime);
+                          title, selected.path, email,entry.createdTime);
                       await DBProvider.DB.deletePassEntry(entry);
                       HomePageState.Pairs.remove(entry);
                       await DBProvider.DB.addPassEntry(newEntry);
@@ -377,6 +392,12 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
                                     ],
                                   )),
                               // password_password_txt.text
+                              Row(children: <Widget>[
+                                Expanded(
+                                    child: Padding(
+                                        padding: EdgeInsets.all(14),
+                                        child: _emailForm)),
+                              ]), //EMAIL,
                               Row(children: <Widget>[
                                 Expanded(
                                     child: Padding(

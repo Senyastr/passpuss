@@ -90,7 +90,23 @@ class LocalizationTool {
 
   String get notificationExpiredTitle => getValue("notificationExpiredTitle");
 
-  String get notificationExpiredContent => getValue("notificationExpiredContent");
+  String get notificationExpiredContent =>
+      getValue("notificationExpiredContent");
+
+  String get notifications => getValue("notifications");
+
+  String get newPasswordEmailHint => getValue("newPasswordEmailHint");
+
+  String get newPassswordEmailLabel => getValue("newPassswordEmailLabel");
+
+  String get emailCopied => getValue("emailCopied");
+
+  String get soon => getValue("soon");
+
+  String get emailWarning => getValue("emailWarning");
+
+  String get settingsNotificationPasswordExpirationDays =>
+      getValue("settingsNotifcationPasswordExpirationDays");
 
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
@@ -150,7 +166,18 @@ class LocalizationTool {
       "shareWarningPositive": "Yes, I'm risky.",
       "shareWarningNegative": "No, I want to my mummy.",
       "notificationExpiredTitle": "One of your passwords should be CHANGED",
-      "notificationExpiredContent": "The password for %s should be changed." // #SPRINTF 
+      "notificationExpiredContent":
+          "The password for %s should be changed.", // #SPRINTF
+      "notifications": "Notifications",
+      "newPasswordEmailHint":
+          "The email address connected to this account(optional)",
+      "newPassswordEmailLabel":
+          "The email address connected to this account(optional)",
+      "emailCopied": "Your email has been copied to the clipboard.",
+      "soon": "Soon.",
+      "emailWarning": "It doesn't seem to be an email.",
+      "settingsNotifcationPasswordExpirationDays":
+          "The Password Entry expiration time"
     },
     'ru': {
       'home': 'Главная',
@@ -194,8 +221,15 @@ class LocalizationTool {
       "shareWarningPositive": "Да, я опасный.",
       "shareWarningNegative": "Нет, я хочу к маме.",
       "notificationExpiredTitle": "Один с ваших паролей следует СМЕНИТЬ",
-      "notificationExpiredContent": "Пароль к %s следует сменить" // #SPRINTF 
-
+      "notificationExpiredContent": "Пароль к %s следует сменить", // #SPRINTF
+      "notifications": "Уведомления",
+      "newPasswordEmailHint": "Email связаный с этим аккаунтом(по желанию)",
+      "newPassswordEmailLabel": "Email связаный с этим аккаунтом(по желанию)",
+      "emailCopied": "Емейл скопирован в буфер обмена.",
+      "soon": "Скоро.",
+      "emailWarning": "Кажется это не емейл.",
+      "settingsNotifcationPasswordExpirationDays":
+          "Истечение срока действия пароля"
     },
     'ua': {
       'home': "Головна",
@@ -241,7 +275,15 @@ class LocalizationTool {
       "shareWarningPositive": "Так, я небезпечний.",
       "shareWarningNegative": "Ні, я хочу до матусі.",
       "notificationExpiredTitle": "Один з ваших паролів слід ЗМІНИТИ",
-      "notificationExpiredContent": "Пароль до %s слід змінити" // #SPRINTF 
+      "notificationExpiredContent": "Пароль до %s слід змінити", // #SPRINTF
+      "notifications": "Сповіщення",
+      "newPasswordEmailHint": "Емейл зв'язаний з акаунтом.",
+      "newPassswordEmailLabel": "Емейл зв'язаний з акаунтом.",
+      "emailCopied": "Емейл був зкопійований в буфер обміну.",
+      "soon": "Скоро",
+      "emailWarning": "Здається це не пароль.",
+      "settingsNotifcationPasswordExpirationDays":
+          "Закінчується термін придатності пароля"
     }
   };
 }
