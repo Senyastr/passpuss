@@ -43,12 +43,14 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
   var email;
   var expiration;
   DateFormat timeCreated;
+  PassEntryDetailsState state;
   @override
   void initState() {
     super.initState();
     username = entry.getUsername();
     password = entry.getPassword();
     email = entry.getEmail();
+    state = this;
   }
 
   var _context;
@@ -357,15 +359,21 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                       isPasswordShown = true;
                     });
                     Navigator.pop<AlertDialog>(_context);
-                    screenshotController
-                        .capture(pixelRatio: 4)
-                        .then((File image) async {
-                      await Share.file(entry.getUsername(), "password.png",
-                          await image.readAsBytes(), 'image/png');
-                      setState(() {
-                        isPasswordShown = false;
-                      });
-                    });
+
+                    showDialog(
+                      context: _context,
+                      builder: (context) => ChooseShareTypeDialog(
+                          entry, screenshotController, state),
+                    );
+                    // screenshotController
+                    //     .capture(pixelRatio: 8)
+                    //     .then((File image) async {
+                    //   await Share.file(entry.getUsername(), "password.png",
+                    //       await image.readAsBytes(), 'image/png');
+                    //   setState(() {
+                    //     isPasswordShown = false;
+                    //   });
+                    // });
                   },
                 ),
                 FlatButton(
@@ -389,6 +397,11 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
   void removeShareFile() {}
 }
 
+enum PassEntryShareType {
+  image,
+  text,
+}
+
 String hidePassword(String password) {
   String result;
   StringBuffer buffer = StringBuffer();
@@ -407,5 +420,145 @@ class ImageDialog extends StatelessWidget {
     return Dialog(
       child: widget,
     );
+  }
+}
+
+class ChooseShareTypeDialog extends StatefulWidget {
+  ScreenshotController screenshotController;
+  PassEntry entry;
+  PassEntryDetailsState details;
+  ChooseShareTypeDialog(this.entry, this.screenshotController, details);
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return ChooseShareTypeDialogState(entry, screenshotController, details);
+  }
+}
+
+class ChooseShareTypeDialogState extends State<ChooseShareTypeDialog> {
+  PassEntryShareType _shareType = PassEntryShareType.image;
+  ScreenshotController screenshotController;
+  PassEntry entry;
+  PassEntryDetailsState details;
+  ChooseShareTypeDialogState(this.entry, this.screenshotController, details);
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Dialog(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+      Padding(
+          padding: EdgeInsets.all(15),
+          child: Center(
+              child: Text(LocalizationTool.of(context).shareTypeTitleChoice,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      .copyWith(color: Colors.white)))),
+      Center(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Container(
+                  width: 100,
+                  height: 48,
+                  child: SvgPicture.asset(
+                    "assets/images/ImageShareChoice.svg",
+                    width: 100,
+                    height: 49,
+                  )),
+              Text(LocalizationTool.of(context).shareTypeImage,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      .copyWith(color: Colors.white)),
+              Radio(
+                  groupValue: _shareType,
+                  value: PassEntryShareType.image,
+                  onChanged: (changed) {
+                    setState(() {
+                      _shareType = changed;
+                    });
+                  }),
+            ],
+          ), // IMAGE CHOICE
+          Center(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(Icons.short_text,
+                  size: 70, color: Color.fromARGB(153, 100, 150, 100)),
+              Text(LocalizationTool.of(context).shareTypeText,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      .copyWith(color: Colors.white)),
+              Radio(
+                  groupValue: _shareType,
+                  value: PassEntryShareType.text,
+                  onChanged: (changed) {
+                    setState(() {
+                      _shareType = changed;
+                    });
+                  }),
+            ],
+          )),
+          // TEXT CHOICE
+        ],
+      )),
+      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
+        FlatButton(
+          child: Text(LocalizationTool.of(context).cancel,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  .copyWith(color: Colors.orangeAccent)),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        FlatButton(
+          child: Text(
+            LocalizationTool.of(context).share,
+            style: Theme.of(context)
+                .textTheme
+                .bodyText2
+                .copyWith(color: Colors.lightGreenAccent),
+          ),
+          onPressed: () {
+            switch (_shareType) {
+              case PassEntryShareType.image:
+                screenshotController
+                    .capture(pixelRatio: 8)
+                    .then((File image) async {
+                  await Share.file(entry.getUsername(), "password.png",
+                      await image.readAsBytes(), 'image/png');
+
+                  details.setState(() {
+                    details.isPasswordShown = false;
+                  });
+                });
+                continue pop;
+              case PassEntryShareType.text:
+                // TODO: Handle this case.
+                var username = entry.getUsername();
+                var password = entry.getPassword();
+                var email = entry.getEmail();
+
+                Share.text(
+                    entry.getUsername(),
+                    "Username: $username \nPassword: $password \nEmail: $email",
+                    "text/plain");
+                continue pop;
+              pop:
+              default:
+                Navigator.pop(context);
+            }
+          },
+        ),
+      ]),
+    ]));
   }
 }

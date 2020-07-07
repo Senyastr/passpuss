@@ -84,6 +84,7 @@ flutter:
     - assets/images/Creative_Cloud.svg
     - assets/images/reddit copy.svg
     - assets/images/Netflix_icon.svg
+    - assets/images/ImageShareChoice.svg
 
 
   # To add assets to your application, add an assets section, like this:

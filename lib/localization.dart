@@ -108,6 +108,16 @@ class LocalizationTool {
   String get settingsNotificationPasswordExpirationDays =>
       getValue("settingsNotifcationPasswordExpirationDays");
 
+  String get shareTypeTitleChoice => getValue("shareTypeTitleChoice");
+
+  String get shareTypeImage => getValue("shareTypeImage");
+
+  String get shareTypeText => getValue("shareTypeText");
+
+  String get share => getValue("share");
+
+  String get cancel => getValue("cancel");
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -177,7 +187,12 @@ class LocalizationTool {
       "soon": "Soon.",
       "emailWarning": "It doesn't seem to be an email.",
       "settingsNotifcationPasswordExpirationDays":
-          "The Password Entry expiration time"
+          "The Password Entry expiration time",
+      "shareTypeTitleChoice": "Choose how you want to share the account info.",
+      "shareTypeImage": "Image",
+      "shareTypeText": "Text",
+      "share" : "Share",
+      "cancel" : "Cancel"
     },
     'ru': {
       'home': 'Главная',
@@ -229,7 +244,13 @@ class LocalizationTool {
       "soon": "Скоро.",
       "emailWarning": "Кажется это не емейл.",
       "settingsNotifcationPasswordExpirationDays":
-          "Истечение срока действия пароля"
+          "Истечение срока действия пароля",
+      "shareTypeTitleChoice":
+          "Выберите как вы хотите поделится данными от аккаунта",
+      "shareTypeImage": "Фото",
+      "shareTypeText": "Текст",
+      "share" : "Поделиться",
+      "cancel" : "Отменить"
     },
     'ua': {
       'home': "Головна",
@@ -283,7 +304,13 @@ class LocalizationTool {
       "soon": "Скоро",
       "emailWarning": "Здається це не пароль.",
       "settingsNotifcationPasswordExpirationDays":
-          "Закінчується термін придатності пароля"
+          "Закінчується термін придатності пароля",
+      "shareTypeTitleChoice":
+          "Виберіть як ви хочете поділитися даними акаунту.",
+      "shareTypeImage": "Фото",
+      "shareTypeText": "Текст",
+      "share" : "Поширити",
+      "cancel" : "Відхилити"
     }
   };
 }
