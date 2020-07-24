@@ -70,6 +70,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
         key: passwordStateKey, color: Theme.of(context).accentColor);
     iconOpened = Icon(Icons.lock_open,
         key: passwordStateKey, color: Theme.of(context).accentColor);
+        
     mainInfo = Column(children: <Widget>[
       Align(
           alignment: Alignment.centerLeft,
@@ -114,14 +115,12 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                               content: Text(LocalizationTool.of(context)
                                   .usernameCopied)));
                     })),
-            Padding(
-                padding: EdgeInsets.all(2),
-                child: Icon(
+             Icon(
                   Icons.text_rotation_none,
                   color: Theme.of(context).accentColor,
-                )),
+                ),
             Padding(
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.all(3),
                 child: Text(username.length.toString(),
                     style: Theme.of(context)
                         .textTheme
@@ -163,14 +162,12 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                             content: Text(
                                 LocalizationTool.of(context).passwordCopied)));
                   })),
-          Padding(
-              padding: EdgeInsets.all(2),
-              child: Icon(
+          Icon(
                 Icons.text_rotation_none,
                 color: Theme.of(context).accentColor,
-              )),
+              ),
           Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(3),
               child: Text(password.length.toString(),
                   style: Theme.of(context)
                       .textTheme
@@ -201,14 +198,12 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                               content: Text(
                                   LocalizationTool.of(context).emailCopied)));
                     })),
-            Padding(
-                padding: EdgeInsets.all(2),
-                child: Icon(
+             Icon(
                   Icons.text_rotation_none,
                   color: Theme.of(context).accentColor,
-                )),
+                ),
             Padding(
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.all(3),
                 child: Text(email.length.toString(),
                     style: Theme.of(context)
                         .textTheme

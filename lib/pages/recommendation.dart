@@ -1,10 +1,12 @@
 import 'package:PassPuss/pages/homePage.dart';
+import 'package:PassPuss/pages/settings/ForYou.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:PassPuss/localization.dart';
 import 'package:PassPuss/passentry.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
 enum PasswordProblem{
   Expired, OnlyLetters, OnlyNumbers, LessThan8, RepeatChars, Idiot
@@ -96,8 +98,8 @@ class RecommendationTabState extends State<RecommendationTab> {
     var pairs = HomePageState.Pairs;
     var recommendSet = List<Tuple3<PassEntry, PasswordProblem, MessageType>>();
     // HERE WE ANALYZE THE TIME THAT HAS PASSED SINCE THE PASSENTRYIES WERE CREATED
-    pairs.forEach((f) {
-      var filtered = filter(f);
+    pairs.forEach((f) async {
+      var filtered = await filter(f);
       if (filtered != null) {
         recommendSet.add(filtered);
       }
@@ -105,8 +107,8 @@ class RecommendationTabState extends State<RecommendationTab> {
     return recommendSet;
   }
 
-  Tuple3<PassEntry, PasswordProblem, MessageType> filter(
-      PassEntry f) {
+  Future<Tuple3<PassEntry, PasswordProblem, MessageType>> filter  (
+      PassEntry f) async {
     var password = f.getPassword();
     var timeDifference = (f.createdTime.difference(DateTime.now()));
     if (timeDifference.inDays > 31) {
@@ -133,8 +135,13 @@ class RecommendationTabState extends State<RecommendationTab> {
       // 87654321
 
       if (hasIdiotPasswords(password)) {
-        return new Tuple3(f, PasswordProblem.Idiot,
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        var temp = prefs.getBool(ForYouSettingsTabState.qwertyKey);
+        var setting = temp == null ? true : temp;
+        if (setting){
+           return new Tuple3(f, PasswordProblem.Idiot,
             MessageType.higlyRecommended);
+        }       
       }
       // 4. The password hasn't used any letters, but numbers
       if (hasOnlyLetters(password)) {
@@ -217,6 +224,7 @@ bool hasRepeatedCharacters(String password) {
 
 enum MessageType { higlyRecommended, warning, recommendation }
 
+// ignore: must_be_immutable
 class RecommendationItem extends StatefulWidget {
   PasswordProblem message;
   PassEntry entry;

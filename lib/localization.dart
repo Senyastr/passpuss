@@ -118,6 +118,21 @@ class LocalizationTool {
 
   String get cancel => getValue("cancel");
 
+  String get privacy => getValue("privacy");
+
+  String get privacySettingsEncryption => getValue("privacySettingsEncryption");
+
+  String get fingerprintAuthentication => getValue("fingerprintAuthentication");
+
+  String get fingerprintStartDialogReason =>
+      getValue("fingerprintStartDialogReason");
+
+  get fingerprintLogin => getValue("fingerprintLogin");
+
+  get qwertySetting => getValue("qwertySetting");
+
+  get charsSetting => null;
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -191,8 +206,15 @@ class LocalizationTool {
       "shareTypeTitleChoice": "Choose how you want to share the account info.",
       "shareTypeImage": "Image",
       "shareTypeText": "Text",
-      "share" : "Share",
-      "cancel" : "Cancel"
+      "share": "Share",
+      "cancel": "Cancel",
+      "privacy": "Privacy",
+      "privacySettingsEncryption": "Keep my passwords encrypted all the time.",
+      "fingerprintAuthentication": "Fingerprint Authentication",
+      "fingerprintStartDialogReason":
+          'Please authenticate in order to turn on/off Fingerprint Authentication',
+      "fingerprintLogin": "Please authenticate to see your passwords.",
+      "qwertySetting": "Remind of using a popular password",
     },
     'ru': {
       'home': 'Главная',
@@ -249,8 +271,16 @@ class LocalizationTool {
           "Выберите как вы хотите поделится данными от аккаунта",
       "shareTypeImage": "Фото",
       "shareTypeText": "Текст",
-      "share" : "Поделиться",
-      "cancel" : "Отменить"
+      "share": "Поделиться",
+      "cancel": "Отменить",
+      "privacy": "Конфиденциальность",
+      "privacySettingsEncryption": "Хранить пароли зашифроваными",
+      "fingerprintAuthentication": "Верификация по отпечатку пальца.",
+      "fingerprintStartDialogReason":
+          "Пожалуйста, прикоснитесь к сканеру, чтобы включить/выключить аутентификацию.",
+      "fingerprintLogin":
+          "Пожалуйста, прикоснитесь к сканеру, чтобы увидеть свои пароли",
+          "qwertySetting": "Нагадать о использовании популярных паролей",
     },
     'ua': {
       'home': "Головна",
@@ -309,8 +339,16 @@ class LocalizationTool {
           "Виберіть як ви хочете поділитися даними акаунту.",
       "shareTypeImage": "Фото",
       "shareTypeText": "Текст",
-      "share" : "Поширити",
-      "cancel" : "Відхилити"
+      "share": "Поширити",
+      "cancel": "Відхилити",
+      "privacy": "Privacy",
+      "privacySettingsEncryption": "Зберігати паролі зашифрованими",
+      "fingerprintAuthentication": "Верифікація по відбитку пальця",
+      "fingerprintStartDialogReason":
+          "Будь ласка, доторкніться до сканеру, щоб ввімкнути/вимкнути аутентифікацію по відбитку пальця.",
+      "fingerprintLogin":
+          "Будь ласка, доторкніться до сканеру, щоб побачити свої паролі.",
+          "qwertySetting": "Нагадати про використання популярних паролей",
     }
   };
 }

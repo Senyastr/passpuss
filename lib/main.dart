@@ -1,12 +1,14 @@
 import 'package:PassPuss/pages/homePage.dart';
 import 'package:PassPuss/localization.dart';
 import 'package:PassPuss/pages/recommendation.dart';
+import 'package:PassPuss/pages/settings/Privacy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:PassPuss/auth/local_auth.dart';
 import 'package:package_info/package_info.dart';
 
-import 'pages/settings.dart';
+import 'pages/settings/settings.dart';
 
 void main() => runApp(PassPuss());
 
@@ -47,6 +49,7 @@ class PassPuss extends StatelessWidget {
         cardColor: Color.fromARGB(255, 70, 70, 70),
         backgroundColor: Color.fromARGB(255, 40, 40, 40),
         canvasColor: Color.fromARGB(255, 40, 40, 40),
+        dividerColor: Color.fromARGB(225, 82, 172, 117),
         // APPLY THIS THEME TO EVERY TEXT ELEMENT
         accentTextTheme: TextTheme(
           headline1: TextStyle(
@@ -177,8 +180,12 @@ class PassEntriesPage extends State<MyHomePage> {
     RecommendationTab(),
   ];
   List<BottomNavigationBarItem> bottomItems;
-
   String currentPageTitle = "";
+  var infoIcon = Icon(
+                              Icons.info,
+                              color: Colors.white,
+                            );
+  bool isAuth = true;
   @override
   Widget build(BuildContext context) {
     home = Text(LocalizationTool.of(context).home);
@@ -187,8 +194,9 @@ class PassEntriesPage extends State<MyHomePage> {
       BottomNavigationBarItem(icon: Icon(Icons.home), title: home),
       BottomNavigationBarItem(icon: Icon(Icons.thumb_up), title: forYou)
     ];
-
     this.currentPageTitle = home.data;
+    
+
     var drawerTextStyle =
         Theme.of(context).textTheme.headline5.copyWith(color: Colors.white);
     var drawer = Drawer(
@@ -230,10 +238,7 @@ class PassEntriesPage extends State<MyHomePage> {
                         child: ListTile(
                             title: Row(
                           children: <Widget>[
-                            Icon(
-                              Icons.info,
-                              color: Colors.white,
-                            ),
+                            infoIcon,
                             VerticalDivider(),
                             Text(
                               LocalizationTool.of(context).aboutApp,
@@ -250,10 +255,14 @@ class PassEntriesPage extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets
+    if (!isAuth) {
+      Auth();
+    }
+
     var scaffold = Scaffold(
       appBar: AppBar(),
       key: scaffoldKey,
-      body: pages.elementAt(_selectedPageIndex),
+      body: isAuth ? pages.elementAt(_selectedPageIndex) : Container(),
       bottomNavigationBar: BottomNavigationBar(
         items: bottomItems,
         currentIndex: _selectedPageIndex,
@@ -277,18 +286,31 @@ class PassEntriesPage extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    isAuth = false;
   }
 
   void Auth() async {
-//    var localAuth = LocalAuthentication();
-//    bool didAuthenticate =
-//        await localAuth.authenticateWithBiometrics(
-//        localizedReason: 'Please authenticate to show account balance');
+    if (await mustAuth()) {
+      var localAuth = LocalAuthentication();
+      bool hasAuthenticated = await localAuth.authenticateWithBiometrics(
+          localizedReason: LocalizationTool.of(context).fingerprintLogin,
+          stickyAuth: true);
+      setState(() => isAuth = hasAuthenticated);
+    } else {
+      setState(() => isAuth = true);
+    }
   }
 
   void _onPageTapped(int value) {
     this._selectedPageIndex = value;
     this.currentPageTitle = (bottomItems[value].title as Text).data;
     setState(() {});
+  }
+
+  Future<bool> mustAuth() async {
+    var option =
+        await SettingsManager.getPref(PrivacySettingsTabState.isVerifyingKey);
+    var result = option as bool;
+    return result == null ? false : result;
   }
 }
