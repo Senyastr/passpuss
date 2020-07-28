@@ -76,7 +76,8 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
                 Divider(),
                 ListTile(
                   leading:Text(
-                      "Characters allowed for passwords", softWrap: true,//Text(LocalizationTool.of(context).charsSetting,
+                      LocalizationTool.of(context).charsSetting,
+                      softWrap: true,
                       style: Theme.of(context).textTheme.bodyText2.copyWith(
                             color: Colors.white,
                           )),

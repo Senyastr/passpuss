@@ -7,7 +7,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:PassPuss/auth/local_auth.dart';
 import 'package:package_info/package_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'message.dart';
 import 'pages/settings/settings.dart';
 
 void main() => runApp(PassPuss());
@@ -164,7 +166,7 @@ class MyHomePage extends StatefulWidget {
   PassEntriesPage createState() => PassEntriesPage();
 }
 
-class PassEntriesPage extends State<MyHomePage> {
+class PassEntriesPage extends State<MyHomePage> implements ResetAuthAction {
   int _selectedPageIndex = 0;
   static const TextStyle _bottomNavTextStyleDisabled =
       TextStyle(color: Colors.white);
@@ -182,9 +184,9 @@ class PassEntriesPage extends State<MyHomePage> {
   List<BottomNavigationBarItem> bottomItems;
   String currentPageTitle = "";
   var infoIcon = Icon(
-                              Icons.info,
-                              color: Colors.white,
-                            );
+    Icons.info,
+    color: Colors.white,
+  );
   bool isAuth = true;
   @override
   Widget build(BuildContext context) {
@@ -195,7 +197,6 @@ class PassEntriesPage extends State<MyHomePage> {
       BottomNavigationBarItem(icon: Icon(Icons.thumb_up), title: forYou)
     ];
     this.currentPageTitle = home.data;
-    
 
     var drawerTextStyle =
         Theme.of(context).textTheme.headline5.copyWith(color: Colors.white);
@@ -262,7 +263,9 @@ class PassEntriesPage extends State<MyHomePage> {
     var scaffold = Scaffold(
       appBar: AppBar(),
       key: scaffoldKey,
-      body: isAuth ? pages.elementAt(_selectedPageIndex) : Container(),
+      body: isAuth
+          ? pages.elementAt(_selectedPageIndex)
+          : NotAuthenticatedWidget(this),
       bottomNavigationBar: BottomNavigationBar(
         items: bottomItems,
         currentIndex: _selectedPageIndex,
@@ -313,4 +316,109 @@ class PassEntriesPage extends State<MyHomePage> {
     var result = option as bool;
     return result == null ? false : result;
   }
+
+  @override
+  onResetAuth() {
+    Auth();
+  }
+}
+
+class NotAuthenticatedWidget extends StatefulWidget {
+  ResetAuthAction callback;
+  NotAuthenticatedWidget(this.callback);
+  @override
+  _NotAuthenticatedWidgetState createState() =>
+      _NotAuthenticatedWidgetState(callback);
+}
+
+class _NotAuthenticatedWidgetState extends State<NotAuthenticatedWidget> {
+  String userCode;
+  ResetAuthAction callback;
+  GlobalKey<FormState> key = GlobalKey<FormState>();
+  bool isWrong = true;
+  int tries = 0;
+  _NotAuthenticatedWidgetState(this.callback);
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return SafeArea(
+        child: Form(
+            key: key,
+            child: Column(
+              children: <Widget>[
+                Icon(Icons.warning, color: Colors.redAccent, size: 72),
+                Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Text(
+                      LocalizationTool.of(context).notAuthText,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5
+                          .copyWith(color: Colors.redAccent),
+                    )),
+                Padding(
+                    padding: EdgeInsets.all(15),
+                    child: TextFormField(
+                      onChanged: (String v) {
+                        userCode = v;
+                      },
+                      validator: (value) {
+                        if (isWrong) {
+                          // TODO: FIX IT
+                          tries++;
+                          var triesRemaining = (3 - tries);
+                          if (triesRemaining == 0) {
+                            return "Try again later.";
+                          } else {
+                            return "The code is wrong. Try again. " +
+                                triesRemaining.toString() +
+                                " try/tries remaining.";
+                          }
+                        } else {
+                          return null;
+                        }
+                      },
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.lock,
+                            color: Theme.of(context).accentColor),
+                        hintText: LocalizationTool.of(context).typeBackupCode,
+                      ),
+                    )),
+                Padding(
+                  padding: EdgeInsets.only(right: 20),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: FlatButton(
+                      child: Text(LocalizationTool.of(context).proceed),
+                      color: Colors.greenAccent,
+                      onPressed: () async {
+                        if (tries < 3) {
+                          var prefs = (await SharedPreferences.getInstance());
+                          var code = prefs.getString(
+                              FingerprintBackupState.backupKeySetting);
+                          if (code == userCode) {
+                            prefs.setBool(
+                                PrivacySettingsTabState.isVerifyingKey, false);
+                            showDialog(
+                              context: context,
+                              builder: (context) => ResultDialog("msg", ResultType.positive),
+                            );
+                            callback.onResetAuth();
+                            // msg isn't used
+                          } else {
+                            isWrong = true;
+                            key.currentState.validate();
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            )));
+  }
+}
+
+class ResetAuthAction {
+  onResetAuth() {}
 }

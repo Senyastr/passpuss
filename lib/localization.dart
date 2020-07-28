@@ -127,11 +127,24 @@ class LocalizationTool {
   String get fingerprintStartDialogReason =>
       getValue("fingerprintStartDialogReason");
 
-  get fingerprintLogin => getValue("fingerprintLogin");
+  String get fingerprintLogin => getValue("fingerprintLogin");
 
-  get qwertySetting => getValue("qwertySetting");
+  String get qwertySetting => getValue("qwertySetting");
 
-  get charsSetting => null;
+  String get charsSetting => getValue("charsSetting");
+
+  String get backupFingerprintKeyTitle => getValue("backupFingerprintKeyTitle");
+
+  String get proceed => getValue("proceed");
+
+  String get success => null;
+
+  String get notAuthText => getValue("notAuthText");
+
+  String get typeBackupCode => getValue("typeBackupCode");
+
+  String get fingerprintBackupWindowText =>
+      getValue("fingerprintBackupWindowText");
 
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
@@ -215,6 +228,16 @@ class LocalizationTool {
           'Please authenticate in order to turn on/off Fingerprint Authentication',
       "fingerprintLogin": "Please authenticate to see your passwords.",
       "qwertySetting": "Remind of using a popular password",
+      "charsSetting": "Characters allowed for passwords",
+      "backupFingerprintKeyTitle": "Save the backup code",
+      "proceed": "Continue",
+      "notAuthText":
+          "Seems like something went wrong. Restart the application or, please, proceed to recover your data.",
+      "typeBackupCode": "Please, type down your recovery code. ",
+      "fingerprintBackupWindowText":
+          "Save the code shown in the middle of the screen. " +
+              "Write it down in your notes, take a screenshot. " +
+              "If you don't do this, your data might be corrupted and removed."
     },
     'ru': {
       'home': 'Главная',
@@ -280,7 +303,17 @@ class LocalizationTool {
           "Пожалуйста, прикоснитесь к сканеру, чтобы включить/выключить аутентификацию.",
       "fingerprintLogin":
           "Пожалуйста, прикоснитесь к сканеру, чтобы увидеть свои пароли",
-          "qwertySetting": "Нагадать о использовании популярных паролей",
+      "qwertySetting": "Нагадать о использовании популярных паролей",
+      "charsSetting": "Кол-во символов разрешенных для паролей",
+      "backupFingerprintKeyTitle": "Сохраните код восстановления паролей",
+      "proceed": "Продолжить",
+      "notAuthText":
+          "Похоже что то пошло не те так. Перезагрузите приложение. Следуйте дальше для восстановления данных.",
+      "typeBackupCode": "Пожалуйста, напишите пароль восстановления данных. ",
+      "fingerprintBackupWindowText":
+          "Сохраните код, который находится по середине екрана" +
+              "Запишите его в заметках, сделайте скриншот. " +
+              "Если вы откажетесь делать это, есть вероятность, что вы потеряете данные."
     },
     'ua': {
       'home': "Головна",
@@ -348,7 +381,18 @@ class LocalizationTool {
           "Будь ласка, доторкніться до сканеру, щоб ввімкнути/вимкнути аутентифікацію по відбитку пальця.",
       "fingerprintLogin":
           "Будь ласка, доторкніться до сканеру, щоб побачити свої паролі.",
-          "qwertySetting": "Нагадати про використання популярних паролей",
+      "qwertySetting": "Нагадати про використання популярних паролей",
+      "charsSetting": "Кількість символів дозволених для паролей",
+      "backupFingerprintKeyTitle": "Збережіть код для відновлення паролей",
+      "proceed": "Продовжити",
+      "notAuthText":
+          "Схоже щось пішло не так. Перезапустіть додаток або слідуйте далі, щоб відновити дані.",
+      "typeBackupCode": "Будь ласка, напишіть пароль для відновлення даних",
+      "fingerprintBackupWindowText":
+      "Збережіть код, який знаходиться по середині екрану."
+          "Save the code shown in the middle of the screen. " +
+              "Запишіть його в нотатках, зробіть знімок екрану. " +
+              "Якщо ви відмовитесь зробити це, є можливість, що ваші дані загубляться."
     }
   };
 }

@@ -154,8 +154,14 @@ class AuthenticationHelper : androidx.biometric.BiometricPrompt.AuthenticationCa
         }
     }
 
-    override fun onActivityStarted(activity: Activity) {
-        TODO("Not yet implemented")
+    override fun onActivityStarted(ignored: Activity) {
+        if (stickyAuth) {
+            activityPasued = false
+            val prompt = androidx.biometric.BiometricPrompt(activity, uiThreadExecutor, this)
+            // When activity is resuming, we cannot show the prompt right away. We need to post it to the
+            // UI queue.
+            uiThreadExecutor.handler.post { prompt.authenticate(promptInfo!!) }
+        }
     }
 
     override fun onActivityDestroyed(activity: Activity) {
@@ -167,7 +173,9 @@ class AuthenticationHelper : androidx.biometric.BiometricPrompt.AuthenticationCa
     }
 
     override fun onActivityStopped(activity: Activity) {
-        TODO("Not yet implemented")
+        if (stickyAuth) {
+            activityPasued = true
+        }
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {

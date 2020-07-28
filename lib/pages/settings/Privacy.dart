@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:PassPuss/message.dart';
 import 'package:PassPuss/pages/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,11 +23,11 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
 
   bool isVerifyingCompatible = true;
 
-  var privacyIcon =  Icon(
-                        Icons.lock,
-                        color: Colors.blueAccent,
-                        size: 40,
-                      );
+  var privacyIcon = Icon(
+    Icons.lock,
+    color: Colors.blueAccent,
+    size: 40,
+  );
 
   @override
   void initState() {
@@ -55,9 +58,7 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
                           .copyWith(color: Colors.white),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child:privacyIcon
-                    ),
+                        padding: EdgeInsets.only(left: 20), child: privacyIcon),
                   ]),
             ),
             Padding(
@@ -137,6 +138,141 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
       setState(() {
         isVerifying = value;
       });
+      if (isVerifying) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => FingerprintBackup()));
+      }
     }
+  }
+}
+
+class FingerprintBackup extends StatefulWidget {
+  FingerprintBackup({Key key}) : super(key: key);
+
+  @override
+  FingerprintBackupState createState() => FingerprintBackupState();
+}
+
+class FingerprintBackupState extends State<FingerprintBackup> {
+  FingerprintBackupKey backupKey;
+  static final backupKeySetting = "backupCode";
+  @override
+  void initState() {
+    super.initState();
+    backupKey = FingerprintBackupKey();
+    backupKey.init();
+    saveBackupCode();
+      }
+      void saveBackupCode() async {
+      var prefs = await SharedPreferences.getInstance();
+      prefs.setString(backupKeySetting, backupKey.getKey());
+}
+    
+      @override
+      Widget build(BuildContext context) {
+        return Scaffold(
+          appBar: AppBar(),
+          body: SafeArea(
+              child: Column(
+            children: <Widget>[
+              Padding(
+                  padding: EdgeInsets.all(30),
+                  child: Text(
+                    LocalizationTool.of(context).backupFingerprintKeyTitle,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5
+                        .copyWith(color: Colors.white),
+                  )),
+              Container(
+                  decoration: BoxDecoration(color: Colors.lightGreen),
+                  child: Text(
+                    backupKey.getKey(),
+                    style: Theme.of(context).textTheme.headline4,
+                  )),
+                  Padding(padding: EdgeInsets.all(20),child: Text(
+                  LocalizationTool.of(context).fingerprintBackupWindowText,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      .copyWith(color: Colors.white)),),
+             Padding(padding: EdgeInsets.symmetric(horizontal: 15), child: 
+              Align(
+                alignment: Alignment.bottomRight,
+                child: FlatButton(
+                  child: Text(LocalizationTool.of(context).proceed),
+                  onPressed: () => showDialog(builder: (context) {return ResultDialog("message", ResultType.positive);}, 
+                  context: context),
+                  color: Theme.of(context).accentColor,
+                ),
+              )),
+            ],
+          )),
+        );
+      }
+    }
+    
+    
+
+class FingerprintBackupKey {
+  String _key;
+  bool _isInit;
+  void init() {
+    _key = randomKey();
+    _isInit = true;
+  }
+
+  String getKey() {
+    if (_isInit) {
+      return _key;
+    }
+  }
+
+  var randomSet = [
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '0'
+  ];
+  String randomKey() {
+    // result is random: BXXXXXXX
+    var chars = 7;
+    var result = "B";
+    Random random = Random();
+    for (var i = 0; i < chars; i++) {
+      result += randomSet[random.nextInt(randomSet.length - 1)].toString();
+    }
+    return result;
   }
 }

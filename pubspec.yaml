@@ -37,6 +37,7 @@ dependencies:
   platform: ^2.0.0
   flutter_plugin_android_lifecycle: ^1.0.2
   get_version: ^0.2.2
+  flare_flutter: ^2.0.5
 
 
 
@@ -90,6 +91,8 @@ flutter:
     - assets/images/reddit copy.svg
     - assets/images/Netflix_icon.svg
     - assets/images/ImageShareChoice.svg
+    - assets/animations/success.flr
+    - assets/animations/failed.flr
 
 
   # To add assets to your application, add an assets section, like this:
