@@ -97,6 +97,7 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
                           value: isVerifying,
                         ))
                     : Container(),
+                Divider(),
               ],
             )
           ],
@@ -120,7 +121,10 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
     var split = OsVersion.split(" ");
     if (split[0] == "Android") {
       var androidV = (split[1]);
-      isVerifyingCompatible = double.parse(androidV.split(".")[0]) > 9;
+      
+      if (await LocalAuthentication().canCheckBiometrics){
+        isVerifyingCompatible = isVerifyingCompatible = double.parse(androidV.split(".")[0]) > 9;
+      }
     }
 
     // finally, update UI

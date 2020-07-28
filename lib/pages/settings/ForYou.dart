@@ -89,8 +89,10 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
                     divisions: 7,
                     label: "$charsAllowed",
                   )),
-                )
+                ),
+                Divider(),
               ],
+              
             )
           ],
         ));

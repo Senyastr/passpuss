@@ -11,7 +11,7 @@ class NotificationSettingsTab extends StatefulWidget {
 }
 
 class NotificationSettingsTabState extends State<NotificationSettingsTab> implements SettingsTab{
-  bool turnedNotifcation;
+  bool turnedNotifcation = true;
   String expirationDays;
   final List<String> expirationItems = [
     "1 month",
