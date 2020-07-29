@@ -146,6 +146,14 @@ class LocalizationTool {
   String get fingerprintBackupWindowText =>
       getValue("fingerprintBackupWindowText");
 
+  String get removeEntryFingerprintSetting =>
+      getValue("removeEntryFingerprintSetting");
+
+  String get fingerprintAuthRemoveSetup =>
+      getValue("fingerprintSettingsChange");
+
+  get removeEntryFingerprintPrompt => getValue("removeEntryFingerprintPrompt");
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -237,7 +245,13 @@ class LocalizationTool {
       "fingerprintBackupWindowText":
           "Save the code shown in the middle of the screen. " +
               "Write it down in your notes, take a screenshot. " +
-              "If you don't do this, your data might be corrupted and removed."
+              "If you don't do this, your data might be corrupted and removed.",
+      "fingerprintSettingsChange":
+          "Scan the fingerprint to verify yourself and make changes to the app that can harm PassPuss' data",
+      "removeEntryFingerprintSetting":
+          "Always verify the identity when removing password entries",
+      "removeEntryFingerprintPrompt":
+          "Are you sure about removing the password entry? If so, scan your fingerprint."
     },
     'ru': {
       'home': 'Главная',
@@ -313,7 +327,14 @@ class LocalizationTool {
       "fingerprintBackupWindowText":
           "Сохраните код, который находится по середине екрана" +
               "Запишите его в заметках, сделайте скриншот. " +
-              "Если вы откажетесь делать это, есть вероятность, что вы потеряете данные."
+              "Если вы откажетесь делать это, есть вероятность, что вы потеряете данные.",
+      "fingerprintSettingsChange":
+          "Просканируйте отпечаток пальца, чтобы удостовериться в вашей личности и ввести изменения в Pass Puss, " +
+              "которые могут нанести вред вашим данным.",
+      "removeEntryFingerprintSetting":
+          "Всегда удостовериваться в личности при удалении записей паролей.",
+      "removeEntryFingerprintPrompt":
+          "Вы уверенны, что хотите удалить запись пароля? Если да, просканируйте отпечаток пальца.",
     },
     'ua': {
       'home': "Головна",
@@ -389,10 +410,17 @@ class LocalizationTool {
           "Схоже щось пішло не так. Перезапустіть додаток або слідуйте далі, щоб відновити дані.",
       "typeBackupCode": "Будь ласка, напишіть пароль для відновлення даних",
       "fingerprintBackupWindowText":
-      "Збережіть код, який знаходиться по середині екрану."
-          "Save the code shown in the middle of the screen. " +
+          "Збережіть код, який знаходиться по середині екрану."
+                  "Save the code shown in the middle of the screen. " +
               "Запишіть його в нотатках, зробіть знімок екрану. " +
-              "Якщо ви відмовитесь зробити це, є можливість, що ваші дані загубляться."
+              "Якщо ви відмовитесь зробити це, є можливість, що ваші дані загубляться.",
+      "fingerprintSettingsChange":
+          "Проскануйте відбиток пальца, щоб запевнитись у вашій особі " +
+              "та ввести зміни до Pass Puss, які можуть нанести шкоду вашим даним.",
+      "removeEntryFingerprintSetting":
+          "Завжди запевнятися в особі при видаленні записів паролей",
+      "removeEntryFingerprintPrompt":
+          "Ви впевнені, що хочете видалити запис паролю? Якщо так, то проскануйте відбиток пальца."
     }
   };
 }

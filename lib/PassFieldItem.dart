@@ -1,4 +1,7 @@
+import 'package:PassPuss/auth/local_auth.dart';
 import 'package:PassPuss/pages/homePage.dart';
+import 'package:PassPuss/pages/settings.dart';
+import 'package:PassPuss/pages/settings/Privacy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:PassPuss/Database.dart';
@@ -152,11 +155,24 @@ class PassFieldState extends State<PassField> {
 // }
   RemoveCommand command;
 
-  void removeEntry() {
-    HomePageState.changeDataset(() {
+  void removeEntry() async {
+    bool isAuth;
+    var auth = await SettingsManager.getPref(PrivacySettingsTabState.authVerifyRemoveEntrySetting) as bool;
+    if (auth != null || auth){
+      var localAuthentication = LocalAuthentication();
+      var hasAuth = await localAuthentication.authenticateWithBiometrics(localizedReason: LocalizationTool.of(context).removeEntryFingerprintPrompt);
+      isAuth = hasAuth;
+      
+    }
+    else{
+      isAuth = true;
+    }
+    if (isAuth){
+      HomePageState.changeDataset(() {
       HomePageState.Pairs.remove(passEntry);
       DBProvider.DB.deletePassEntry(passEntry);
     });
+    }
   }
 
   String hidePassword(String password) {

@@ -10,7 +10,8 @@ class NotificationSettingsTab extends StatefulWidget {
   }
 }
 
-class NotificationSettingsTabState extends State<NotificationSettingsTab> implements SettingsTab{
+class NotificationSettingsTabState extends State<NotificationSettingsTab>
+    implements SettingsTab {
   bool turnedNotifcation = true;
   String expirationDays;
   final List<String> expirationItems = [
@@ -22,10 +23,10 @@ class NotificationSettingsTabState extends State<NotificationSettingsTab> implem
   static const String passwordEntryExpiration = "passwordEntryExpirationDays";
 
   var notificationIcon = Icon(
-                        Icons.notifications,
-                        size: 40,
-                        color: Colors.yellowAccent,
-                      );
+    Icons.notifications,
+    size: 40,
+    color: Colors.yellowAccent,
+  );
   @override
   void initState() {
     super.initState();
@@ -53,8 +54,6 @@ class NotificationSettingsTabState extends State<NotificationSettingsTab> implem
                             .headline4
                             .copyWith(color: Colors.white),
                       ),
-                     
-
                       Container(
                           width: 60,
                           height: 40,
@@ -79,6 +78,7 @@ class NotificationSettingsTabState extends State<NotificationSettingsTab> implem
                 // !!!! HERE ARE SETTINGS !!!!
                 // Password Expiration Notification Days
                 ListTile(
+                  leading: Icon(Icons.access_time, color: Colors.white),
                   title: Text(
                     LocalizationTool.of(context)
                         .settingsNotificationPasswordExpirationDays,
@@ -177,5 +177,3 @@ class NotificationSettingsTabState extends State<NotificationSettingsTab> implem
     setState(() {});
   }
 }
-
-

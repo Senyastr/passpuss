@@ -25,6 +25,7 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
     super.initState();
     initSettings();
   }
+
   var qwertySettingValue = true;
 
   double charsAllowed = 8;
@@ -38,8 +39,7 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
         body: Column(
           children: <Widget>[
             SafeArea(
-            child:
-            Padding(
+                child: Padding(
               padding: EdgeInsets.all(10),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -64,35 +64,43 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
             Column(
               children: <Widget>[
                 ListTile(
-                    leading: Text(
-                      LocalizationTool.of(context).qwertySetting,
-                      style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            color: Colors.white,
-                          )),
+                    leading: Icon(
+                      Icons.language,
+                      color: Colors.white,
+                    ),
+                    title: Text(LocalizationTool.of(context).qwertySetting,
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                              color: Colors.white,
+                            )),
                     trailing: Switch(
                       onChanged: qwertySetting,
                       value: qwertySettingValue,
                     )),
                 Divider(),
                 ListTile(
-                  leading:Text(
-                      LocalizationTool.of(context).charsSetting,
+                  leading: Icon(
+                    Icons.text_rotation_none,
+                    color: Colors.white,
+                  ),
+                  title: Text(LocalizationTool.of(context).charsSetting,
                       softWrap: true,
                       style: Theme.of(context).textTheme.bodyText2.copyWith(
                             color: Colors.white,
                           )),
-                  trailing: Container(height:40, width: 125,child: Slider(
-                    value: charsAllowed,
-                    min: 1,
-                    max: 8,
-                    onChanged: charsAllowedChanged,
-                    divisions: 7,
-                    label: "$charsAllowed",
-                  )),
+                  trailing: Container(
+                      height: 40,
+                      width: 125,
+                      child: Slider(
+                        value: charsAllowed,
+                        min: 1,
+                        max: 8,
+                        onChanged: charsAllowedChanged,
+                        divisions: 7,
+                        label: "$charsAllowed",
+                      )),
                 ),
                 Divider(),
               ],
-              
             )
           ],
         ));
@@ -106,7 +114,7 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
     qwertySettingValue = temp == null ? true : temp; // DEFAULT : TRUE
     temp = sharedPrefs.getDouble(charsAllowedKey);
     charsAllowed = temp == null ? 8 : temp;
-    setState((){});
+    setState(() {});
   }
 
   void qwertySetting(bool value) async {

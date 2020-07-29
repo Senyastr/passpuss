@@ -292,6 +292,7 @@ class PassEntriesPage extends State<MyHomePage> implements ResetAuthAction {
     isAuth = false;
   }
 
+  // ignore: non_constant_identifier_names
   void Auth() async {
     if (await mustAuth()) {
       var localAuth = LocalAuthentication();

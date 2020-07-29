@@ -29,6 +29,11 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
     size: 40,
   );
 
+  var authRemoveValue = false;
+
+  static final String authVerifyRemoveEntrySetting =
+      "authVerifyRemoveEntrySetting";
+
   @override
   void initState() {
     super.initState();
@@ -68,7 +73,8 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
             Column(
               children: <Widget>[
                 ListTile(
-                  leading: Text(
+                  leading: Icon(Icons.enhanced_encryption, color: Colors.white),
+                  title: Text(
                     LocalizationTool.of(context).privacySettingsEncryption,
                     style: Theme.of(context)
                         .textTheme
@@ -85,7 +91,8 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
                 Divider(),
                 isVerifyingCompatible
                     ? ListTile(
-                        leading: Text(
+                      leading: Icon(Icons.fingerprint,color: Colors.white),
+                        title: Text(
                             LocalizationTool.of(context)
                                 .fingerprintAuthentication,
                             style: Theme.of(context)
@@ -98,6 +105,23 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
                         ))
                     : Container(),
                 Divider(),
+                isVerifyingCompatible
+                    ? ListTile(
+                        leading: Icon(Icons.delete, color: Colors.white),
+                        title: Text(
+                            LocalizationTool.of(context)
+                                .removeEntryFingerprintSetting,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(color: Colors.white)),
+                        trailing: Switch(
+                            onChanged: isVerifying
+                                ? (changed) => authRemove(changed)
+                                : null,
+                            value: authRemoveValue),
+                      )
+                    : Container(),
               ],
             )
           ],
@@ -108,7 +132,7 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
   @override
   void initSettings() async {
     // IS AUTH
-    var temp = await SettingsManager.getPref(
+    dynamic temp = await SettingsManager.getPref(
         PrivacySettingsTabState.isVerifyingKey.toString()) as bool;
     isVerifying = (temp == null ? false : temp);
     // AUTH COMPATIBILITY // WORKS ONLY WHEN WE HAVE ANDROID PIE OR MORE
@@ -121,11 +145,16 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
     var split = OsVersion.split(" ");
     if (split[0] == "Android") {
       var androidV = (split[1]);
-      
-      if (await LocalAuthentication().canCheckBiometrics){
-        isVerifyingCompatible = isVerifyingCompatible = double.parse(androidV.split(".")[0]) > 9;
+
+      if (await LocalAuthentication().canCheckBiometrics) {
+        isVerifyingCompatible =
+            isVerifyingCompatible = double.parse(androidV.split(".")[0]) > 9;
       }
     }
+
+    // REMOVE PASS ENTRY AUTHENTICATION
+    temp = (await SettingsManager.getPref(PrivacySettingsTabState.authVerifyRemoveEntrySetting)) as bool;
+    authRemoveValue = temp == null ? false : temp;
 
     // finally, update UI
     setState(() {});
@@ -148,6 +177,18 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
       }
     }
   }
+
+  authRemove(bool changed) async {
+    var localAuth = LocalAuthentication();
+    bool hasAuthenticated = await localAuth.authenticateWithBiometrics(
+        localizedReason:
+            LocalizationTool.of(context).fingerprintAuthRemoveSetup);
+    if (hasAuthenticated) {
+      SettingsManager.changePref(authVerifyRemoveEntrySetting, changed);
+      authRemoveValue = changed;
+      setState(() {});
+    }
+  }
 }
 
 class FingerprintBackup extends StatefulWidget {
@@ -166,57 +207,63 @@ class FingerprintBackupState extends State<FingerprintBackup> {
     backupKey = FingerprintBackupKey();
     backupKey.init();
     saveBackupCode();
-      }
-      void saveBackupCode() async {
-      var prefs = await SharedPreferences.getInstance();
-      prefs.setString(backupKeySetting, backupKey.getKey());
-}
-    
-      @override
-      Widget build(BuildContext context) {
-        return Scaffold(
-          appBar: AppBar(),
-          body: SafeArea(
-              child: Column(
-            children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.all(30),
-                  child: Text(
-                    LocalizationTool.of(context).backupFingerprintKeyTitle,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5
-                        .copyWith(color: Colors.white),
-                  )),
-              Container(
-                  decoration: BoxDecoration(color: Colors.lightGreen),
-                  child: Text(
-                    backupKey.getKey(),
-                    style: Theme.of(context).textTheme.headline4,
-                  )),
-                  Padding(padding: EdgeInsets.all(20),child: Text(
-                  LocalizationTool.of(context).fingerprintBackupWindowText,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2
-                      .copyWith(color: Colors.white)),),
-             Padding(padding: EdgeInsets.symmetric(horizontal: 15), child: 
-              Align(
+  }
+
+  void saveBackupCode() async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString(backupKeySetting, backupKey.getKey());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: SafeArea(
+          child: Column(
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.all(30),
+              child: Text(
+                LocalizationTool.of(context).backupFingerprintKeyTitle,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline5
+                    .copyWith(color: Colors.white),
+              )),
+          Container(
+              decoration: BoxDecoration(color: Colors.lightGreen),
+              child: Text(
+                backupKey.getKey(),
+                style: Theme.of(context).textTheme.headline4,
+              )),
+          Padding(
+            padding: EdgeInsets.all(20),
+            child: Text(
+                LocalizationTool.of(context).fingerprintBackupWindowText,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    .copyWith(color: Colors.white)),
+          ),
+          Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Align(
                 alignment: Alignment.bottomRight,
                 child: FlatButton(
                   child: Text(LocalizationTool.of(context).proceed),
-                  onPressed: () => showDialog(builder: (context) {return ResultDialog("message", ResultType.positive);}, 
-                  context: context),
+                  onPressed: () => showDialog(
+                      builder: (context) {
+                        return ResultDialog("message", ResultType.positive);
+                      },
+                      context: context),
                   color: Theme.of(context).accentColor,
                 ),
               )),
-            ],
-          )),
-        );
-      }
-    }
-    
-    
+        ],
+      )),
+    );
+  }
+}
 
 class FingerprintBackupKey {
   String _key;
