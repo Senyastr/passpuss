@@ -35,7 +35,6 @@ class NotificationSettingsTabState extends State<NotificationSettingsTab>
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     var layout = Scaffold(
         appBar: AppBar(),
         body: SafeArea(
@@ -62,7 +61,7 @@ class NotificationSettingsTabState extends State<NotificationSettingsTab>
                               setState(() {
                                 turnedNotifcation = changed;
                                 SettingsManager.changePref(notifcationsOn,
-                                    changed); // TODO: USE THIS SHIT TO SCHEDULE NOTIFCATIONS
+                                    changed); 
                                 // print(SettingsManager.getPref(notifcationsOn));
                               });
                             },

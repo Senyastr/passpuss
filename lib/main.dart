@@ -341,7 +341,6 @@ class _NotAuthenticatedWidgetState extends State<NotAuthenticatedWidget> {
   _NotAuthenticatedWidgetState(this.callback);
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return SafeArea(
         child: Form(
             key: key,
@@ -365,7 +364,6 @@ class _NotAuthenticatedWidgetState extends State<NotAuthenticatedWidget> {
                       },
                       validator: (value) {
                         if (isWrong) {
-                          // TODO: FIX IT
                           tries++;
                           var triesRemaining = (3 - tries);
                           if (triesRemaining == 0) {

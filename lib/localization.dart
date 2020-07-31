@@ -154,6 +154,10 @@ class LocalizationTool {
 
   get removeEntryFingerprintPrompt => getValue("removeEntryFingerprintPrompt");
 
+  String get onlyLettersSetting => getValue("onlyLettersSetting");
+
+  get entrySearchHint => getValue("entrySearchHint");
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -251,7 +255,9 @@ class LocalizationTool {
       "removeEntryFingerprintSetting":
           "Always verify the identity when removing password entries",
       "removeEntryFingerprintPrompt":
-          "Are you sure about removing the password entry? If so, scan your fingerprint."
+          "Are you sure about removing the password entry? If so, scan your fingerprint.",
+      "onlyLettersSetting" : "Remind of using only letters in the password",
+      "entrySearchHint" : "Search an entry"
     },
     'ru': {
       'home': 'Главная',
@@ -335,6 +341,8 @@ class LocalizationTool {
           "Всегда удостовериваться в личности при удалении записей паролей.",
       "removeEntryFingerprintPrompt":
           "Вы уверенны, что хотите удалить запись пароля? Если да, просканируйте отпечаток пальца.",
+      "onlyLettersSetting" : "Напоминать о использовании только букв в пароле.",
+      "entrySearchHint" : "Искать запись"
     },
     'ua': {
       'home': "Головна",
@@ -420,7 +428,9 @@ class LocalizationTool {
       "removeEntryFingerprintSetting":
           "Завжди запевнятися в особі при видаленні записів паролей",
       "removeEntryFingerprintPrompt":
-          "Ви впевнені, що хочете видалити запис паролю? Якщо так, то проскануйте відбиток пальца."
+          "Ви впевнені, що хочете видалити запис паролю? Якщо так, то проскануйте відбиток пальца.",
+      "onlyLettersSetting" : "Нагадувати про використання тільки букв в паролі.",
+      "entrySearchHint" : "Шукати запис"
     }
   };
 }

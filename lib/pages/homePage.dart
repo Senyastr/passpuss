@@ -15,6 +15,8 @@ class HomePage extends StatefulWidget {
   }
 }
 
+enum InteractMode { def, searching }
+
 class HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   static List<PassEntry> Pairs = [];
@@ -25,6 +27,13 @@ class HomePageState extends State<HomePage>
 
   Animation<Offset> _offsetAnimation;
   List<PassField> passFieldsWidgets;
+  InteractMode mode = InteractMode.def;
+
+  String searchInquery;
+
+  List<PassEntry> entriesFound = List<PassEntry>();
+
+  int viewItemsCount;
   @override
   void initState() {
     super.initState();
@@ -40,8 +49,6 @@ class HomePageState extends State<HomePage>
   bool loading = true;
   @override
   Widget build(BuildContext context) {
-    
-    
     emptyList = SafeArea(
         child: Align(
             alignment: Alignment.bottomCenter,
@@ -79,26 +86,99 @@ class HomePageState extends State<HomePage>
                   ],
                 ))));
     _page = this;
+    Widget upperPart;
+    switch (mode) {
+      case InteractMode.def:
+      viewItemsCount = Pairs.length;
+        upperPart = Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        LocalizationTool.of(context).home,
+                        style: TextStyle(fontSize: 32, color: Colors.white),
+                      ))),
+              Pairs.length != 0
+                  ? Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: IconButton(
+                          icon: Icon(Icons.search, color: Colors.white),
+                          onPressed: () {
+                            mode = InteractMode.searching;
+                            setState(() {});
+                          },
+                        ),
+                      ))
+                  : Container(),
+            ]);
+        break;
+      case InteractMode.searching:
+      viewItemsCount = entriesFound.length;
+        upperPart = SafeArea(
+            child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Container(
+                    child: Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: FocusScope(
+                            child: TextField(
+                                autofocus: true,
+                                onChanged: searchUpdate,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2
+                                    .copyWith(color: Colors.white),
+                                decoration: InputDecoration(
+                                    hintStyle: Theme.of(context)
+                                        .textTheme
+                                        .bodyText2
+                                        .copyWith(
+                                            color: Color.fromARGB(
+                                                150, 255, 255, 255)),
+                                    hintText: LocalizationTool.of(context)
+                                        .entrySearchHint,
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).accentColor),
+                                    ))))),
+                    Padding(
+                        padding: EdgeInsets.only(left: 10),
+                        child: IconButton(
+                          icon: Icon(Icons.cancel, color: Colors.white),
+                          onPressed: () {
+                            mode = InteractMode.def;
+                            setState(() {});
+                          },
+                        ))
+                  ],
+                ))));
+        break;
+    }
+
     return Column(children: <Widget>[
-      SafeArea(
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                LocalizationTool.of(context).home,
-                style: TextStyle(fontSize: 32, color: Colors.white),
-              )),
-        ),
-      ),
+      SafeArea(child: upperPart),
       Pairs.length == 0
           ? Expanded(child: emptyList)
           : !loading
               ? Expanded(
                   child: ListView.builder(
-                      itemCount: Pairs.length,
+                      itemCount: viewItemsCount,
                       itemBuilder: (BuildContext context, int index) {
-                        return PassField(Pairs[index], GlobalKey());
+                        switch (mode) {
+                          case InteractMode.def:
+                            return PassField(Pairs[index], GlobalKey());
+                            break;
+                          case InteractMode.searching:
+                            return PassField(entriesFound[index], GlobalKey());
+                            break;
+                        }
                       }))
               : Center(child: CircularProgressIndicator()),
       loading
@@ -115,8 +195,6 @@ class HomePageState extends State<HomePage>
     ]);
   }
 
-  
-
   assignPairs() async {
     loading = true;
     var pairs = await DBProvider.DB.getPassEntries();
@@ -129,7 +207,38 @@ class HomePageState extends State<HomePage>
   static changeDataset(VoidCallback callback) {
     _page.loading = true;
     callback();
-    _page.setState(()=> _page.loading = false);
+    _page.setState(() => _page.loading = false);
+  }
+
+  // SEARCH
+  void searchUpdate(String changed) {
+    searchInquery = changed;
+    entriesFound = search(searchInquery);
+    setState((){});
+  }
+  List<PassEntry> search(String inquery){
+    List<PassEntry> result = List<PassEntry>();
+    for(int i = 0; i < Pairs.length; i++){
+      var curPair = Pairs[i];
+      if (concur(inquery, curPair)){
+        result.add(curPair);
+      }
+    }
+    return result;
+  }
+  bool concur(String inquery, PassEntry entry){
+    var username = entry.getUsername();
+    var emailValue = entry.getEmail();
+    var email = emailValue == null ? "" : emailValue;
+    var title = entry.getTitle();
+    // TODO: Implement a searching mechanism for icons
+    var usernameConcur = username.contains(inquery);
+    var emailConcur = email != "" ? email.contains(inquery) : false ;
+    var titleConcur = title.contains(inquery);
+    return usernameConcur || emailConcur|| titleConcur; 
     
+    
+    
+
   }
 }

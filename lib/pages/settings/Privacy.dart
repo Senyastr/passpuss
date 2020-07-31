@@ -12,7 +12,6 @@ import 'package:PassPuss/auth/local_auth.dart';
 class PrivacySettingsTab extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return PrivacySettingsTabState();
   }
 }
@@ -45,7 +44,6 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
   static final String isVerifyingKey = "auth";
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     var temp = Scaffold(
         appBar: AppBar(),
         body: Column(
@@ -136,7 +134,6 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
         PrivacySettingsTabState.isVerifyingKey.toString()) as bool;
     isVerifying = (temp == null ? false : temp);
     // AUTH COMPATIBILITY // WORKS ONLY WHEN WE HAVE ANDROID PIE OR MORE
-    // TODO: Implement Authentication for android 8.1 and less
     try {
       OsVersion = await GetVersion.platformVersion;
     } on PlatformException {

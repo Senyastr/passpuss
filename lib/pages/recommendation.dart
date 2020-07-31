@@ -145,8 +145,14 @@ class RecommendationTabState extends State<RecommendationTab> {
       }
       // 4. The password hasn't used any letters, but numbers
       if (hasOnlyLetters(password)) {
-        return new Tuple3(f, PasswordProblem.OnlyLetters,
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        var temp = prefs.getBool(ForYouSettingsTabState.onlyLettersSetting);
+        var setting = temp == null ? true : temp;
+        if (setting){
+           return new Tuple3(f, PasswordProblem.OnlyLetters,
             MessageType.recommendation);
+        }
+       
       }
       // 5. Vice versa, the password used only letters.
       if (hasOnlyNumbers(password)) {

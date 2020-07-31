@@ -310,7 +310,6 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
   var screenshotController = ScreenshotController();
 
   void _share() {
-    // TODO: Implement a share mechanism
     // depces:
     // esys_flutter_share
     // screenshot
@@ -425,7 +424,6 @@ class ChooseShareTypeDialog extends StatefulWidget {
   ChooseShareTypeDialog(this.entry, this.screenshotController, details);
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return ChooseShareTypeDialogState(entry, screenshotController, details);
   }
 }
@@ -438,7 +436,6 @@ class ChooseShareTypeDialogState extends State<ChooseShareTypeDialog> {
   ChooseShareTypeDialogState(this.entry, this.screenshotController, details);
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Dialog(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
       Padding(
@@ -537,7 +534,6 @@ class ChooseShareTypeDialogState extends State<ChooseShareTypeDialog> {
                 });
                 continue pop;
               case PassEntryShareType.text:
-                // TODO: Handle this case.
                 var username = entry.getUsername();
                 var password = entry.getPassword();
                 var email = entry.getEmail();

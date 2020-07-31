@@ -24,7 +24,6 @@ class ResultDialog extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return ResultDialogState(message, this.type);
   }
 }

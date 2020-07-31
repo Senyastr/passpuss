@@ -19,9 +19,12 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
     color: Colors.indigo,
     size: 40,
   );
+
+  bool onlyLetters = true;
+
+  static final String onlyLettersSetting = "onlyLettersSetting";
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initSettings();
   }
@@ -79,6 +82,24 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
                 Divider(),
                 ListTile(
                   leading: Icon(
+                    Icons.title,
+                    color: Colors.white,
+                  ),
+                  title: Text(
+                    LocalizationTool.of(context).onlyLettersSetting,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        .copyWith(color: Colors.white),
+                  ),
+                  trailing: Switch(
+                    onChanged: onlyLettersChanged,
+                    value: onlyLetters,
+                  ),
+                ),
+                Divider(),
+                ListTile(
+                  leading: Icon(
                     Icons.text_rotation_none,
                     color: Colors.white,
                   ),
@@ -108,12 +129,16 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
 
   @override
   void initSettings() async {
-    // TODO: implement initSettings
     sharedPrefs = await SharedPreferences.getInstance();
-    dynamic temp = sharedPrefs.getBool(qwertyKey); // QWERTY SETTING
+    dynamic temp;// QWERTY SETTING
+    temp = sharedPrefs.getBool(qwertyKey); 
     qwertySettingValue = temp == null ? true : temp; // DEFAULT : TRUE
+
     temp = sharedPrefs.getDouble(charsAllowedKey);
     charsAllowed = temp == null ? 8 : temp;
+
+    temp = (await SettingsManager.getPref(onlyLettersSetting)) as bool;
+    onlyLetters = temp == null ? true : false;
     setState(() {});
   }
 
@@ -127,6 +152,12 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
   void charsAllowedChanged(double value) async {
     charsAllowed = value;
     sharedPrefs.setDouble(charsAllowedKey, value);
+    setState(() {});
+  }
+
+  void onlyLettersChanged(bool value) async{
+    await SettingsManager.changePref(onlyLettersSetting, value);
+    onlyLetters = value;
     setState(() {});
   }
 }

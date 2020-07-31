@@ -1,7 +1,7 @@
 import 'package:PassPuss/auth/local_auth.dart';
 import 'package:PassPuss/pages/homePage.dart';
-import 'package:PassPuss/pages/settings.dart';
 import 'package:PassPuss/pages/settings/Privacy.dart';
+import 'package:PassPuss/pages/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:PassPuss/Database.dart';
