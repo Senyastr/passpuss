@@ -1,4 +1,4 @@
-package com.example.passpuss
+package com.passpuss.passpuss
 
 import android.content.pm.PackageManager
 import android.hardware.biometrics.BiometricPrompt

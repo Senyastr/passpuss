@@ -34,6 +34,7 @@ class HomePageState extends State<HomePage>
   List<PassEntry> entriesFound = List<PassEntry>();
 
   int viewItemsCount;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +48,7 @@ class HomePageState extends State<HomePage>
   }
 
   bool loading = true;
+
   @override
   Widget build(BuildContext context) {
     emptyList = SafeArea(
@@ -89,7 +91,7 @@ class HomePageState extends State<HomePage>
     Widget upperPart;
     switch (mode) {
       case InteractMode.def:
-      viewItemsCount = Pairs.length;
+        viewItemsCount = Pairs.length;
         upperPart = Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -119,7 +121,7 @@ class HomePageState extends State<HomePage>
             ]);
         break;
       case InteractMode.searching:
-      viewItemsCount = entriesFound.length;
+        viewItemsCount = entriesFound.length;
         upperPart = SafeArea(
             child: Padding(
                 padding: EdgeInsets.all(20),
@@ -178,6 +180,8 @@ class HomePageState extends State<HomePage>
                           case InteractMode.searching:
                             return PassField(entriesFound[index], GlobalKey());
                             break;
+                          default:
+                            return null;
                         }
                       }))
               : Center(child: CircularProgressIndicator()),
@@ -211,34 +215,143 @@ class HomePageState extends State<HomePage>
   }
 
   // SEARCH
+
   void searchUpdate(String changed) {
     searchInquery = changed;
-    entriesFound = search(searchInquery);
-    setState((){});
+    entriesFound = search(searchInquery.toLowerCase());
+    setState(() {});
   }
-  List<PassEntry> search(String inquery){
+
+  List<PassEntry> search(String inquery) {
     List<PassEntry> result = List<PassEntry>();
-    for(int i = 0; i < Pairs.length; i++){
+    for (int i = 0; i < Pairs.length; i++) {
       var curPair = Pairs[i];
-      if (concur(inquery, curPair)){
+      if (concur(inquery, curPair)) {
         result.add(curPair);
       }
     }
     return result;
   }
-  bool concur(String inquery, PassEntry entry){
-    var username = entry.getUsername();
-    var emailValue = entry.getEmail();
-    var email = emailValue == null ? "" : emailValue;
-    var title = entry.getTitle();
-    // TODO: Implement a searching mechanism for icons
-    var usernameConcur = username.contains(inquery);
-    var emailConcur = email != "" ? email.contains(inquery) : false ;
-    var titleConcur = title.contains(inquery);
-    return usernameConcur || emailConcur|| titleConcur; 
-    
-    
-    
 
+  Map<String, List<String>> iconTags;
+
+  bool concur(String inquery, PassEntry entry) {
+    if (iconTags == null) {
+      initIconTags();
+    }
+    var username = entry.getUsername().toLowerCase();
+    var emailValue = entry.getEmail().toLowerCase();
+    var email = emailValue == null ? "" : emailValue;
+    var title = entry.getTitle().toLowerCase();
+    var icon = entry.getIconId();
+    var usernameConcur = username.contains(inquery);
+    var emailConcur = email != "" ? email.contains(inquery) : false;
+    var titleConcur = title.contains(inquery);
+    return usernameConcur ||
+        emailConcur ||
+        titleConcur ||
+        concurIcon(inquery, icon);
+  }
+
+  bool concurIcon(String inquery, String iconPath) {
+    if (iconTags.containsKey(iconPath)) {
+      var tags = iconTags[iconPath];
+      for (var v in tags) {
+        if (v.contains(inquery)) {
+          return true;
+        }
+      }
+      return false;
+    } else {
+      return false;
+    }
+  }
+
+  void initIconTags() {
+    iconTags = Map<String, List<String>>();
+    var icons = NewPassEntry.iconsChoice;
+    for (var i = 0; i < icons.length; i++) {
+      var curIcon = icons[i];
+      // WHENEVER A NEW ICON IS ADDED TO NEW PASS ENTRY OR SOMEWHERE ELSE
+      // U SHOULD ADD THAT ICON AND CORRESPONDING TAGS HERE
+      switch (curIcon.path) {
+        case "assets/images/Instagram_logo_2016.svg":
+          iconTags["assets/images/Instagram_logo_2016.svg"] = [
+            "instagram",
+            "photos",
+            "videos"
+          ];
+          break;
+        case "assets/images/Facebook_logo_24x24.svg":
+          iconTags["assets/images/Facebook_logo_24x24.svg"] = ["facebook"];
+          break;
+        case "assets/images/Apple48x48.svg":
+          iconTags["assets/images/Apple48x48.svg"] = [
+            "apple",
+            "icloud",
+            "mac",
+            "iphone",
+            "ipad",
+            "macos",
+            "watch"
+          ];
+          break;
+        case "assets/images/Google48x48.svg":
+          iconTags["assets/images/Google48x48.svg"] = [
+            "google",
+            "mail",
+            "gmail",
+            "notes",
+            "youtube",
+            "calendar"
+          ];
+          break;
+        case "assets/images/Spotify48x48.svg":
+          iconTags["assets/images/Spotify48x48.svg"] = [
+            "music",
+            "spotify",
+            "podcasts"
+          ];
+          break;
+        case "assets/images/Steam48x48.svg":
+          iconTags["assets/images/Steam48x48.svg"] = ["games", "steam"];
+          break;
+        case "assets/images/twitter-seeklogo.svg":
+          iconTags["assets/images/twitter-seeklogo.svg"] = [
+            "twitter",
+            "tweets"
+          ];
+          break;
+        case "assets/images/Microsoft48x48.svg":
+          iconTags["assets/images/Microsoft48x48.svg"] = [
+            "microsoft",
+            "windows"
+          ];
+          break;
+        case "assets/images/Yandex_Browser_logo.svg":
+          iconTags["assets/images/Yandex_Browser_logo.svg"] = [
+            "yandex",
+            "ydrive"
+          ];
+          break;
+        case "assets/images/Creative_Cloud.svg":
+          iconTags["assets/images/Creative_Cloud.svg"] = ["adobe", "cloud"];
+          break;
+        case "assets/images/reddit copy.svg":
+          iconTags["assets/images/reddit copy.svg"] = [
+            "reddit",
+            "news",
+            "memes"
+          ];
+          break;
+        case "assets/images/Netflix_icon.svg":
+          iconTags["assets/images/Netflix_icon.svg"] = [
+            "movies",
+            "tv shows",
+            "netflix"
+          ];
+          break;
+      }
+    }
   }
 }

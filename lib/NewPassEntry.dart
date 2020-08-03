@@ -2,6 +2,7 @@ import 'package:PassPuss/localization.dart';
 import 'package:PassPuss/pages/editEntryPage.dart';
 import 'package:PassPuss/pages/settings/ForYou.dart';
 import 'package:PassPuss/pages/settings/Notification.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'Database.dart';
 import 'package:PassPuss/pages/homePage.dart';
 import 'package:PassPuss/pages/settings/settings.dart';
+import 'ads/adManager.dart';
 import 'notifications.dart';
 
 class NewPassEntryPage extends StatefulWidget {
@@ -47,6 +49,9 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
   double emailWarningHeight = 0;
 
   double charsMin = 8;
+  // ADS
+  static bool isInterstitialAdReady;
+  InterstitialAd interstitialAd;
 
   @override
   void initState() {
@@ -57,6 +62,15 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
     IconChoiceState.icons = iconsChoice;
     IconChoiceState.selected = null;
     assignSettings();
+
+    isInterstitialAdReady = false;
+    interstitialAd = InterstitialAd(
+      adUnitId: AdManager.interstitialAdUnitId,
+      listener: _onInterstitialAdEvent,
+    );
+    if (!isInterstitialAdReady) {
+      _loadInterstitialAd();
+    }
   }
 
   void update() {
@@ -484,7 +498,9 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                 newEntry, newEntry.createdTime.add(Duration(days: daysDelay)))
             .scheduleNotification(context);
       }
-
+      if (isInterstitialAdReady) {
+        interstitialAd.show();
+      }
       Navigator.pop<NewPassEntry>(context, this);
     }
   }
@@ -495,6 +511,27 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
     charsMin = temp == null ? 8 : temp;
     _genChars = charsMin;
     setState(() {});
+  }
+
+  void _loadInterstitialAd() {
+    interstitialAd.load();
+  }
+
+  void _onInterstitialAdEvent(MobileAdEvent event) {
+    switch (event) {
+      case MobileAdEvent.loaded:
+        isInterstitialAdReady = true;
+        break;
+      case MobileAdEvent.failedToLoad:
+        isInterstitialAdReady = false;
+        print('Failed to load an interstitial ad');
+        break;
+      case MobileAdEvent.closed:
+        // IDK WTF IS THAT
+        break;
+      default:
+      // do nothing
+    }
   }
 }
 

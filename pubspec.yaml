@@ -21,6 +21,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  google_fonts: ^0.3.9
   flutter_svg: ^0.17.4
   flutter_sqlcipher: any
   path_provider: any
@@ -38,6 +39,9 @@ dependencies:
   flutter_plugin_android_lifecycle: ^1.0.2
   get_version: ^0.2.2
   flare_flutter: ^2.0.5
+  firebase_core: ^0.4.0+9
+  firebase_analytics: ^5.0.2
+  firebase_admob: ^0.9.3
 
 
 

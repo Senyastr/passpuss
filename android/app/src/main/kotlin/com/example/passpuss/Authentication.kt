@@ -1,4 +1,4 @@
-package com.example.passpuss
+package com.passpuss.passpuss
 
 import android.app.Activity
 import android.app.AlertDialog

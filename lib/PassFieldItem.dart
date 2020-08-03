@@ -108,44 +108,41 @@ class PassFieldState extends State<PassField> {
                                       .usernameCopied)));
                             })),
                   ])),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Row(children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.only(
-                            left: 15,
-                          ),
-                          child: IconButton(
-                            icon: (isPasswordShown) ? iconOpened : iconLocked,
-                            onPressed: () {
-                              setState(() {
-                                isPasswordShown = !isPasswordShown;
-                              });
-                            },
-                          )),
-                      Padding(
-                          padding:
-                          EdgeInsets.only(left: 6, top: 10, bottom: 10),
-                          child: Text(
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Row(children: <Widget>[
+                  Padding(
+                      padding: EdgeInsets.only(
+                        left: 15,
+                      ),
+                      child: IconButton(
+                        icon: (isPasswordShown) ? iconOpened : iconLocked,
+                        onPressed: () {
+                          setState(() {
+                            isPasswordShown = !isPasswordShown;
+                          });
+                        },
+                      )),
+                  Padding(
+                      padding: EdgeInsets.only(left: 6, top: 10, bottom: 10),
+                      child: Text(
                           (isPasswordShown)
                               ? passEntry.getPassword()
                               : hidePassword(passEntry.getPassword()),
                           style: TextStyle(fontSize: 20, color: Colors.white))),
-                      Padding(
-                          padding: EdgeInsets.all(1),
-                          child: IconButton(
-                              icon: Icon(Icons.content_copy),
-                              onPressed: () {
-                                Clipboard.setData(
-                                    ClipboardData(
-                                        text: passEntry.getPassword()));
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text(LocalizationTool
-                                        .of(context)
+                  Padding(
+                      padding: EdgeInsets.all(1),
+                      child: IconButton(
+                          icon: Icon(Icons.content_copy),
+                          onPressed: () {
+                            Clipboard.setData(
+                                ClipboardData(text: passEntry.getPassword()));
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text(LocalizationTool.of(context)
                                     .passwordCopied)));
-                              })),
-                    ]),
-                  ),
+                          })),
+                ]),
+              ),
             ]))));
   }
 
@@ -157,21 +154,22 @@ class PassFieldState extends State<PassField> {
 
   void removeEntry() async {
     bool isAuth;
-    var auth = await SettingsManager.getPref(PrivacySettingsTabState.authVerifyRemoveEntrySetting) as bool;
-    if (auth != null || auth){
+    var auth = await SettingsManager.getPref(
+        PrivacySettingsTabState.authVerifyRemoveEntrySetting) as bool;
+    if (auth != null && auth) {
       var localAuthentication = LocalAuthentication();
-      var hasAuth = await localAuthentication.authenticateWithBiometrics(localizedReason: LocalizationTool.of(context).removeEntryFingerprintPrompt);
+      var hasAuth = await localAuthentication.authenticateWithBiometrics(
+          localizedReason:
+              LocalizationTool.of(context).removeEntryFingerprintPrompt);
       isAuth = hasAuth;
-      
-    }
-    else{
+    } else {
       isAuth = true;
     }
-    if (isAuth){
+    if (isAuth) {
       HomePageState.changeDataset(() {
-      HomePageState.Pairs.remove(passEntry);
-      DBProvider.DB.deletePassEntry(passEntry);
-    });
+        HomePageState.Pairs.remove(passEntry);
+        DBProvider.DB.deletePassEntry(passEntry);
+      });
     }
   }
 

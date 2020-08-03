@@ -2,6 +2,7 @@ import 'package:PassPuss/pages/homePage.dart';
 import 'package:PassPuss/localization.dart';
 import 'package:PassPuss/pages/recommendation.dart';
 import 'package:PassPuss/pages/settings/Privacy.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,6 +10,7 @@ import 'package:PassPuss/auth/local_auth.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'ads/adManager.dart';
 import 'message.dart';
 import 'pages/settings/settings.dart';
 
@@ -150,7 +152,9 @@ class PassPuss extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
+  Future<void> _initAdMob() {
+    return FirebaseAdMob.instance.initialize(appId: AdManager.appId);
+  }
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
@@ -324,6 +328,7 @@ class PassEntriesPage extends State<MyHomePage> implements ResetAuthAction {
   }
 }
 
+// ignore: must_be_immutable
 class NotAuthenticatedWidget extends StatefulWidget {
   ResetAuthAction callback;
   NotAuthenticatedWidget(this.callback);
@@ -400,7 +405,8 @@ class _NotAuthenticatedWidgetState extends State<NotAuthenticatedWidget> {
                                 PrivacySettingsTabState.isVerifyingKey, false);
                             showDialog(
                               context: context,
-                              builder: (context) => ResultDialog("msg", ResultType.positive),
+                              builder: (context) =>
+                                  ResultDialog("msg", ResultType.positive),
                             );
                             callback.onResetAuth();
                             // msg isn't used
