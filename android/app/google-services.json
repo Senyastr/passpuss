@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "368764625354",
+    "firebase_url": "https://pass-puss.firebaseio.com",
+    "project_id": "pass-puss",
+    "storage_bucket": "pass-puss.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368764625354:android:08e488cdb662c1f80e2f33",
+        "android_client_info": {
+          "package_name": "com.passpuss.passpuss"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "368764625354-82d91l2tabc1b74qt98fr1m2enqvlj44.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXYqAjzyU31_PZaSNaYPNJkJBQBrzoSv4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "368764625354-82d91l2tabc1b74qt98fr1m2enqvlj44.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
