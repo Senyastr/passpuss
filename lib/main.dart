@@ -223,10 +223,12 @@ class PassEntriesPage extends State<MyHomePage> implements ResetAuthAction {
                         child: ListTile(
                             title: Row(
                           children: <Widget>[
-                            Icon(
-                              Icons.settings,
-                              color: Colors.white,
-                            ),
+                            Hero(
+                                tag: "settings",
+                                child: Icon(
+                                  Icons.settings,
+                                  color: Colors.white,
+                                )),
                             VerticalDivider(),
                             Text(
                               LocalizationTool.of(context).settings,

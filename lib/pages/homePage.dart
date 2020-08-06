@@ -1,12 +1,15 @@
 import 'dart:isolate';
 
+import 'package:PassPuss/ads/adManager.dart';
 import 'package:PassPuss/localization.dart';
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:PassPuss/Database.dart';
 import "package:PassPuss/passentry.dart";
 import 'package:PassPuss/PassFieldItem.dart';
 
 import 'package:PassPuss/NewPassEntry.dart';
+import 'package:tuple/tuple.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,12 +23,10 @@ enum InteractMode { def, searching }
 class HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   static List<PassEntry> Pairs = [];
+  static Sorts sortType = Sorts.none;
+  static int sortIndex = 1;
   static HomePageState _page;
-  static Widget emptyList;
 
-  AnimationController _controller;
-
-  Animation<Offset> _offsetAnimation;
   List<PassField> passFieldsWidgets;
   InteractMode mode = InteractMode.def;
 
@@ -40,55 +41,61 @@ class HomePageState extends State<HomePage>
     super.initState();
     assignPairs();
 
-    _controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
-    _offsetAnimation = Tween<Offset>(
-            begin: Offset.zero, end: const Offset(1.5, 0.0))
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+    AdManager.initInterstitialAd();
+    AdManager.loadInterstitialAd();
   }
 
   bool loading = true;
 
   @override
   Widget build(BuildContext context) {
-    emptyList = SafeArea(
-        child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-                padding: EdgeInsets.all(15),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 60),
-                      child: Row(
-                        children: <Widget>[
-                          Center(
-                            child: Icon(Icons.lock_outline,
-                                size: 100,
-                                color: Theme.of(context).accentColor),
-                          ),
-                          Center(
-                            child: Icon(Icons.list,
-                                size: 100,
-                                color: Theme.of(context).accentColor),
-                          )
-                        ],
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        LocalizationTool.of(context).passEntriesEmpty,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline6
-                            .copyWith(color: Colors.white),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ))));
     _page = this;
-    Widget upperPart;
+    var construction = buildContent();
+    Widget upperPart = construction.item1;
+    Widget content = construction.item2;
+
+    return Column(children: <Widget>[
+      SafeArea(child: upperPart),
+      !loading ? content : Center(child: CircularProgressIndicator()),
+      loading
+          ? Container()
+          : Align(
+              alignment: Alignment.bottomCenter,
+              child: FloatingActionButton(
+                child: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NewPassEntryPage()));
+                },
+              )),
+    ]);
+  }
+
+  List<SortOption> filterChoices = [
+    SortOption("Sort by time", (items) {
+      // TODO: localize string
+      items.sort((a, b) => a.createdTime.compareTo(b.createdTime));
+      return items;
+    }, Icon(Icons.timer), Sorts.byTime),
+    SortOption("None", (items) {
+      // TODO: Localize string
+      return items;
+    }, Icon(Icons.cancel), Sorts.none),
+  ];
+  // upperpart, content
+  Tuple2<Widget, Widget> buildContent() {
+    var flareActor = FlareActor(
+      "assets/animations/lock.flr",
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.center,
+      animation: 'loop',
+    );
+
+    var upperPart;
+    var pairs = filterChoices[sortIndex].sort(Pairs);
+
     switch (mode) {
       case InteractMode.def:
         viewItemsCount = Pairs.length;
@@ -104,21 +111,65 @@ class HomePageState extends State<HomePage>
                         LocalizationTool.of(context).home,
                         style: TextStyle(fontSize: 32, color: Colors.white),
                       ))),
-              Pairs.length != 0
-                  ? Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: IconButton(
-                          icon: Icon(Icons.search, color: Colors.white),
-                          onPressed: () {
-                            mode = InteractMode.searching;
-                            setState(() {});
-                          },
-                        ),
-                      ))
-                  : Container(),
+              Row(
+                children: <Widget>[
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      child: Container(
+                          width: 20,
+                          height: 18,
+                          child: Text(Pairs.length.toString(),
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(color: Colors.white)),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white),
+                            shape: BoxShape.circle,
+                          ))),
+                  Pairs.length != 0
+                      ? Row(children: [
+                          PopupMenuButton(
+                            onSelected: (value) {
+                              sortType = filterChoices[value].sortType;
+                              sortIndex = value;
+                              setState(() {});
+                            },
+                            child: Icon(Icons.sort, color: Colors.white),
+                            color: Colors.white,
+                            itemBuilder: (BuildContext context) {
+                              return filterChoices.map((item) {
+                                return PopupMenuItem(
+                                  child: ListTile(
+                                    leading: item.icon,
+                                    title: Text(item.name),
+                                    contentPadding: EdgeInsets.all(1),
+                                  ),
+                                  value: filterChoices.indexOf(item),
+                                );
+                              }).toList();
+                            },
+                          ),
+                          Align(
+                              alignment: Alignment.topRight,
+                              child: Padding(
+                                padding: EdgeInsets.all(20),
+                                child: IconButton(
+                                  icon: Icon(Icons.search, color: Colors.white),
+                                  onPressed: () {
+                                    mode = InteractMode.searching;
+                                    setState(() {});
+                                  },
+                                ),
+                              ))
+                        ])
+                      : Container(),
+                ],
+              ),
             ]);
+            
+
         break;
       case InteractMode.searching:
         viewItemsCount = entriesFound.length;
@@ -163,40 +214,73 @@ class HomePageState extends State<HomePage>
                 ))));
         break;
     }
-
-    return Column(children: <Widget>[
-      SafeArea(child: upperPart),
-      Pairs.length == 0
-          ? Expanded(child: emptyList)
-          : !loading
-              ? Expanded(
-                  child: ListView.builder(
-                      itemCount: viewItemsCount,
-                      itemBuilder: (BuildContext context, int index) {
-                        switch (mode) {
-                          case InteractMode.def:
-                            return PassField(Pairs[index], GlobalKey());
-                            break;
-                          case InteractMode.searching:
-                            return PassField(entriesFound[index], GlobalKey());
-                            break;
-                          default:
-                            return null;
-                        }
-                      }))
-              : Center(child: CircularProgressIndicator()),
-      loading
-          ? Container()
-          : FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => NewPassEntryPage()));
-              },
-            )
-    ]);
+            var content = Pairs.length == 0
+            ? Expanded(
+                child: SafeArea(
+                    child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Column(
+                              children: <Widget>[
+                                Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 90),
+                                    child: TweenAnimationBuilder(
+                                      curve: Curves.easeIn,
+                                      builder: (_, double pos, __) {
+                                        return Transform.translate(
+                                            offset: Offset(pos, 0),
+                                            child: Row(
+                                              children: <Widget>[
+                                                Center(
+                                                    child: Container(
+                                                        width: 80,
+                                                        height: 80,
+                                                        child: flareActor)),
+                                                Center(
+                                                  child: Icon(Icons.list,
+                                                      size: 100,
+                                                      color: Theme.of(context)
+                                                          .accentColor),
+                                                )
+                                              ],
+                                            ));
+                                      },
+                                      duration: Duration(milliseconds: 300),
+                                      tween: Tween<double>(begin: -200, end: 0),
+                                    )),
+                                Center(
+                                  child: Text(
+                                    LocalizationTool.of(context)
+                                        .passEntriesEmpty,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline6
+                                        .copyWith(color: Colors.white),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            )))))
+            : Expanded(
+                child: ListView.builder(
+                    itemCount: viewItemsCount,
+                    itemBuilder: (context, index) {
+                      switch (mode) {
+                        case InteractMode.def:
+                        
+                        return PassField(pairs[index], GlobalKey());
+                          
+                          break;
+                        case InteractMode.searching:
+                          return PassField(entriesFound[index], GlobalKey());
+                          break;
+                        default:
+                          return null;
+                      }
+                    }));
+    return Tuple2<Widget, Widget>(upperPart, content);
   }
 
   assignPairs() async {
@@ -353,5 +437,23 @@ class HomePageState extends State<HomePage>
           break;
       }
     }
+  }
+}
+
+enum Sorts {
+  none,
+  byTime,
+}
+typedef SortItems<T1> = List<T1> Function(List<T1> value);
+
+class SortOption<T> {
+  SortItems<PassEntry> sort;
+  String name;
+  Icon icon;
+
+  Sorts sortType;
+  SortOption(this.name, this.sort, this.icon, this.sortType);
+  List<PassEntry> sortItems(List<PassEntry> items) {
+    return sort(items);
   }
 }

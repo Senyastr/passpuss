@@ -61,7 +61,8 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
                           .copyWith(color: Colors.white),
                     ),
                     Padding(
-                        padding: EdgeInsets.only(left: 20), child: privacyIcon),
+                        padding: EdgeInsets.only(left: 20),
+                        child: Hero(tag: "privacy", child: privacyIcon)),
                   ]),
             ),
             Padding(
@@ -89,7 +90,7 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
                 Divider(),
                 isVerifyingCompatible
                     ? ListTile(
-                      leading: Icon(Icons.fingerprint,color: Colors.white),
+                        leading: Icon(Icons.fingerprint, color: Colors.white),
                         title: Text(
                             LocalizationTool.of(context)
                                 .fingerprintAuthentication,
@@ -150,7 +151,8 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
     }
 
     // REMOVE PASS ENTRY AUTHENTICATION
-    temp = (await SettingsManager.getPref(PrivacySettingsTabState.authVerifyRemoveEntrySetting)) as bool;
+    temp = (await SettingsManager.getPref(
+        PrivacySettingsTabState.authVerifyRemoveEntrySetting)) as bool;
     authRemoveValue = temp == null ? false : temp;
 
     // finally, update UI

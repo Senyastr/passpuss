@@ -9,6 +9,7 @@ import "package:PassPuss/passentry.dart";
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:PassPuss/pages/PassEntryDetails.dart';
+import 'ads/adManager.dart';
 import 'localization.dart';
 
 class PassField extends StatefulWidget {
@@ -61,6 +62,7 @@ class PassFieldState extends State<PassField> {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => PassEntryDetails(passEntry)));
+              AdManager.tryShowInterstitialAd();
             },
             child: Card(
                 child: Column(children: <Widget>[

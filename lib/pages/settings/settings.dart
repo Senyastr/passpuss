@@ -16,10 +16,14 @@ class SettingsPage extends StatefulWidget {
 }
 
 class SettingsPageState extends State<SettingsPage> {
-  var settingsIcon = Icon(Icons.settings, size: 32, color: Colors.white,);
+  var settingsIcon = Icon(
+    Icons.settings,
+    size: 32,
+    color: Colors.white,
+  );
 
-  var notifcationIcon = Icon(Icons.notifications,
-                    color: Colors.yellowAccent, size: 32);
+  var notifcationIcon =
+      Icon(Icons.notifications, color: Colors.yellowAccent, size: 32);
 
   var recommendationIcon = Icon(Icons.thumb_up, color: Colors.indigo, size: 32);
 
@@ -41,7 +45,10 @@ class SettingsPageState extends State<SettingsPage> {
                       LocalizationTool.of(context).settings,
                       style: TextStyle(fontSize: 32, color: Colors.white),
                     ))),
-                    Padding(child: settingsIcon, padding: EdgeInsets.only(left: 10),)
+            Padding(
+              child: Hero(tag: "settings", child: settingsIcon),
+              padding: EdgeInsets.only(left: 10),
+            )
           ]),
         ),
         Column(
@@ -59,7 +66,7 @@ class SettingsPageState extends State<SettingsPage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => NotificationSettingsTab())),
-                leading: notifcationIcon,
+                leading: Hero(tag: "notif", child: notifcationIcon),
                 title: Text(
                   LocalizationTool.of(context).notifications,
                   style: Theme.of(context)
@@ -78,7 +85,7 @@ class SettingsPageState extends State<SettingsPage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ForYouSettingsTab())),
-                leading: recommendationIcon,
+                leading: Hero(tag: "forYou", child: recommendationIcon),
                 title: Text(
                   LocalizationTool.of(context).forYou,
                   style: Theme.of(context)
@@ -97,7 +104,7 @@ class SettingsPageState extends State<SettingsPage> {
                       MaterialPageRoute(
                           builder: (context) => PrivacySettingsTab()));
                 },
-                leading: privacyIcon,
+                leading: Hero(tag: "privacy", child: privacyIcon),
                 title: Text(
                   LocalizationTool.of(context).privacy,
                   style: Theme.of(context)

@@ -97,6 +97,7 @@ flutter:
     - assets/images/ImageShareChoice.svg
     - assets/animations/success.flr
     - assets/animations/failed.flr
+    - assets/animations/lock.flr
 
 
   # To add assets to your application, add an assets section, like this:

@@ -56,7 +56,7 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 20),
-                      child: thumpUpIcon,
+                      child: Hero(tag: "forYou", child: thumpUpIcon),
                     ),
                   ]),
             )),
@@ -130,8 +130,8 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
   @override
   void initSettings() async {
     sharedPrefs = await SharedPreferences.getInstance();
-    dynamic temp;// QWERTY SETTING
-    temp = sharedPrefs.getBool(qwertyKey); 
+    dynamic temp; // QWERTY SETTING
+    temp = sharedPrefs.getBool(qwertyKey);
     qwertySettingValue = temp == null ? true : temp; // DEFAULT : TRUE
 
     temp = sharedPrefs.getDouble(charsAllowedKey);
@@ -155,7 +155,7 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
     setState(() {});
   }
 
-  void onlyLettersChanged(bool value) async{
+  void onlyLettersChanged(bool value) async {
     await SettingsManager.changePref(onlyLettersSetting, value);
     onlyLetters = value;
     setState(() {});

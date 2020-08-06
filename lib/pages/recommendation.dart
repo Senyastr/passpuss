@@ -8,9 +8,16 @@ import 'package:PassPuss/localization.dart';
 import 'package:PassPuss/passentry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
-enum PasswordProblem{
-  Expired, OnlyLetters, OnlyNumbers, LessThan8, RepeatChars, Idiot
+
+enum PasswordProblem {
+  Expired,
+  OnlyLetters,
+  OnlyNumbers,
+  LessThan8,
+  RepeatChars,
+  Idiot
 }
+
 class RecommendationTab extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -27,8 +34,7 @@ class RecommendationTabState extends State<RecommendationTab> {
   @override
   void initState() {
     analyzing = true;
-    analyze()
-    .then((recSet) {
+    analyze().then((recSet) {
       this.recSet = recSet;
       setState(() {
         analyzing = false;
@@ -39,7 +45,7 @@ class RecommendationTabState extends State<RecommendationTab> {
   bool analyzing;
   @override
   Widget build(BuildContext context) {
-    if (analyzing == false){
+    if (analyzing == false) {
       items = buildItems();
     }
     var emptyView = Column(
@@ -93,7 +99,8 @@ class RecommendationTabState extends State<RecommendationTab> {
     ]);
   }
 
-  Future<List<Tuple3<PassEntry, PasswordProblem, MessageType>>> analyze() async {
+  Future<List<Tuple3<PassEntry, PasswordProblem, MessageType>>>
+      analyze() async {
     // Here we're getting RecommendationItems(passwords that should be changed)
     var pairs = HomePageState.Pairs;
     var recommendSet = List<Tuple3<PassEntry, PasswordProblem, MessageType>>();
@@ -107,26 +114,24 @@ class RecommendationTabState extends State<RecommendationTab> {
     return recommendSet;
   }
 
-  Future<Tuple3<PassEntry, PasswordProblem, MessageType>> filter  (
+  Future<Tuple3<PassEntry, PasswordProblem, MessageType>> filter(
       PassEntry f) async {
     var password = f.getPassword();
     var timeDifference = (f.createdTime.difference(DateTime.now()));
     if (timeDifference.inDays > 31) {
-      return new Tuple3(f, PasswordProblem.Expired,
-          MessageType.recommendation);
+      return new Tuple3(f, PasswordProblem.Expired, MessageType.recommendation);
     } else {
       // HERE WE ANALYZE THE PASSWORDS(PASSWORDS SAFETY)
 
       // WE ANALYZE ONLY LOWER-CASED PASSWORDS
       // 1. The password has the length less than 8 characters.
       if (password.length < 8) {
-        return new Tuple3(f, PasswordProblem.LessThan8,
-            MessageType.higlyRecommended);
+        return new Tuple3(
+            f, PasswordProblem.LessThan8, MessageType.higlyRecommended);
       }
       // 2. The password has repeated characters.
       if (hasRepeatedCharacters(password)) {
-        return new Tuple3(f, PasswordProblem.RepeatChars,
-            MessageType.warning);
+        return new Tuple3(f, PasswordProblem.RepeatChars, MessageType.warning);
       }
       // 3. The password is one of these:
       // qwertyui
@@ -138,26 +143,25 @@ class RecommendationTabState extends State<RecommendationTab> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         var temp = prefs.getBool(ForYouSettingsTabState.qwertyKey);
         var setting = temp == null ? true : temp;
-        if (setting){
-           return new Tuple3(f, PasswordProblem.Idiot,
-            MessageType.higlyRecommended);
-        }       
+        if (setting) {
+          return new Tuple3(
+              f, PasswordProblem.Idiot, MessageType.higlyRecommended);
+        }
       }
       // 4. The password hasn't used any letters, but numbers
       if (hasOnlyLetters(password)) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         var temp = prefs.getBool(ForYouSettingsTabState.onlyLettersSetting);
         var setting = temp == null ? true : temp;
-        if (setting){
-           return new Tuple3(f, PasswordProblem.OnlyLetters,
-            MessageType.recommendation);
+        if (setting) {
+          return new Tuple3(
+              f, PasswordProblem.OnlyLetters, MessageType.recommendation);
         }
-       
       }
       // 5. Vice versa, the password used only letters.
       if (hasOnlyNumbers(password)) {
-        return new Tuple3(f, PasswordProblem.OnlyNumbers,
-            MessageType.recommendation);
+        return new Tuple3(
+            f, PasswordProblem.OnlyNumbers, MessageType.recommendation);
       }
     }
     return null;
@@ -274,11 +278,9 @@ class RecommendationItemState extends State<RecommendationItem> {
 
   @override
   Widget build(BuildContext context) {
-
     String textMessage;
 
-    switch(message){
-      
+    switch (message) {
       case PasswordProblem.Expired:
         textMessage = LocalizationTool.of(context).passwordExpired;
         break;
@@ -286,19 +288,15 @@ class RecommendationItemState extends State<RecommendationItem> {
         textMessage = LocalizationTool.of(context).passwordLetters;
         break;
       case PasswordProblem.OnlyNumbers:
-        
         textMessage = LocalizationTool.of(context).passwordNumbers;
         break;
       case PasswordProblem.LessThan8:
-        
         textMessage = LocalizationTool.of(context).passwordChars;
         break;
       case PasswordProblem.RepeatChars:
-        
         textMessage = LocalizationTool.of(context).passwordRepeatChars;
         break;
       case PasswordProblem.Idiot:
-        
         textMessage = LocalizationTool.of(context).passwordIdiot;
         break;
     }

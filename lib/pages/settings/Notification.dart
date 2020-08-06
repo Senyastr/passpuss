@@ -45,7 +45,7 @@ class NotificationSettingsTabState extends State<NotificationSettingsTab>
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      notificationIcon,
+                      Hero(tag: "notif", child: notificationIcon),
                       Text(
                         LocalizationTool.of(context).notifications,
                         style: Theme.of(context)
@@ -60,8 +60,8 @@ class NotificationSettingsTabState extends State<NotificationSettingsTab>
                             onChanged: (bool changed) {
                               setState(() {
                                 turnedNotifcation = changed;
-                                SettingsManager.changePref(notifcationsOn,
-                                    changed); 
+                                SettingsManager.changePref(
+                                    notifcationsOn, changed);
                                 // print(SettingsManager.getPref(notifcationsOn));
                               });
                             },
