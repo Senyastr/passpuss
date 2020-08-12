@@ -80,6 +80,7 @@ class AdManager {
 
   static String get rewardedAdUnitId {
     throw UnsupportedError("NOT REGISTERED");
+    // ignore: dead_code
     if (Platform.isAndroid) {
       return "<YOUR_ANDROID_REWARDED_AD_UNIT_ID>";
     } else if (Platform.isIOS) {

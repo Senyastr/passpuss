@@ -22,7 +22,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   google_fonts: ^0.3.9
-  flutter_svg: ^0.17.4
+  flutter_svg: ^0.18.0
   flutter_sqlcipher: any
   path_provider: any
   sliding_up_panel: ^1.0.2
@@ -98,6 +98,7 @@ flutter:
     - assets/animations/success.flr
     - assets/animations/failed.flr
     - assets/animations/lock.flr
+    - assets/animations/loading.flr
 
 
   # To add assets to your application, add an assets section, like this:

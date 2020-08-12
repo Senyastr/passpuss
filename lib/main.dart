@@ -408,7 +408,7 @@ class _NotAuthenticatedWidgetState extends State<NotAuthenticatedWidget> {
                             showDialog(
                               context: context,
                               builder: (context) =>
-                                  ResultDialog("msg", ResultType.positive),
+                                  ResultDialog("msg", type: ResultType.positive),
                             );
                             callback.onResetAuth();
                             // msg isn't used

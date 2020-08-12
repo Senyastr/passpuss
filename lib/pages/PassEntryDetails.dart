@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:PassPuss/pages/editEntryPage.dart';
+import 'package:PassPuss/pages/homePage.dart';
+import 'package:PassPuss/pages/settings/ForYou.dart';
+import 'package:PassPuss/pages/settings/settings.dart';
 import 'package:PassPuss/passentry.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +12,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
-
+import 'package:PassPuss/message.dart';
 import 'package:PassPuss/localization.dart';
 
+import '../Database.dart';
 import '../PassFieldItem.dart';
 import '../main.dart';
 import '../notifications.dart';
@@ -44,6 +48,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
   var expiration;
   DateFormat timeCreated;
   PassEntryDetailsState state;
+
   @override
   void initState() {
     super.initState();
@@ -70,7 +75,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
         key: passwordStateKey, color: Theme.of(context).accentColor);
     iconOpened = Icon(Icons.lock_open,
         key: passwordStateKey, color: Theme.of(context).accentColor);
-        
+
     mainInfo = Column(children: <Widget>[
       Align(
           alignment: Alignment.centerLeft,
@@ -80,14 +85,14 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                 LocalizationTool.of(context).details,
                 style: Theme.of(context)
                     .textTheme
-                    .headline5
+                    .headline6
                     .copyWith(color: Colors.white),
               ))),
       Align(
           alignment: Alignment.topLeft,
           child: Row(children: <Widget>[
             Padding(
-                child: SvgPicture.asset(entry.getIconId()),
+                child: Hero(tag: "entryIcon",child: SvgPicture.asset(entry.getIconId())),
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
             Text(entry.getTitle(),
                 style: TextStyle(fontSize: 20, color: Colors.white)),
@@ -115,10 +120,10 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                               content: Text(LocalizationTool.of(context)
                                   .usernameCopied)));
                     })),
-             Icon(
-                  Icons.text_rotation_none,
-                  color: Theme.of(context).accentColor,
-                ),
+            Icon(
+              Icons.text_rotation_none,
+              color: Theme.of(context).accentColor,
+            ),
             Padding(
                 padding: EdgeInsets.all(3),
                 child: Text(username.length.toString(),
@@ -163,16 +168,16 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                                 LocalizationTool.of(context).passwordCopied)));
                   })),
           Icon(
-                Icons.text_rotation_none,
-                color: Theme.of(context).accentColor,
-              ),
+            Icons.text_rotation_none,
+            color: Theme.of(context).accentColor,
+          ),
           Padding(
               padding: EdgeInsets.all(3),
               child: Text(password.length.toString(),
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1
-                      .copyWith(color: Colors.white)))
+                      .copyWith(color: Colors.white))),
         ]),
       ),
       Align(
@@ -198,10 +203,10 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                               content: Text(
                                   LocalizationTool.of(context).emailCopied)));
                     })),
-             Icon(
-                  Icons.text_rotation_none,
-                  color: Theme.of(context).accentColor,
-                ),
+            Icon(
+              Icons.text_rotation_none,
+              color: Theme.of(context).accentColor,
+            ),
             Padding(
                 padding: EdgeInsets.all(3),
                 child: Text(email.length.toString(),
@@ -211,7 +216,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                         .copyWith(color: Colors.white)))
           ])),
     ]);
-    timeBlock = Column(children: <Widget>[
+    timeBlock = Padding(padding: EdgeInsets.only(bottom: 10), child: Column(children: <Widget>[
       Align(
         alignment: Alignment.centerLeft,
         child: Padding(
@@ -220,7 +225,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
               LocalizationTool.of(context).time,
               style: Theme.of(context)
                   .textTheme
-                  .headline5
+                  .headline6
                   .copyWith(color: Colors.white),
             )),
       ),
@@ -240,7 +245,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
             left: 20,
             top: 10,
           ))
-    ]);
+    ]));
     var editButton = FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -286,7 +291,22 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Divider(color: Colors.white),
             ),
-            Expanded(child: timeBlock),
+            timeBlock,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Divider(color: Colors.white),
+            ),
+            Align(
+                alignment: Alignment.center,
+                child: IconButton(
+                    icon: Icon(Icons.lightbulb_outline),
+                    iconSize: 52,
+                    color: Colors.yellow,
+                    onPressed: () {
+                      tryRegeneratePassword(context,
+                          onPositive: regeneratePassword,
+                          onNegative: cancelPasswordRegeneration);
+                    })),
             SafeArea(
               child: Padding(
                 padding: EdgeInsets.all(10),
@@ -389,6 +409,109 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
   }
 
   void removeShareFile() {}
+
+  void tryRegeneratePassword(BuildContext context,
+      {VoidCallback onPositive, VoidCallback onNegative}) {
+    var positive = onPositive == null ? () {} : onPositive;
+    var negative = onNegative == null ? () {} : onNegative;
+    showDialog(
+        context: context,
+        builder: (context) => RegeneratePasswordDialog(
+              onPositive: positive,
+              onNegative: negative,
+            ));
+  }
+
+  void regeneratePassword() async {
+     Navigator.pop<RegeneratePasswordDialog>(context);
+    var dialog =  ResultDialog("message");
+    showDialog(context: context, builder: (context) => dialog);
+    var temp = (await SettingsManager.getPref(ForYouSettingsTabState.charsAllowedKey) as int);
+    var minChars = temp == null ? 8 : temp;
+    var username = entry.getUsername();
+    var password = PassEntry.generatePass(minChars);
+    var email = entry.getEmail();
+    var title = entry.getTitle();
+    var icon = entry.getIconId();
+    var createdTime = entry.createdTime;
+    var removedNumber = await DBProvider.DB.deletePassEntry(entry);
+    HomePageState.Pairs.remove(entry);
+    var newEntry =
+        PassEntry.withIcon(username, password, title, email, icon, createdTime);
+    await DBProvider.DB.addPassEntry(newEntry);
+    await HomePageState.changeDataset(() {
+      HomePageState.Pairs.add(newEntry);
+    });
+    entry = HomePageState.Pairs.where((field) => field.getUsername() == username && password == field.getPassword() && email == field.getEmail() && title == field.getTitle() && icon == field.getIconId() && createdTime == field.createdTime).elementAt(0);
+    this.password = password;
+    dialog.state.loaded();
+    setState((){});
+    
+  }
+
+  void cancelPasswordRegeneration() {
+    Navigator.pop<RegeneratePasswordDialog>(context);
+  }
+}
+
+class RegeneratePasswordDialog extends StatefulWidget {
+  RegeneratePasswordDialog({VoidCallback onPositive, VoidCallback onNegative}) {
+    this.onPositive = onPositive == null ? () {} : onPositive;
+    this.onNegative = onNegative == null ? () {} : onNegative;
+  }
+  VoidCallback onPositive;
+  VoidCallback onNegative;
+  @override
+  _RegeneratePasswordDialogState createState() =>
+      _RegeneratePasswordDialogState(
+        onPositive: onPositive,
+        onNegative: onNegative,
+      );
+}
+
+class _RegeneratePasswordDialogState extends State<RegeneratePasswordDialog> {
+  _RegeneratePasswordDialogState(
+      {VoidCallback onPositive, VoidCallback onNegative}) {
+    this.onPositive = onPositive;
+    this.onNegative = onNegative;
+  }
+  VoidCallback onPositive;
+  VoidCallback onNegative;
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        LocalizationTool.of(context).regenerateDialogWarningTitle,
+        style:
+            Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),
+      ),
+      content: Text(
+        LocalizationTool.of(context).regenerateDialogWarningContent,
+      ),
+      actions: <Widget>[
+        // POSITIVE
+        FlatButton(
+            onPressed: onPositive,
+            child: Text(
+                LocalizationTool.of(context)
+                    .regenerateDialogWarningPositiveAnswer,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    .copyWith(color: Colors.lightGreenAccent))),
+        // NEGATIVE
+        FlatButton(
+            onPressed: onNegative,
+            child: Text(
+                LocalizationTool.of(context)
+                    .regenerateDialogWarningNegativeAnswer,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    .copyWith(color: Colors.redAccent)))
+      ],
+    );
+  }
 }
 
 enum PassEntryShareType {

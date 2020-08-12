@@ -152,11 +152,28 @@ class LocalizationTool {
   String get fingerprintAuthRemoveSetup =>
       getValue("fingerprintSettingsChange");
 
-  get removeEntryFingerprintPrompt => getValue("removeEntryFingerprintPrompt");
+  String get removeEntryFingerprintPrompt =>
+      getValue("removeEntryFingerprintPrompt");
 
   String get onlyLettersSetting => getValue("onlyLettersSetting");
 
-  get entrySearchHint => getValue("entrySearchHint");
+  String get entrySearchHint => getValue("entrySearchHint");
+
+  String get regenerateDialogWarningTitle =>
+      getValue("regenerateDialogWarningTitle");
+
+  String get regenerateDialogWarningPositiveAnswer =>
+      getValue("regenerateDialogWarningPositiveAnswer");
+
+  String get regenerateDialogWarningContent =>
+      getValue("regenerateDialogWarningContent");
+
+  String get sortNone => getValue("sortNone");
+
+  String get sortTime => getValue("sortTime");
+
+  String get regenerateDialogWarningNegativeAnswer =>
+      getValue("regenerateDialogWarningNegativeAnswer");
 
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
@@ -256,8 +273,17 @@ class LocalizationTool {
           "Always verify the identity when removing password entries",
       "removeEntryFingerprintPrompt":
           "Are you sure about removing the password entry? If so, scan your fingerprint.",
-      "onlyLettersSetting" : "Remind of using only letters in the password",
-      "entrySearchHint" : "Search an entry"
+      "onlyLettersSetting": "Remind of using only letters in the password",
+      "entrySearchHint": "Search an entry",
+      "regenerateDialogWarningTitle":
+          "Are you sure you want to regenerate password?",
+      "regenerateDialogWarningPositiveAnswer": "Yes, I'm ready",
+      "regenerateDialogWarningNegativeAnswer": "No, let me go back",
+      "regenerateDialogWarningContent":
+          "Regenerating password is going to REMOVE the old password and replace it with the new one!" +
+              " Back up the old password.",
+      "sortNone": "None",
+      "sortTime" : "By time",
     },
     'ru': {
       'home': 'Главная',
@@ -341,8 +367,17 @@ class LocalizationTool {
           "Всегда удостовериваться в личности при удалении записей паролей.",
       "removeEntryFingerprintPrompt":
           "Вы уверенны, что хотите удалить запись пароля? Если да, просканируйте отпечаток пальца.",
-      "onlyLettersSetting" : "Напоминать о использовании только букв в пароле.",
-      "entrySearchHint" : "Искать запись"
+      "onlyLettersSetting": "Напоминать о использовании только букв в пароле.",
+      "entrySearchHint": "Искать запись",
+      "regenerateDialogWarningTitle":
+          "Вы уверенны, что хотите регенерировтаь пароль?",
+      "regenerateDialogWarningPositiveAnswer": "Да, я готов",
+      "regenerateDialogWarningNegativeAnswer": "Нет, верните меня назад",
+      "regenerateDialogWarningContent":
+          "Регенерация пароля УДАЛИТ ваш старый пароль и заменит его другим! " +
+              "Сохраните старый пароль.",
+      "sortNone": "Отсутствует",
+      "sortTime" : "По времени",
     },
     'ua': {
       'home': "Головна",
@@ -429,8 +464,17 @@ class LocalizationTool {
           "Завжди запевнятися в особі при видаленні записів паролей",
       "removeEntryFingerprintPrompt":
           "Ви впевнені, що хочете видалити запис паролю? Якщо так, то проскануйте відбиток пальца.",
-      "onlyLettersSetting" : "Нагадувати про використання тільки букв в паролі.",
-      "entrySearchHint" : "Шукати запис"
+      "onlyLettersSetting": "Нагадувати про використання тільки букв в паролі.",
+      "entrySearchHint": "Шукати запис",
+      "regenerateDialogWarningTitle":
+          "Ви впевнені, що хочете регенерувати пароль?",
+      "regenerateDialogWarningPositiveAnswer": "Так, я готовий",
+      "regenerateDialogWarningNegativeAnswer": "Ні, поверніть мене назад",
+      "regenerateDialogWarningContent":
+          "Регенерація пароля ВИДАЛИТЬ ваш стаарий пароль та замінить його новим!" +
+              "Збережіть свій старий пароль.",
+      "sortNone": "Відсутнє",
+      "sortTime" : "За часом"
     }
   };
 }

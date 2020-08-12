@@ -250,11 +250,15 @@ class FingerprintBackupState extends State<FingerprintBackup> {
                 alignment: Alignment.bottomRight,
                 child: FlatButton(
                   child: Text(LocalizationTool.of(context).proceed),
-                  onPressed: () => showDialog(
-                      builder: (context) {
-                        return ResultDialog("message", ResultType.positive);
-                      },
-                      context: context),
+                  onPressed: () {
+                    showDialog(
+                        builder: (context) {
+                          var dialog = ResultDialog("message",
+                              type: ResultType.positive);
+                          return dialog;
+                        },
+                        context: context);
+                  },
                   color: Theme.of(context).accentColor,
                 ),
               )),

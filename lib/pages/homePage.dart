@@ -1,5 +1,3 @@
-import 'dart:isolate';
-
 import 'package:PassPuss/ads/adManager.dart';
 import 'package:PassPuss/localization.dart';
 import 'package:flare_flutter/flare_actor.dart';
@@ -50,6 +48,7 @@ class HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     _page = this;
+    initFilterChoices(context);
     var construction = buildContent();
     Widget upperPart = construction.item1;
     Widget content = construction.item2;
@@ -73,17 +72,9 @@ class HomePageState extends State<HomePage>
     ]);
   }
 
-  List<SortOption> filterChoices = [
-    SortOption("Sort by time", (items) {
-      // TODO: localize string
-      items.sort((a, b) => a.createdTime.compareTo(b.createdTime));
-      return items;
-    }, Icon(Icons.timer), Sorts.byTime),
-    SortOption("None", (items) {
-      // TODO: Localize string
-      return items;
-    }, Icon(Icons.cancel), Sorts.none),
-  ];
+  String timeSortName;
+  String noneSortName;
+
   // upperpart, content
   Tuple2<Widget, Widget> buildContent() {
     var flareActor = FlareActor(
@@ -168,7 +159,6 @@ class HomePageState extends State<HomePage>
                 ],
               ),
             ]);
-            
 
         break;
       case InteractMode.searching:
@@ -214,72 +204,69 @@ class HomePageState extends State<HomePage>
                 ))));
         break;
     }
-            var content = Pairs.length == 0
-            ? Expanded(
-                child: SafeArea(
-                    child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                            padding: EdgeInsets.all(15),
-                            child: Column(
-                              children: <Widget>[
-                                Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 90),
-                                    child: TweenAnimationBuilder(
-                                      curve: Curves.easeIn,
-                                      builder: (_, double pos, __) {
-                                        return Transform.translate(
-                                            offset: Offset(pos, 0),
-                                            child: Row(
-                                              children: <Widget>[
-                                                Center(
-                                                    child: Container(
-                                                        width: 80,
-                                                        height: 80,
-                                                        child: flareActor)),
-                                                Center(
-                                                  child: Icon(Icons.list,
-                                                      size: 100,
-                                                      color: Theme.of(context)
-                                                          .accentColor),
-                                                )
-                                              ],
-                                            ));
-                                      },
-                                      duration: Duration(milliseconds: 300),
-                                      tween: Tween<double>(begin: -200, end: 0),
-                                    )),
-                                Center(
-                                  child: Text(
-                                    LocalizationTool.of(context)
-                                        .passEntriesEmpty,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline6
-                                        .copyWith(color: Colors.white),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ],
-                            )))))
-            : Expanded(
-                child: ListView.builder(
-                    itemCount: viewItemsCount,
-                    itemBuilder: (context, index) {
-                      switch (mode) {
-                        case InteractMode.def:
-                        
-                        return PassField(pairs[index], GlobalKey());
-                          
-                          break;
-                        case InteractMode.searching:
-                          return PassField(entriesFound[index], GlobalKey());
-                          break;
-                        default:
-                          return null;
-                      }
-                    }));
+    var content = Pairs.length == 0
+        ? Expanded(
+            child: SafeArea(
+                child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 90),
+                                child: TweenAnimationBuilder(
+                                  curve: Curves.easeIn,
+                                  builder: (_, double pos, __) {
+                                    return Transform.translate(
+                                        offset: Offset(pos, 0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Center(
+                                                child: Container(
+                                                    width: 80,
+                                                    height: 80,
+                                                    child: flareActor)),
+                                            Center(
+                                              child: Icon(Icons.list,
+                                                  size: 100,
+                                                  color: Theme.of(context)
+                                                      .accentColor),
+                                            )
+                                          ],
+                                        ));
+                                  },
+                                  duration: Duration(milliseconds: 300),
+                                  tween: Tween<double>(begin: -200, end: 0),
+                                )),
+                            Center(
+                              child: Text(
+                                LocalizationTool.of(context).passEntriesEmpty,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    .copyWith(color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        )))))
+        : Expanded(
+            child: ListView.builder(
+                itemCount: viewItemsCount,
+                itemBuilder: (context, index) {
+                  switch (mode) {
+                    case InteractMode.def:
+                      return PassField(pairs[index], GlobalKey());
+
+                      break;
+                    case InteractMode.searching:
+                      return PassField(entriesFound[index], GlobalKey());
+                      break;
+                    default:
+                      return null;
+                  }
+                }));
     return Tuple2<Widget, Widget>(upperPart, content);
   }
 
@@ -292,9 +279,10 @@ class HomePageState extends State<HomePage>
     });
   }
 
-  static changeDataset(VoidCallback callback) {
+  static changeDataset(VoidCallback callback) async {
     _page.loading = true;
     callback();
+    Pairs = await DBProvider.DB.getPassEntries();
     _page.setState(() => _page.loading = false);
   }
 
@@ -438,6 +426,21 @@ class HomePageState extends State<HomePage>
       }
     }
   }
+}
+
+List<SortOption> filterChoices;
+void initFilterChoices(BuildContext context) {
+  filterChoices = [
+    SortOption(LocalizationTool.of(context).sortTime, // "Sort by time"
+        (items) {
+      items.sort((a, b) => a.createdTime.compareTo(b.createdTime));
+      return items;
+    }, Icon(Icons.timer), Sorts.byTime),
+    SortOption(LocalizationTool.of(context).sortNone, // "None",
+        (items) {
+      return items;
+    }, Icon(Icons.cancel), Sorts.none),
+  ];
 }
 
 enum Sorts {

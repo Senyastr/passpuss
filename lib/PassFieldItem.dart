@@ -70,7 +70,7 @@ class PassFieldState extends State<PassField> {
                   alignment: Alignment.topLeft,
                   child: Row(children: <Widget>[
                     Padding(
-                        child: SvgPicture.asset(passEntry.getIconId()),
+                        child: Hero(tag: "entryIcon", child: SvgPicture.asset(passEntry.getIconId())),
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
                     Text(passEntry.getTitle(),

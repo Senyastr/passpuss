@@ -1,63 +1,79 @@
-import 'package:PassPuss/pages/homePage.dart';
-import 'package:flare_flutter/asset_provider.dart';
-import 'package:flare_flutter/cache.dart';
-import 'package:flare_flutter/cache_asset.dart';
-import 'package:flare_flutter/flare.dart';
 import 'package:flare_flutter/flare_actor.dart';
-import 'package:flare_flutter/flare_cache.dart';
-import 'package:flare_flutter/flare_cache_asset.dart';
-import 'package:flare_flutter/flare_cache_builder.dart';
-import 'package:flare_flutter/flare_controller.dart';
-import 'package:flare_flutter/flare_controls.dart';
-import 'package:flare_flutter/flare_render_box.dart';
-import 'package:flare_flutter/flare_testing.dart';
-import 'package:flare_flutter/provider/asset_flare.dart';
-import 'package:flare_flutter/provider/memory_flare.dart';
 import 'package:flutter/material.dart';
-
-import 'localization.dart';
 
 class ResultDialog extends StatefulWidget {
   String message;
   ResultType type;
-  ResultDialog(this.message, this.type);
-
+  ResultDialog(this.message, {this.type});
+  ResultDialogState state;
   @override
   State<StatefulWidget> createState() {
-    return ResultDialogState(message, this.type);
+    state = ResultDialogState(message, type: this.type);
+    return state;
   }
 }
 
 class ResultDialogState extends State<ResultDialog> {
   String message;
   ResultType type;
-  ResultDialogState(this.message, this.type);
+
+  bool _isLoaded = false;
+
+  String _animationName;
+  ResultDialogState(this.message, {this.type});
+
+  void loaded() {
+    this._isLoaded = true;
+  }
+
+  void onAnimationEnded(String name) {
+    switch (type) {
+      case ResultType.positive:
+        Navigator.popUntil(context, (route) => route.isFirst);
+        break;
+      case ResultType.negative:
+        Navigator.popUntil(context, (route) => route.isFirst);
+        break;
+      default:
+        if (_isLoaded) {
+          type = ResultType.positive;
+          setState(() {});
+        }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var image;
-    switch (type) {
-      case ResultType.positive:
-        image = FlareActor(
-          "assets/animations/success.flr",
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.center,
-          animation: 'Untitled',
-          callback: (name) =>
-              Navigator.popUntil(context, (route) => route.isFirst),
-        );
-        break;
-      case ResultType.negative:
-        image = FlareActor(
-          "assets/animations/failed.flr",
+    if (type != null) {
+      _isLoaded = true;
+      switch (type) {
+        case ResultType.positive:
+          image = FlareActor(
+            "assets/animations/success.flr",
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.center,
+            animation: 'Untitled',
+            callback: onAnimationEnded,
+          );
+          break;
+        case ResultType.negative:
+          image = FlareActor("assets/animations/failed.flr",
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+              animation: 'activate',
+              callback: onAnimationEnded);
+          break;
+      }
+    } else {
+      image = FlareActor("assets/animations/loading.flr",
           fit: BoxFit.scaleDown,
           alignment: Alignment.center,
           animation: 'activate',
-          callback: (name) =>
-              Navigator.popUntil(context, (route) => route.isFirst),
-        );
-        break;
+          callback: onAnimationEnded);
     }
+    
+
     return Material(
         type: MaterialType.transparency,
         child: Dialog(
@@ -69,6 +85,7 @@ class ResultDialogState extends State<ResultDialog> {
                   child: Container(width: 200, height: 200, child: image))),
         ]))));
   }
+  
 }
 
 enum ResultType { positive, negative }
