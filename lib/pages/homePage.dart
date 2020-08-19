@@ -306,23 +306,28 @@ class HomePageState extends State<HomePage>
   }
 
   Map<String, List<String>> iconTags;
-
+  Map<Tags, String> tagsTags;
   bool concur(String inquery, PassEntry entry) {
     if (iconTags == null) {
       initIconTags();
+    }
+    if (tagsTags == null) {
+      initTagsTags();
     }
     var username = entry.getUsername().toLowerCase();
     var emailValue = entry.getEmail().toLowerCase();
     var email = emailValue == null ? "" : emailValue;
     var title = entry.getTitle().toLowerCase();
     var icon = entry.getIconId();
+    var tag = entry.tag;
     var usernameConcur = username.contains(inquery);
     var emailConcur = email != "" ? email.contains(inquery) : false;
     var titleConcur = title.contains(inquery);
     return usernameConcur ||
         emailConcur ||
         titleConcur ||
-        concurIcon(inquery, icon);
+        concurIcon(inquery, icon) ||
+        concurTag(inquery, tag);
   }
 
   bool concurIcon(String inquery, String iconPath) {
@@ -339,91 +344,352 @@ class HomePageState extends State<HomePage>
     }
   }
 
+  bool concurTag(String inquery, Tags tag) {
+    return tagsTags[tag].toLowerCase().contains(inquery);
+  }
+
   void initIconTags() {
     iconTags = Map<String, List<String>>();
     var icons = NewPassEntry.iconsChoice;
+    var language = LocalizationTool.of(context).locale.languageCode;
     for (var i = 0; i < icons.length; i++) {
       var curIcon = icons[i];
       // WHENEVER A NEW ICON IS ADDED TO NEW PASS ENTRY OR SOMEWHERE ELSE
       // U SHOULD ADD THAT ICON AND CORRESPONDING TAGS HERE
-      switch (curIcon.path) {
-        case "assets/images/Instagram_logo_2016.svg":
-          iconTags["assets/images/Instagram_logo_2016.svg"] = [
-            "instagram",
-            "photos",
-            "videos"
-          ];
+      switch (language) {
+        case "en":
+          switch (curIcon.path) {
+            case "assets/images/Instagram_logo_2016.svg":
+              iconTags["assets/images/Instagram_logo_2016.svg"] = [
+                "instagram",
+                "photos",
+                "videos"
+              ];
+              break;
+            case "assets/images/Facebook_logo_24x24.svg":
+              iconTags["assets/images/Facebook_logo_24x24.svg"] = ["facebook"];
+              break;
+            case "assets/images/Apple48x48.svg":
+              iconTags["assets/images/Apple48x48.svg"] = [
+                "apple",
+                "icloud",
+                "mac",
+                "iphone",
+                "ipad",
+                "macos",
+                "watch"
+              ];
+              break;
+            case "assets/images/Google48x48.svg":
+              iconTags["assets/images/Google48x48.svg"] = [
+                "google",
+                "mail",
+                "gmail",
+                "notes",
+                "youtube",
+                "calendar"
+              ];
+              break;
+            case "assets/images/Spotify48x48.svg":
+              iconTags["assets/images/Spotify48x48.svg"] = [
+                "music",
+                "spotify",
+                "podcasts"
+              ];
+              break;
+            case "assets/images/Steam48x48.svg":
+              iconTags["assets/images/Steam48x48.svg"] = ["games", "steam"];
+              break;
+            case "assets/images/twitter-seeklogo.svg":
+              iconTags["assets/images/twitter-seeklogo.svg"] = [
+                "twitter",
+                "tweets"
+              ];
+              break;
+            case "assets/images/Microsoft48x48.svg":
+              iconTags["assets/images/Microsoft48x48.svg"] = [
+                "microsoft",
+                "windows"
+              ];
+              break;
+            case "assets/images/Yandex_Browser_logo.svg":
+              iconTags["assets/images/Yandex_Browser_logo.svg"] = [
+                "yandex",
+                "ydrive"
+              ];
+              break;
+            case "assets/images/Creative_Cloud.svg":
+              iconTags["assets/images/Creative_Cloud.svg"] = ["adobe", "cloud"];
+              break;
+            case "assets/images/reddit copy.svg":
+              iconTags["assets/images/reddit copy.svg"] = [
+                "reddit",
+                "news",
+                "memes"
+              ];
+              break;
+            case "assets/images/Netflix_icon.svg":
+              iconTags["assets/images/Netflix_icon.svg"] = [
+                "movies",
+                "tv shows",
+                "netflix"
+              ];
+              break;
+          }
           break;
-        case "assets/images/Facebook_logo_24x24.svg":
-          iconTags["assets/images/Facebook_logo_24x24.svg"] = ["facebook"];
+
+        case "ru":
+          switch (curIcon.path) {
+            case "assets/images/Instagram_logo_2016.svg":
+              iconTags["assets/images/Instagram_logo_2016.svg"] = [
+                "instagram",
+                "photos",
+                "videos",
+                "фотки",
+                "инстаграм",
+                "видео",
+              ];
+              break;
+            case "assets/images/Facebook_logo_24x24.svg":
+              iconTags["assets/images/Facebook_logo_24x24.svg"] = ["facebook"];
+              break;
+            case "assets/images/Apple48x48.svg":
+              iconTags["assets/images/Apple48x48.svg"] = [
+                "apple",
+                "icloud",
+                "mac",
+                "iphone",
+                "ipad",
+                "macos",
+                "watch",
+                "епл",
+                "айклауд",
+                "мак",
+                "айфон",
+              ];
+              break;
+            case "assets/images/Google48x48.svg":
+              iconTags["assets/images/Google48x48.svg"] = [
+                "google",
+                "mail",
+                "gmail",
+                "notes",
+                "youtube",
+                "calendar",
+                "гугл",
+                "почта",
+                "записи",
+                "календарь"
+              ];
+              break;
+            case "assets/images/Spotify48x48.svg":
+              iconTags["assets/images/Spotify48x48.svg"] = [
+                "music",
+                "spotify",
+                "podcasts",
+                "спотифай",
+                "подкасты",
+                "музыка"
+              ];
+              break;
+            case "assets/images/Steam48x48.svg":
+              iconTags["assets/images/Steam48x48.svg"] = [
+                "games",
+                "steam",
+                "игры"
+              ];
+              break;
+            case "assets/images/twitter-seeklogo.svg":
+              iconTags["assets/images/twitter-seeklogo.svg"] = [
+                "twitter",
+                "tweets",
+                "твиттер",
+                "твиты"
+              ];
+              break;
+            case "assets/images/Microsoft48x48.svg":
+              iconTags["assets/images/Microsoft48x48.svg"] = [
+                "microsoft",
+                "windows",
+                "виндовс",
+                "пк",
+              ];
+              break;
+            case "assets/images/Yandex_Browser_logo.svg":
+              iconTags["assets/images/Yandex_Browser_logo.svg"] = [
+                "yandex",
+                "ydrive",
+                "яндекс",
+              ];
+              break;
+            case "assets/images/Creative_Cloud.svg":
+              iconTags["assets/images/Creative_Cloud.svg"] = [
+                "adobe",
+                "cloud",
+                "адоб",
+                "фотошоп"
+              ];
+              break;
+            case "assets/images/reddit copy.svg":
+              iconTags["assets/images/reddit copy.svg"] = [
+                "reddit",
+                "news",
+                "memes",
+                "редит",
+                "мемы"
+              ];
+              break;
+            case "assets/images/Netflix_icon.svg":
+              iconTags["assets/images/Netflix_icon.svg"] = [
+                "movies",
+                "tv shows",
+                "netflix",
+                "нетфликс",
+                "фильмы",
+                "сериалы",
+                
+              ];
+              break;
+          }
           break;
-        case "assets/images/Apple48x48.svg":
-          iconTags["assets/images/Apple48x48.svg"] = [
-            "apple",
-            "icloud",
-            "mac",
-            "iphone",
-            "ipad",
-            "macos",
-            "watch"
-          ];
-          break;
-        case "assets/images/Google48x48.svg":
-          iconTags["assets/images/Google48x48.svg"] = [
-            "google",
-            "mail",
-            "gmail",
-            "notes",
-            "youtube",
-            "calendar"
-          ];
-          break;
-        case "assets/images/Spotify48x48.svg":
-          iconTags["assets/images/Spotify48x48.svg"] = [
-            "music",
-            "spotify",
-            "podcasts"
-          ];
-          break;
-        case "assets/images/Steam48x48.svg":
-          iconTags["assets/images/Steam48x48.svg"] = ["games", "steam"];
-          break;
-        case "assets/images/twitter-seeklogo.svg":
-          iconTags["assets/images/twitter-seeklogo.svg"] = [
-            "twitter",
-            "tweets"
-          ];
-          break;
-        case "assets/images/Microsoft48x48.svg":
-          iconTags["assets/images/Microsoft48x48.svg"] = [
-            "microsoft",
-            "windows"
-          ];
-          break;
-        case "assets/images/Yandex_Browser_logo.svg":
-          iconTags["assets/images/Yandex_Browser_logo.svg"] = [
-            "yandex",
-            "ydrive"
-          ];
-          break;
-        case "assets/images/Creative_Cloud.svg":
-          iconTags["assets/images/Creative_Cloud.svg"] = ["adobe", "cloud"];
-          break;
-        case "assets/images/reddit copy.svg":
-          iconTags["assets/images/reddit copy.svg"] = [
-            "reddit",
-            "news",
-            "memes"
-          ];
-          break;
-        case "assets/images/Netflix_icon.svg":
-          iconTags["assets/images/Netflix_icon.svg"] = [
-            "movies",
-            "tv shows",
-            "netflix"
-          ];
-          break;
+        case "ua":
+          switch (curIcon.path) {
+            case "assets/images/Instagram_logo_2016.svg":
+              iconTags["assets/images/Instagram_logo_2016.svg"] = [
+                "instagram",
+                "photos",
+                "videos",
+                "фотки",
+                "инстаграм",
+                "видео",
+                "інстаграм",
+                "фото",
+                "відео"
+              ];
+              break;
+            case "assets/images/Facebook_logo_24x24.svg":
+              iconTags["assets/images/Facebook_logo_24x24.svg"] = ["facebook"];
+              break;
+            case "assets/images/Apple48x48.svg":
+              iconTags["assets/images/Apple48x48.svg"] = [
+                "apple",
+                "icloud",
+                "mac",
+                "iphone",
+                "ipad",
+                "macos",
+                "watch",
+                "епл",
+                "айклауд",
+                "мак",
+                "айфон",
+              ];
+              break;
+            case "assets/images/Google48x48.svg":
+              iconTags["assets/images/Google48x48.svg"] = [
+                "google",
+                "mail",
+                "gmail",
+                "notes",
+                "youtube",
+                "calendar",
+                "гугл",
+                "почта",
+                "записи",
+                "календарь"
+              ];
+              break;
+            case "assets/images/Spotify48x48.svg":
+              iconTags["assets/images/Spotify48x48.svg"] = [
+                "music",
+                "spotify",
+                "podcasts",
+                "спотифай",
+                "подкасты",
+                "подкасти",
+                "музика"
+              ];
+              break;
+            case "assets/images/Steam48x48.svg":
+              iconTags["assets/images/Steam48x48.svg"] = [
+                "games",
+                "steam",
+                "игры",
+                "ігри"
+              ];
+              break;
+            case "assets/images/twitter-seeklogo.svg":
+              iconTags["assets/images/twitter-seeklogo.svg"] = [
+                "twitter",
+                "tweets",
+                "твиттер",
+                "твиты",
+                "твіти",
+                "твітер"
+              ];
+              break;
+            case "assets/images/Microsoft48x48.svg":
+              iconTags["assets/images/Microsoft48x48.svg"] = [
+                "microsoft",
+                "windows",
+                "виндовс",
+                "пк",
+                "віндовс"
+              ];
+              break;
+            case "assets/images/Yandex_Browser_logo.svg":
+              iconTags["assets/images/Yandex_Browser_logo.svg"] = [
+                "yandex",
+                "ydrive",
+                "яндекс",
+                
+              ];
+              break;
+            case "assets/images/Creative_Cloud.svg":
+              iconTags["assets/images/Creative_Cloud.svg"] = [
+                "adobe",
+                "cloud",
+                "адоб",
+                "фотошоп",
+                
+              ];
+              break;
+            case "assets/images/reddit copy.svg":
+              iconTags["assets/images/reddit copy.svg"] = [
+                "reddit",
+                "news",
+                "memes",
+                "редит",
+                "редіт",
+                "мемы",
+                "меми"
+              ];
+              break;
+            case "assets/images/Netflix_icon.svg":
+              iconTags["assets/images/Netflix_icon.svg"] = [
+                "movies",
+                "tv shows",
+                "netflix",
+                "нетфликс",
+                "фильмы",
+                "сериалы",
+                "серіали",
+                "фільми",
+                "кіно"
+              ];
+              break;
+          }
       }
+    }
+  }
+
+  void initTagsTags() {
+    tagsTags = Map<Tags, String>();
+    var tags = Tags.values;
+    for (var i = 0; i < tags.length; i++) {
+      var t = tags[i];
+
+      tagsTags[t] = t.toString().split(".")[1];
     }
   }
 }
@@ -431,6 +697,9 @@ class HomePageState extends State<HomePage>
 List<SortOption> filterChoices;
 void initFilterChoices(BuildContext context) {
   filterChoices = [
+    SortOption(LocalizationTool.of(context).sortTags, (items) {
+      return TagHelper.sortByTags(items);
+    }, Icon(Icons.flag), Sorts.byTags),
     SortOption(LocalizationTool.of(context).sortTime, // "Sort by time"
         (items) {
       items.sort((a, b) => a.createdTime.compareTo(b.createdTime));
@@ -446,6 +715,7 @@ void initFilterChoices(BuildContext context) {
 enum Sorts {
   none,
   byTime,
+  byTags,
 }
 typedef SortItems<T1> = List<T1> Function(List<T1> value);
 

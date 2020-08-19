@@ -175,6 +175,8 @@ class LocalizationTool {
   String get regenerateDialogWarningNegativeAnswer =>
       getValue("regenerateDialogWarningNegativeAnswer");
 
+  String get sortTags => getValue("sortTags");
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -284,6 +286,7 @@ class LocalizationTool {
               " Back up the old password.",
       "sortNone": "None",
       "sortTime" : "By time",
+      "sortTags" : "By tags"
     },
     'ru': {
       'home': 'Главная',
@@ -357,7 +360,7 @@ class LocalizationTool {
           "Похоже что то пошло не те так. Перезагрузите приложение. Следуйте дальше для восстановления данных.",
       "typeBackupCode": "Пожалуйста, напишите пароль восстановления данных. ",
       "fingerprintBackupWindowText":
-          "Сохраните код, который находится по середине екрана" +
+          "Сохраните код, который находится по середине екрана. " +
               "Запишите его в заметках, сделайте скриншот. " +
               "Если вы откажетесь делать это, есть вероятность, что вы потеряете данные.",
       "fingerprintSettingsChange":
@@ -378,6 +381,7 @@ class LocalizationTool {
               "Сохраните старый пароль.",
       "sortNone": "Отсутствует",
       "sortTime" : "По времени",
+      "sortTags" : "По тегам"
     },
     'ua': {
       'home': "Головна",
@@ -474,7 +478,8 @@ class LocalizationTool {
           "Регенерація пароля ВИДАЛИТЬ ваш стаарий пароль та замінить його новим!" +
               "Збережіть свій старий пароль.",
       "sortNone": "Відсутнє",
-      "sortTime" : "За часом"
+      "sortTime" : "За часом",
+      "sortTags" : "За тегами"
     }
   };
 }

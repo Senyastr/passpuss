@@ -1,4 +1,5 @@
 import 'package:PassPuss/localization.dart';
+import 'package:PassPuss/message.dart';
 import 'package:PassPuss/pages/editEntryPage.dart';
 import 'package:PassPuss/pages/settings/ForYou.dart';
 import 'package:PassPuss/pages/settings/Notification.dart';
@@ -39,7 +40,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
   String email = "";
 
   bool generate_mode = false;
-  bool emailAcceptable = false;
+  bool emailAcceptable = true;
   double _sliderHeight = 0.0;
 
   double _genChars = 8;
@@ -49,6 +50,8 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
   double emailWarningHeight = 0;
 
   double charsMin = 8;
+
+  Tags tag = Tags.white;
 
   @override
   void initState() {
@@ -186,19 +189,32 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                           child: Column(children: <Widget>[
                             Align(
                                 alignment: Alignment.topLeft,
-                                child: Row(children: <Widget>[
-                                  Padding(
-                                      child: (IconChoiceState.selected != null)
-                                          ? SvgPicture.asset(IconChoiceState
-                                              .selected.iconInfo?.path)
-                                          : SvgPicture.asset(
-                                              IconChoiceState.emptyIconPath),
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10)),
-                                  Text("$title",
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.white))
-                                ])), // ICON PREVIEW
+                                child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Row(children:[
+                                      Padding(
+                                          child: (IconChoiceState.selected !=
+                                                  null)
+                                              ? SvgPicture.asset(IconChoiceState
+                                                  .selected.iconInfo?.path)
+                                              : SvgPicture.asset(IconChoiceState
+                                                  .emptyIconPath),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 10)),
+                                      Text("$title",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.white)),
+                                      ]),
+                                          Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 15),
+                                              child: TagHelper.widgetByTag(tag)),
+                                          
+                                    ])), // ICON PREVIEW
                             Align(
                                 alignment: Alignment.bottomLeft,
                                 child: Row(children: <Widget>[
@@ -381,10 +397,18 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                                     ],
                                   )),
                               // Password
+
                               Row(children: <Widget>[
                                 Expanded(
                                     child: Padding(
                                         padding: EdgeInsets.all(14),
+                                        child: _titleForm)),
+                              ]), // TITLE
+
+                              Row(children: <Widget>[
+                                Expanded(
+                                    child: Padding(
+                                        padding: EdgeInsets.all(20),
                                         child: _emailForm)),
                               ]), // EMAIL
 
@@ -409,12 +433,28 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                                           ),
                                         )
                                       : Container()),
-                              Row(children: <Widget>[
-                                Expanded(
-                                    child: Padding(
-                                        padding: EdgeInsets.all(14),
-                                        child: _titleForm)),
-                              ]), // TITLE
+                              Padding(
+                                  padding: EdgeInsets.all(15),
+                                  child: ListTile(
+                                      title: Text("Tag",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText2),
+                                      trailing: DropdownButton(
+                                        value: tag,
+                                        onChanged: (value) {
+                                          tag = value;
+                                          setState(() {});
+                                        },
+                                        items: Tags.values
+                                            .map<DropdownMenuItem<Tags>>(
+                                                (Tags value) {
+                                          return DropdownMenuItem<Tags>(
+                                              value: value,
+                                              child:
+                                                  TagHelper.widgetByTag(value));
+                                        }).toList(),
+                                      ))),
                               Padding(
                                   padding: EdgeInsets.only(
                                       bottom: 30, left: 14, right: 14),
@@ -468,9 +508,11 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
       icon = selected.path;
     }
     PassEntry newEntry = PassEntry.withIcon(
-        username, password, title, email, icon, DateTime.now());
+        username, password, title, email, icon, tag, DateTime.now());
 
     if (_formKey.currentState.validate()) {
+      ResultDialog dialog = ResultDialog("message");
+      showDialog(context: context, builder: (context)=> dialog);
       await DBProvider.DB.addPassEntry(newEntry);
       HomePageState.changeDataset(() {
         HomePageState.Pairs.add(newEntry);
@@ -490,8 +532,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
       }
 
       AdManager.tryShowInterstitialAd();
-
-      Navigator.pop<NewPassEntry>(context, this);
+      dialog.state.loaded();
     }
   }
 
@@ -613,5 +654,51 @@ class PassEntryIcon {
 
   PassEntryIcon(String path) {
     this.path = path;
+  }
+}
+
+class TagHelper {
+  static Widget widgetByTag(Tags tag, {Key key}) {
+    Color color;
+    switch (tag) {
+      case Tags.red:
+        color = Colors.redAccent;
+        break;
+      case Tags.green:
+        color = Colors.lightGreenAccent;
+        break;
+      case Tags.yellow:
+        color = Colors.yellowAccent;
+        break;
+      case Tags.orange:
+        color = Colors.orangeAccent;
+        break;
+      case Tags.graphite:
+        color = Color.fromARGB(255, 116, 122, 118);
+        break;
+      case Tags.white:
+        color = Colors.white70;
+        break;
+    }
+    return Container(
+      width: 20,
+      height: 20,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+
+  static List<PassEntry> sortByTags(List<PassEntry> initialList) {
+    assert(initialList != null);
+
+    var tags = Tags.values;
+    List<PassEntry> result = List<PassEntry>();
+    for (var i = 0; i < tags.length; i++) {
+      var addition = initialList.where((entry) => entry.tag == tags[i]).toList();
+      result.addAll(addition);
+    }
+    return result;
   }
 }

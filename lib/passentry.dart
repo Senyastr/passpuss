@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:PassPuss/pages/homePage.dart';
 
+enum Tags { red, green, yellow, orange, graphite, white }
+
 class PassEntry {
   int id;
   String _username;
@@ -10,11 +12,15 @@ class PassEntry {
   String _title; // e.g. google, facebook, instagram
   String _iconName = "";
   DateTime createdTime;
+  Tags _tag;
+
+  Tags get tag => _tag;
+
 
   // ignore: non_constant_identifier_names
 
   PassEntry.noIcon(String username, String password, String title, String email,
-      DateTime createdTime) {
+      DateTime createdTime, Tags tag) {
     if (HomePageState.Pairs == null) {
       id = 1;
     } else {
@@ -26,10 +32,11 @@ class PassEntry {
     this._title = title;
     this.createdTime = createdTime;
     this._email = email;
+    this._tag = tag;
   }
 
   PassEntry.withIcon(String username, String password, String title,
-      String email, String iconName, DateTime createdTime) {
+      String email, String iconName, Tags tag, DateTime createdTime) {
     if (HomePageState.Pairs == null) {
       id = 1;
     } else {
@@ -42,10 +49,11 @@ class PassEntry {
     this._iconName = iconName;
     this.createdTime = createdTime;
     this._email = email;
+    this._tag = tag;
   }
 
   PassEntry.fromDB(int id, String username, String password, String title,
-      String iconName, DateTime createdTime, String email) {
+      String iconName, DateTime createdTime, String email, Tags tag) {
     this.id = id;
     this._username = username;
     this._password = password;
@@ -53,6 +61,7 @@ class PassEntry {
     this._iconName = iconName;
     this.createdTime = createdTime;
     this._email = email;
+    this._tag = tag;
   }
 
   String getUsername() {
@@ -165,6 +174,7 @@ class PassEntry {
         "TITLE": _title,
         "ICONPATH": _iconName,
         "CREATEDTIME": createdTime.toString(),
-        "EMAIL": _email
+        "EMAIL": _email,
+        "TAG": _tag,
       };
 }

@@ -42,6 +42,7 @@ class DBProvider {
   static const String iconPathColumn = "ICONPATH";
   static const String createdTimeColumn = "CREATEDTIME";
   static const String emailColumn = "EMAIL";
+  static const String tagColumn = "TAG";
   Future<SQLiteDatabase> initDB() async {
     Directory databases = await getApplicationDocumentsDirectory();
     String path = databases.path +
@@ -58,7 +59,8 @@ class DBProvider {
           "TITLE TEXT,"
           "ICONPATH TEXT,"
           "CREATEDTIME TEXT,"
-          "EMAIL TEXT)");
+          "EMAIL TEXT,"
+          "TAG TEXT)");
       return _database;
     }
     // here we execute "create table"
@@ -83,18 +85,21 @@ class DBProvider {
     var iconPath = map[iconPathColumn];
     var createdTime = map[createdTimeColumn];
     var email = map[emailColumn];
+    var tag = map[tagColumn];
     await db.execSQL("INSERT INTO $TABLE_NAME ($usernameColumn,"
         "$passwordColumn,"
         "$titleColumn,"
         "$iconPathColumn,"
         "$createdTimeColumn,"
-        "$emailColumn) "
+        "$emailColumn,"
+        "$tagColumn) "
         "VALUES ('$username',"
         "'$password',"
         "'$title',"
         "'$iconPath',"
         "'$createdTime',"
-        "'$email');");
+        "'$email', "
+        "'$tag');");
     await this.closeDb();
     return 1;
   }
@@ -120,18 +125,31 @@ class DBProvider {
         iconPathColumn,
         createdTimeColumn,
         emailColumn,
+        tagColumn,
       ],
     );
     List<PassEntry> passEntries = new List<PassEntry>();
     Set set = Set.from(result); // we use set for convenience(forEach method)
-    set.forEach((v) => passEntries.add(PassEntry.fromDB(
-        v[idColumn],
-        v[usernameColumn],
-        v[passwordColumn],
-        v[titleColumn],
-        v[iconPathColumn],
-        DateTime.parse(v[createdTimeColumn]),
-        v[emailColumn])));
+    set.forEach((v) {
+      var id = v[idColumn];
+      var username = v[usernameColumn];
+      var password = v[passwordColumn];
+      var title = v[titleColumn];
+      var iconPath = v[iconPathColumn];
+      var createdTime = DateTime.parse(v[createdTimeColumn]);
+      var email = v[emailColumn];
+      var tag = Tags.values.firstWhere((element) => element.toString() == v[tagColumn]);
+      passEntries.add(PassEntry.fromDB(
+        id,
+        username,
+        password,
+        title,
+        iconPath,
+        createdTime,
+        email,
+        tag,
+      ));
+    });
     HomePageState.Pairs = passEntries;
     await this.closeDb();
     return passEntries;

@@ -1,3 +1,4 @@
+import 'package:PassPuss/NewPassEntry.dart';
 import 'package:PassPuss/auth/local_auth.dart';
 import 'package:PassPuss/pages/homePage.dart';
 import 'package:PassPuss/pages/settings/Privacy.dart';
@@ -29,15 +30,18 @@ class PassField extends StatefulWidget {
 class PassFieldState extends State<PassField> {
   PassEntry passEntry;
 
+  var id;
+
   @override
   void initState() {
     command = SimpleRemove(passEntry);
     passwordShowState = Icon(Icons.lock, key: passwordStateKey);
     iconLocked = Icon(Icons.lock, key: passwordStateKey);
     iconOpened = Icon(Icons.lock_open, key: passwordStateKey);
+    id = passEntry.id;
   }
 
-  Icon iconLocked;
+  Icon iconLocked;  
   Icon iconOpened;
 
   PassFieldState(PassEntry entry) {
@@ -50,8 +54,6 @@ class PassFieldState extends State<PassField> {
 
   @override
   Widget build(BuildContext context) {
-//    printMethod();
-    String imageName = passEntry.getIconId();
     initState();
 
     return new Padding(
@@ -68,13 +70,25 @@ class PassFieldState extends State<PassField> {
                 child: Column(children: <Widget>[
               Align(
                   alignment: Alignment.topLeft,
-                  child: Row(children: <Widget>[
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Row(children: [
                     Padding(
-                        child: Hero(tag: "entryIcon", child: SvgPicture.asset(passEntry.getIconId())),
+                        child: Hero(
+                            tag: "entryIcon$id",
+                            child: SvgPicture.asset(passEntry.getIconId())),
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
                     Text(passEntry.getTitle(),
-                        style: TextStyle(fontSize: 20, color: Colors.white)),
+                        style: TextStyle(fontSize: 20, color: Colors.white)),]),
+                        Row(children: [
+                    passEntry.tag != null
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: TagHelper.widgetByTag(passEntry.tag))
+                        : Container(),
                     Padding(
                         padding: EdgeInsets.only(left: 1),
                         child: Align(
@@ -83,7 +97,7 @@ class PassFieldState extends State<PassField> {
                               icon: Icon(Icons.delete_forever,
                                   color: Colors.redAccent, size: 30),
                               onPressed: removeEntry,
-                            )))
+                            ))),]),
                   ])),
               Align(
                   alignment: Alignment.bottomLeft,

@@ -16,6 +16,7 @@ import 'package:PassPuss/message.dart';
 import 'package:PassPuss/localization.dart';
 
 import '../Database.dart';
+import '../NewPassEntry.dart';
 import '../PassFieldItem.dart';
 import '../main.dart';
 import '../notifications.dart';
@@ -46,8 +47,11 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
   var password;
   var email;
   var expiration;
+  Tags tag;
   DateFormat timeCreated;
   PassEntryDetailsState state;
+
+  var id;
 
   @override
   void initState() {
@@ -55,6 +59,8 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
     username = entry.getUsername();
     password = entry.getPassword();
     email = entry.getEmail();
+    tag = entry.tag;
+    id = entry.id;
     state = this;
   }
 
@@ -89,14 +95,27 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                     .copyWith(color: Colors.white),
               ))),
       Align(
-          alignment: Alignment.topLeft,
-          child: Row(children: <Widget>[
-            Padding(
-                child: Hero(tag: "entryIcon",child: SvgPicture.asset(entry.getIconId())),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
-            Text(entry.getTitle(),
-                style: TextStyle(fontSize: 20, color: Colors.white)),
-          ])),
+        alignment: Alignment.topLeft,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Row(children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Hero(
+                    tag: "entryIcon$id",
+                    child: SvgPicture.asset(entry.getIconId()),
+                  ),
+                ),
+                Text(entry.getTitle(),
+                    style: TextStyle(fontSize: 20, color: Colors.white)),
+              ]),
+              Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: TagHelper.widgetByTag(entry.tag)),
+            ]),
+      ),
       Align(
           alignment: Alignment.bottomLeft,
           child: Row(children: <Widget>[
@@ -216,36 +235,38 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                         .copyWith(color: Colors.white)))
           ])),
     ]);
-    timeBlock = Padding(padding: EdgeInsets.only(bottom: 10), child: Column(children: <Widget>[
-      Align(
-        alignment: Alignment.centerLeft,
-        child: Padding(
-            padding: EdgeInsets.all(20),
-            child: Text(
-              LocalizationTool.of(context).time,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6
-                  .copyWith(color: Colors.white),
-            )),
-      ),
-      AlignCenterLeft(
-          Row(children: <Widget>[
-            Icon(Icons.edit, color: Theme.of(context).accentColor),
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: Text(timeCreated.format(entry.createdTime),
+    timeBlock = Padding(
+        padding: EdgeInsets.only(bottom: 10),
+        child: Column(children: <Widget>[
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  LocalizationTool.of(context).time,
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText1
-                      .copyWith(color: Colors.white)),
-            )
-          ]),
-          EdgeInsets.only(
-            left: 20,
-            top: 10,
-          ))
-    ]));
+                      .headline6
+                      .copyWith(color: Colors.white),
+                )),
+          ),
+          AlignCenterLeft(
+              Row(children: <Widget>[
+                Icon(Icons.edit, color: Theme.of(context).accentColor),
+                Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Text(timeCreated.format(entry.createdTime),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(color: Colors.white)),
+                )
+              ]),
+              EdgeInsets.only(
+                left: 20,
+                top: 10,
+              ))
+        ]));
     var editButton = FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -423,30 +444,38 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
   }
 
   void regeneratePassword() async {
-     Navigator.pop<RegeneratePasswordDialog>(context);
-    var dialog =  ResultDialog("message");
+    Navigator.pop<RegeneratePasswordDialog>(context);
+    var dialog = ResultDialog("message");
     showDialog(context: context, builder: (context) => dialog);
-    var temp = (await SettingsManager.getPref(ForYouSettingsTabState.charsAllowedKey) as int);
+    var temp =
+        (await SettingsManager.getPref(ForYouSettingsTabState.charsAllowedKey)
+            as int);
     var minChars = temp == null ? 8 : temp;
     var username = entry.getUsername();
     var password = PassEntry.generatePass(minChars);
     var email = entry.getEmail();
     var title = entry.getTitle();
     var icon = entry.getIconId();
+    var tag = entry.tag;
     var createdTime = entry.createdTime;
     var removedNumber = await DBProvider.DB.deletePassEntry(entry);
     HomePageState.Pairs.remove(entry);
-    var newEntry =
-        PassEntry.withIcon(username, password, title, email, icon, createdTime);
+    var newEntry = PassEntry.withIcon(
+        username, password, title, email, icon, tag, createdTime);
     await DBProvider.DB.addPassEntry(newEntry);
     await HomePageState.changeDataset(() {
       HomePageState.Pairs.add(newEntry);
     });
-    entry = HomePageState.Pairs.where((field) => field.getUsername() == username && password == field.getPassword() && email == field.getEmail() && title == field.getTitle() && icon == field.getIconId() && createdTime == field.createdTime).elementAt(0);
+    entry = HomePageState.Pairs.where((field) =>
+        field.getUsername() == username &&
+        password == field.getPassword() &&
+        email == field.getEmail() &&
+        title == field.getTitle() &&
+        icon == field.getIconId() &&
+        createdTime == field.createdTime).elementAt(0);
     this.password = password;
     dialog.state.loaded();
-    setState((){});
-    
+    setState(() {});
   }
 
   void cancelPasswordRegeneration() {
