@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:PassPuss/message.dart';
-import 'package:PassPuss/pages/settings/settings.dart';
+import 'package:PassPuss/view/message.dart';
+import 'package:PassPuss/view/pages/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../localization.dart';
+import 'package:PassPuss/logic/localization.dart';
 import 'package:get_version/get_version.dart';
-import 'package:PassPuss/auth/local_auth.dart';
+import 'package:PassPuss/logic/auth/local_auth.dart';
 
 class PrivacySettingsTab extends StatefulWidget {
   @override
@@ -44,83 +44,26 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
   static final String isVerifyingKey = "auth";
   @override
   Widget build(BuildContext context) {
+    var upperPart = _buildUpperPart(context);
+    var encryptionSetting = _buildEncryptionSetting(context);
+    var isVerifyingSetting = _buildIsVeryfyingSetting(context);
+    var removeVerifycationSetting = _buildRemovePassEntryAuthenticationSetting(context);
     var temp = Scaffold(
         appBar: AppBar(),
         body: Column(
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      LocalizationTool.of(context).privacy,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline4
-                          .copyWith(color: Colors.white),
-                    ),
-                    Padding(
-                        padding: EdgeInsets.only(left: 20),
-                        child: Hero(tag: "privacy", child: privacyIcon)),
-                  ]),
-            ),
+            Padding(padding: EdgeInsets.all(10), child: upperPart),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 50),
               child: Divider(),
             ),
             Column(
               children: <Widget>[
-                ListTile(
-                  leading: Icon(Icons.enhanced_encryption, color: Colors.white),
-                  title: Text(
-                    LocalizationTool.of(context).privacySettingsEncryption,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2
-                        .copyWith(color: Colors.white),
-                  ),
-                  // ignore: missing_required_param
-                  trailing: Switch(
-                    value: true,
-                    key: encryptedSwitch,
-                    inactiveTrackColor: Theme.of(context).primaryColor,
-                  ),
-                ),
+                encryptionSetting,
                 Divider(),
-                isVerifyingCompatible
-                    ? ListTile(
-                        leading: Icon(Icons.fingerprint, color: Colors.white),
-                        title: Text(
-                            LocalizationTool.of(context)
-                                .fingerprintAuthentication,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText2
-                                .copyWith(color: Colors.white)),
-                        trailing: Switch(
-                          onChanged: fingerprintAuthChanged,
-                          value: isVerifying,
-                        ))
-                    : Container(),
+                isVerifyingSetting,
                 Divider(),
-                isVerifyingCompatible
-                    ? ListTile(
-                        leading: Icon(Icons.delete, color: Colors.white),
-                        title: Text(
-                            LocalizationTool.of(context)
-                                .removeEntryFingerprintSetting,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText2
-                                .copyWith(color: Colors.white)),
-                        trailing: Switch(
-                            onChanged: isVerifying
-                                ? (changed) => authRemove(changed)
-                                : null,
-                            value: authRemoveValue),
-                      )
-                    : Container(),
+                removeVerifycationSetting,
               ],
             )
           ],
@@ -128,11 +71,84 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
     return temp;
   }
 
+  Widget _buildUpperPart(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+      Text(
+        LocalizationTool.of(context).privacy,
+        style:
+            Theme.of(context).textTheme.headline4.copyWith(color: Colors.white),
+      ),
+      Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Hero(tag: "privacy", child: privacyIcon)),
+    ]);
+  }
+
+  Widget _buildEncryptionSetting(BuildContext context) {
+    return ListTile(
+      leading: Icon(Icons.enhanced_encryption, color: Colors.white),
+      title: Text(
+        LocalizationTool.of(context).privacySettingsEncryption,
+        style:
+            Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.white),
+      ),
+      // ignore: missing_required_param
+      trailing: Switch(
+        value: true,
+        key: encryptedSwitch,
+        inactiveTrackColor: Theme.of(context).primaryColor,
+      ),
+    );
+  }
+
+  Widget _buildIsVeryfyingSetting(BuildContext context) {
+    return isVerifyingCompatible
+        ? ListTile(
+            leading: Icon(Icons.fingerprint, color: Colors.white),
+            title: Text(LocalizationTool.of(context).fingerprintAuthentication,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    .copyWith(color: Colors.white)),
+            trailing: Switch(
+              onChanged: fingerprintAuthChanged,
+              value: isVerifying,
+            ))
+        : Container();
+  }
+
+  Widget _buildRemovePassEntryAuthenticationSetting(BuildContext context) {
+    return isVerifyingCompatible
+        ? ListTile(
+            leading: Icon(Icons.delete, color: Colors.white),
+            title: Text(
+                LocalizationTool.of(context).removeEntryFingerprintSetting,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    .copyWith(color: Colors.white)),
+            trailing: Switch(
+                onChanged:
+                    isVerifying ? (changed) => authRemove(changed) : null,
+                value: authRemoveValue),
+          )
+        : Container();
+  }
+
   @override
   void initSettings() async {
     // IS AUTH
-    dynamic temp = await SettingsManager.getPref(
-        PrivacySettingsTabState.isVerifyingKey.toString()) as bool;
+
+    await initIsVerifyingSetting();
+    await initVerifyRemove();
+
+    // finally, update UI
+    setState(() {});
+  }
+
+  initIsVerifyingSetting() async {
+    var temp = await SettingsManager.getPref<bool>(
+        PrivacySettingsTabState.isVerifyingKey.toString());
     isVerifying = (temp == null ? false : temp);
     // AUTH COMPATIBILITY // WORKS ONLY WHEN WE HAVE ANDROID PIE OR MORE
     try {
@@ -149,14 +165,13 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
             isVerifyingCompatible = double.parse(androidV.split(".")[0]) > 9;
       }
     }
+  }
 
+  initVerifyRemove() async {
     // REMOVE PASS ENTRY AUTHENTICATION
-    temp = (await SettingsManager.getPref(
-        PrivacySettingsTabState.authVerifyRemoveEntrySetting)) as bool;
+    var temp = await SettingsManager.getPref<bool>(
+        PrivacySettingsTabState.authVerifyRemoveEntrySetting);
     authRemoveValue = temp == null ? false : temp;
-
-    // finally, update UI
-    setState(() {});
   }
 
   void fingerprintAuthChanged(bool value) async {

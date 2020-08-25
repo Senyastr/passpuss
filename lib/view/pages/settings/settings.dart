@@ -1,5 +1,5 @@
-import 'package:PassPuss/localization.dart';
-import 'package:PassPuss/pages/settings/ForYou.dart';
+import 'package:PassPuss/logic/localization.dart';
+import 'package:PassPuss/view/pages/settings/ForYou.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -140,7 +140,7 @@ class SettingsManager {
     }
   }
 
-  static Future<Object> getPref(String key) async {
+  static Future<T> getPref<T>(String key) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     return sharedPreferences.get(key);
   }

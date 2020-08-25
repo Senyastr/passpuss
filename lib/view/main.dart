@@ -1,20 +1,20 @@
-import 'package:PassPuss/pages/homePage.dart';
-import 'package:PassPuss/localization.dart';
-import 'package:PassPuss/pages/recommendation.dart';
-import 'package:PassPuss/pages/settings/Privacy.dart';
+import 'package:PassPuss/view/pages/homePage.dart';
+import 'package:PassPuss/logic/localization.dart';
+import 'package:PassPuss/view/pages/recommendation.dart';
+import 'package:PassPuss/view/pages/settings/Privacy.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:PassPuss/auth/local_auth.dart';
+import 'package:PassPuss/logic/auth/local_auth.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'ads/adManager.dart';
-import 'message.dart';
-import 'pages/settings/settings.dart';
+import '../logic/ads/adManager.dart';
+import '../view/message.dart';
+import '../view/pages/settings/settings.dart';
 
-void main() => runApp(PassPuss());
+void main() { runApp(PassPuss());}
 
 class PassPuss extends StatelessWidget {
   // This widget is the root of your application.
@@ -152,9 +152,7 @@ class PassPuss extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-  Future<void> _initAdMob() {
-    return FirebaseAdMob.instance.initialize(appId: AdManager.appId);
-  }
+  
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
@@ -194,14 +192,65 @@ class PassEntriesPage extends State<MyHomePage> implements ResetAuthAction {
   bool isAuth = true;
   @override
   Widget build(BuildContext context) {
-    home = Text(LocalizationTool.of(context).home);
-    forYou = Text(LocalizationTool.of(context).forYou);
-    bottomItems = <BottomNavigationBarItem>[
-      BottomNavigationBarItem(icon: Icon(Icons.home), title: home),
-      BottomNavigationBarItem(icon: Icon(Icons.thumb_up), title: forYou)
-    ];
-    this.currentPageTitle = home.data;
+    initBottomNavigation();
+    var drawer = _buildDrawer(context);
+    var scaffold = _buildScaffold(drawer);
+    if (!isAuth) {
+      Auth();
+    }
+    return GestureDetector(
+        onPanUpdate: (details) {
+          if (details.delta.dx > 0) {
+            scaffoldKey.currentState.openDrawer();
+          }
+        },
+        child: scaffold);
+  }
 
+  @override
+  void initState() {
+    super.initState();
+    isAuth = false;
+  }
+  // ignore: unused_element
+  Future<void> _initAdMob() {
+    return FirebaseAdMob.instance.initialize(appId: AdManager.appId);
+  }
+
+  // ignore: non_constant_identifier_names
+  void Auth() async {
+    if (await mustAuth()) {
+      var localAuth = LocalAuthentication();
+      bool hasAuthenticated = await localAuth.authenticateWithBiometrics(
+          localizedReason: LocalizationTool.of(context).fingerprintLogin,
+          stickyAuth: true);
+      setState(() => isAuth = hasAuthenticated);
+    } else {
+      setState(() => isAuth = true);
+    }
+  }
+
+  void _onBottomNavigationItemTapped(int value) {
+    var curDisposable = pages.elementAt(this._selectedPageIndex) as Disposable;
+    curDisposable.dispose();
+    this._selectedPageIndex = value;
+    this.currentPageTitle = (bottomItems[value].title as Text).data;
+    setState(() {});
+  }
+
+  Future<bool> mustAuth() async {
+    var option =
+        await SettingsManager.getPref(PrivacySettingsTabState.isVerifyingKey);
+    var result = option as bool;
+    return result == null ? false : result;
+  }
+
+  @override
+  onResetAuth() {
+    Auth();
+  }
+
+  Widget _buildDrawer(BuildContext context) {
     var drawerTextStyle =
         Theme.of(context).textTheme.headline5.copyWith(color: Colors.white);
     var drawer = Drawer(
@@ -255,17 +304,20 @@ class PassEntriesPage extends State<MyHomePage> implements ResetAuthAction {
                         )))),
               ],
             )));
+    return drawer;
+  }
 
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets
-    if (!isAuth) {
-      Auth();
-    }
+  void initBottomNavigation() {
+    home = Text(LocalizationTool.of(context).home);
+    forYou = Text(LocalizationTool.of(context).forYou);
+    bottomItems = <BottomNavigationBarItem>[
+      BottomNavigationBarItem(icon: Icon(Icons.home), title: home),
+      BottomNavigationBarItem(icon: Icon(Icons.thumb_up), title: forYou)
+    ];
+    this.currentPageTitle = home.data;
+  }
 
+  _buildScaffold(Drawer drawer) {
     var scaffold = Scaffold(
       appBar: AppBar(),
       key: scaffoldKey,
@@ -276,57 +328,14 @@ class PassEntriesPage extends State<MyHomePage> implements ResetAuthAction {
         items: bottomItems,
         currentIndex: _selectedPageIndex,
         selectedItemColor: Colors.green,
-        onTap: _onPageTapped,
+        onTap: _onBottomNavigationItemTapped,
         unselectedItemColor: Colors.grey,
         selectedLabelStyle: _bottomNavTextStyleEnabled,
         unselectedLabelStyle: _bottomNavTextStyleDisabled,
       ),
       drawer: drawer,
     );
-    return GestureDetector(
-        onPanUpdate: (details) {
-          if (details.delta.dx > 0) {
-            scaffoldKey.currentState.openDrawer();
-          }
-        },
-        child: scaffold);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    isAuth = false;
-  }
-
-  // ignore: non_constant_identifier_names
-  void Auth() async {
-    if (await mustAuth()) {
-      var localAuth = LocalAuthentication();
-      bool hasAuthenticated = await localAuth.authenticateWithBiometrics(
-          localizedReason: LocalizationTool.of(context).fingerprintLogin,
-          stickyAuth: true);
-      setState(() => isAuth = hasAuthenticated);
-    } else {
-      setState(() => isAuth = true);
-    }
-  }
-
-  void _onPageTapped(int value) {
-    this._selectedPageIndex = value;
-    this.currentPageTitle = (bottomItems[value].title as Text).data;
-    setState(() {});
-  }
-
-  Future<bool> mustAuth() async {
-    var option =
-        await SettingsManager.getPref(PrivacySettingsTabState.isVerifyingKey);
-    var result = option as bool;
-    return result == null ? false : result;
-  }
-
-  @override
-  onResetAuth() {
-    Auth();
+    return scaffold;
   }
 }
 
@@ -345,6 +354,7 @@ class _NotAuthenticatedWidgetState extends State<NotAuthenticatedWidget> {
   GlobalKey<FormState> key = GlobalKey<FormState>();
   bool isWrong = true;
   int tries = 0;
+  Icon warningIcon = Icon(Icons.warning, color: Colors.redAccent, size: 72);
   _NotAuthenticatedWidgetState(this.callback);
   @override
   Widget build(BuildContext context) {
@@ -353,7 +363,7 @@ class _NotAuthenticatedWidgetState extends State<NotAuthenticatedWidget> {
             key: key,
             child: Column(
               children: <Widget>[
-                Icon(Icons.warning, color: Colors.redAccent, size: 72),
+                warningIcon,
                 Padding(
                     padding: EdgeInsets.all(15),
                     child: Text(
@@ -397,32 +407,30 @@ class _NotAuthenticatedWidgetState extends State<NotAuthenticatedWidget> {
                     child: FlatButton(
                       child: Text(LocalizationTool.of(context).proceed),
                       color: Colors.greenAccent,
-                      onPressed: () async {
-                        if (tries < 3) {
-                          var prefs = (await SharedPreferences.getInstance());
-                          var code = prefs.getString(
-                              FingerprintBackupState.backupKeySetting);
-                          if (code == userCode) {
-                            prefs.setBool(
-                                PrivacySettingsTabState.isVerifyingKey, false);
-                            showDialog(
-                              context: context,
-                              builder: (context) =>
-                                  ResultDialog("msg", type: ResultType.positive),
-                            );
-                            callback.onResetAuth();
-                            // msg isn't used
-                          } else {
-                            isWrong = true;
-                            key.currentState.validate();
-                          }
-                        }
-                      },
+                      onPressed: verifyCode,
                     ),
                   ),
                 ),
               ],
             )));
+  }
+
+  void verifyCode() async {
+    if (tries < 3) {
+      var code = await SettingsManager.getPref<String>(FingerprintBackupState.backupKeySetting);
+      if (code == userCode) {
+        SettingsManager.changePref(PrivacySettingsTabState.isVerifyingKey, false);
+        showDialog(
+          context: context,
+          builder: (context) => ResultDialog("msg", type: ResultType.positive),
+        );
+        callback.onResetAuth();
+        // msg isn't used
+      } else {
+        isWrong = true;
+        key.currentState.validate();
+      }
+    }
   }
 }
 

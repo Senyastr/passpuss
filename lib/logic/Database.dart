@@ -1,10 +1,10 @@
 import 'dart:core';
 import 'dart:io';
-import 'package:PassPuss/passentry.dart';
+import 'dart:isolate';
+import 'package:PassPuss/logic/passentry.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_sqlcipher/sqlite.dart';
-
-import 'package:PassPuss/pages/homePage.dart';
 
 class DBProvider {
   DBProvider._();
@@ -17,7 +17,6 @@ class DBProvider {
     if (_database != null) {
       return _database;
     }
-
     _database = await initDB();
     return _database;
   }
@@ -113,7 +112,8 @@ class DBProvider {
     return result;
   }
 
-  Future<List<PassEntry>> getPassEntries() async {
+  Future<List<PassEntry>> getPassEntries(
+      GotPassEntries gotPassEntriesCallback) async {
     var db = await this.database;
     var result = await db.query(
       table: TABLE_NAME,
@@ -138,7 +138,8 @@ class DBProvider {
       var iconPath = v[iconPathColumn];
       var createdTime = DateTime.parse(v[createdTimeColumn]);
       var email = v[emailColumn];
-      var tag = Tags.values.firstWhere((element) => element.toString() == v[tagColumn]);
+      var tag = Tags.values
+          .firstWhere((element) => element.toString() == v[tagColumn]);
       passEntries.add(PassEntry.fromDB(
         id,
         username,
@@ -150,8 +151,21 @@ class DBProvider {
         tag,
       ));
     });
-    HomePageState.Pairs = passEntries;
+    if (gotPassEntriesCallback != null) {
+      gotPassEntriesCallback(passEntries);
+    }
+
     await this.closeDb();
     return passEntries;
   }
+}
+
+typedef void GotPassEntries(List<PassEntry> entries);
+Future<int> deletePassEntry(PassEntry entry) async {
+  var db = await DBProvider.DB.database;
+  String id = entry.id.toString();
+  var result = await db
+      .delete(table: DBProvider.TABLE_NAME, where: "id=?", whereArgs: [id]);
+  await DBProvider.DB.closeDb();
+  return result;
 }

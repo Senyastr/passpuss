@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:PassPuss/pages/homePage.dart';
+import 'package:PassPuss/view/pages/homePage.dart';
 
 enum Tags { red, green, yellow, orange, graphite, white }
 

@@ -177,6 +177,14 @@ class LocalizationTool {
 
   String get sortTags => getValue("sortTags");
 
+  String get deleteEntryWarningDialogTitle => getValue("deleteEntryWarningDialogTitle");
+
+  String get deleteEntryWarningDialogContent => getValue("deleteEntryWarningDialogContent");
+
+  String get deleteEntryWarningPositiveButton => getValue("deleteEntryWarningPositiveButton");
+
+  String get deleteEntryWarningNegativeButton => getValue("deleteEntryWarningNegativeButton");
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -286,7 +294,11 @@ class LocalizationTool {
               " Back up the old password.",
       "sortNone": "None",
       "sortTime" : "By time",
-      "sortTags" : "By tags"
+      "sortTags" : "By tags",
+      "deleteEntryWarningDialogTitle" : "You are trying to remove an entry",
+      "deleteEntryWarningPositiveButton" : "Yep, we're good to go.",
+      "deleteEntryWarningNegativeButton" : "Nope, get back",
+      "deleteEntryWarningDialogContent" : "Are you sure about removing the password entry?"
     },
     'ru': {
       'home': 'Главная',
@@ -381,7 +393,11 @@ class LocalizationTool {
               "Сохраните старый пароль.",
       "sortNone": "Отсутствует",
       "sortTime" : "По времени",
-      "sortTags" : "По тегам"
+      "sortTags" : "По тегам",
+      "deleteEntryWarningDialogTitle" : "Вы пытаетесь удалить запись пароля",
+      "deleteEntryWarningPositiveButton" : "Да, погнали",
+      "deleteEntryWarningNegativeButton" : "Нет, давайте назад",
+      "deleteEntryWarningDialogContent" : "Вы уверенны, что хотите удалить запись пароля?"
     },
     'ua': {
       'home': "Головна",
@@ -479,7 +495,11 @@ class LocalizationTool {
               "Збережіть свій старий пароль.",
       "sortNone": "Відсутнє",
       "sortTime" : "За часом",
-      "sortTags" : "За тегами"
+      "sortTags" : "За тегами",
+      "deleteEntryWarningDialogTitle" : "Ви намагаєтесь видалити запис паролю",
+      "deleteEntryWarningPositiveButton" : "Так, полетіли",
+      "deleteEntryWarningNegativeButton" : "Ні, давайте назад",
+      "deleteEntryWarningDialogContent" : "Ви впевнені, що хочете видалити запис паролю?"
     }
   };
 }

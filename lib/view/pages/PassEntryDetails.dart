@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:PassPuss/pages/editEntryPage.dart';
-import 'package:PassPuss/pages/homePage.dart';
-import 'package:PassPuss/pages/settings/ForYou.dart';
-import 'package:PassPuss/pages/settings/settings.dart';
-import 'package:PassPuss/passentry.dart';
+import 'package:PassPuss/view/pages/editEntryPage.dart';
+import 'package:PassPuss/view/pages/homePage.dart';
+import 'package:PassPuss/view/pages/settings/ForYou.dart';
+import 'package:PassPuss/view/pages/settings/settings.dart';
+import 'package:PassPuss/logic/passentry.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,14 +12,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
-import 'package:PassPuss/message.dart';
-import 'package:PassPuss/localization.dart';
+import 'package:PassPuss/view/message.dart';
+import 'package:PassPuss/logic/localization.dart';
 
-import '../Database.dart';
+import 'package:PassPuss/logic/Database.dart';
 import '../NewPassEntry.dart';
 import '../PassFieldItem.dart';
 import '../main.dart';
-import '../notifications.dart';
+import 'package:PassPuss/logic/notifications.dart';
 
 class PassEntryDetails extends StatefulWidget {
   PassEntry entry;
@@ -82,7 +82,112 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
     iconOpened = Icon(Icons.lock_open,
         key: passwordStateKey, color: Theme.of(context).accentColor);
 
-    mainInfo = Column(children: <Widget>[
+    mainInfo = _buildMainInfo(context);
+    timeBlock = Padding(
+        padding: EdgeInsets.only(bottom: 10),
+        child: Column(children: <Widget>[
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  LocalizationTool.of(context).time,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      .copyWith(color: Colors.white),
+                )),
+          ),
+          AlignCenterLeft(
+              Row(children: <Widget>[
+                Icon(Icons.edit, color: Theme.of(context).accentColor),
+                Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Text(timeCreated.format(entry.createdTime),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(color: Colors.white)),
+                )
+              ]),
+              EdgeInsets.only(
+                left: 20,
+                top: 10,
+              ))
+        ]));
+    var editButton = FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              new MaterialPageRoute(
+                  builder: (context) => EditEntryPage(entry)));
+        },
+        child: Icon(Icons.edit));
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).cardColor,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.share,
+                color: Theme.of(context).accentColor,
+              ),
+              onPressed: _share,
+            ),
+          ],
+        ),
+        backgroundColor: Theme.of(context).cardColor,
+        body: SafeArea(
+            child: Column(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Text(
+                    LocalizationTool.of(context).passwordDetailsPage,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5
+                        .copyWith(color: Colors.white),
+                  )),
+            ),
+            Screenshot(
+                controller: screenshotController,
+                child:
+                    Card(color: Theme.of(context).cardColor, child: mainInfo)),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Divider(color: Colors.white),
+            ),
+            timeBlock,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Divider(color: Colors.white),
+            ),
+            Align(
+                alignment: Alignment.center,
+                child: IconButton(
+                    icon: Icon(Icons.lightbulb_outline),
+                    iconSize: 52,
+                    color: Colors.yellow,
+                    onPressed: () {
+                      tryRegeneratePassword(context,
+                          onPositive: regeneratePassword,
+                          onNegative: cancelPasswordRegeneration);
+                    })),
+            SafeArea(
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child:
+                    Align(alignment: Alignment.bottomRight, child: editButton),
+              ),
+            ),
+          ],
+        )));
+  }
+  Widget _buildMainInfo(BuildContext context){
+    return Column(children: <Widget>[
       Align(
           alignment: Alignment.centerLeft,
           child: Padding(
@@ -235,110 +340,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                         .copyWith(color: Colors.white)))
           ])),
     ]);
-    timeBlock = Padding(
-        padding: EdgeInsets.only(bottom: 10),
-        child: Column(children: <Widget>[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Text(
-                  LocalizationTool.of(context).time,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6
-                      .copyWith(color: Colors.white),
-                )),
-          ),
-          AlignCenterLeft(
-              Row(children: <Widget>[
-                Icon(Icons.edit, color: Theme.of(context).accentColor),
-                Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Text(timeCreated.format(entry.createdTime),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          .copyWith(color: Colors.white)),
-                )
-              ]),
-              EdgeInsets.only(
-                left: 20,
-                top: 10,
-              ))
-        ]));
-    var editButton = FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              new MaterialPageRoute(
-                  builder: (context) => EditEntryPage(entry)));
-        },
-        child: Icon(Icons.edit));
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).cardColor,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.share,
-                color: Theme.of(context).accentColor,
-              ),
-              onPressed: _share,
-            ),
-          ],
-        ),
-        backgroundColor: Theme.of(context).cardColor,
-        body: SafeArea(
-            child: Column(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Text(
-                    LocalizationTool.of(context).passwordDetailsPage,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5
-                        .copyWith(color: Colors.white),
-                  )),
-            ),
-            Screenshot(
-                controller: screenshotController,
-                child:
-                    Card(color: Theme.of(context).cardColor, child: mainInfo)),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Divider(color: Colors.white),
-            ),
-            timeBlock,
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Divider(color: Colors.white),
-            ),
-            Align(
-                alignment: Alignment.center,
-                child: IconButton(
-                    icon: Icon(Icons.lightbulb_outline),
-                    iconSize: 52,
-                    color: Colors.yellow,
-                    onPressed: () {
-                      tryRegeneratePassword(context,
-                          onPositive: regeneratePassword,
-                          onNegative: cancelPasswordRegeneration);
-                    })),
-            SafeArea(
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child:
-                    Align(alignment: Alignment.bottomRight, child: editButton),
-              ),
-            ),
-          ],
-        )));
   }
-
   PassEntryDetailsState(this.entry);
 
   Widget AlignCenterLeft(Widget text, EdgeInsets insets) {
@@ -357,7 +359,12 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
 
     showDialog(
         context: _context,
-        builder: (context) => AlertDialog(
+        builder: (context) => _buildShareWarningDialog(context));
+
+    removeShareFile();
+  }
+  Widget _buildShareWarningDialog(BuildContext context){
+    return AlertDialog(
               title: Text(
                 LocalizationTool.of(context).shareWarningTitle,
                 style: Theme.of(context)
@@ -424,11 +431,8 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                   },
                 ),
               ],
-            ));
-
-    removeShareFile();
+            );
   }
-
   void removeShareFile() {}
 
   void tryRegeneratePassword(BuildContext context,
@@ -458,6 +462,8 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
     var icon = entry.getIconId();
     var tag = entry.tag;
     var createdTime = entry.createdTime;
+    // FOR DEBUG PURPOSES
+    // ignore: unused_local_variable
     var removedNumber = await DBProvider.DB.deletePassEntry(entry);
     HomePageState.Pairs.remove(entry);
     var newEntry = PassEntry.withIcon(

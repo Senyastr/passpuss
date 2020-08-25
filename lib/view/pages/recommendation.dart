@@ -1,11 +1,11 @@
-import 'package:PassPuss/pages/homePage.dart';
-import 'package:PassPuss/pages/settings/ForYou.dart';
+import 'package:PassPuss/view/pages/homePage.dart';
+import 'package:PassPuss/view/pages/settings/ForYou.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:PassPuss/localization.dart';
-import 'package:PassPuss/passentry.dart';
+import 'package:PassPuss/logic/localization.dart';
+import 'package:PassPuss/logic/passentry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
 
@@ -18,10 +18,15 @@ enum PasswordProblem {
   Idiot
 }
 
-class RecommendationTab extends StatefulWidget {
+class RecommendationTab extends StatefulWidget implements Disposable{
   @override
   State<StatefulWidget> createState() {
     return new RecommendationTabState();
+  }
+
+  @override
+  void dispose() {
+    
   }
 }
 
@@ -33,6 +38,7 @@ class RecommendationTabState extends State<RecommendationTab> {
 
   @override
   void initState() {
+    super.initState();
     analyzing = true;
     analyze().then((recSet) {
       this.recSet = recSet;
@@ -84,19 +90,21 @@ class RecommendationTabState extends State<RecommendationTab> {
         ),
       ),
       !analyzing
-          ? items.length == 0
-              ? Center(child: emptyView)
-              : Expanded(
-                  child: ListView.separated(
-                      separatorBuilder: (context, index) => Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: Divider(color: Colors.white)),
-                      itemCount: items.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return items[index];
-                      }))
+          ? items.length == 0 ? Center(child: emptyView) : _buildItems(context)
           : CircularProgressIndicator()
     ]);
+  }
+
+  _buildItems(BuildContext context) {
+    return Expanded(
+        child: ListView.separated(
+            separatorBuilder: (context, index) => Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Divider(color: Colors.white)),
+            itemCount: items.length,
+            itemBuilder: (BuildContext context, int index) {
+              return items[index];
+            }));
   }
 
   Future<List<Tuple3<PassEntry, PasswordProblem, MessageType>>>
