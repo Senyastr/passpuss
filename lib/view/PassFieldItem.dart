@@ -71,33 +71,36 @@ class PassFieldState extends State<PassField> {
               AdManager.tryShowInterstitialAd();
             },
             child: Card(
+                elevation: 10,
                 child: Column(children: <Widget>[
-              Align(
-                  alignment: Alignment.topLeft,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Row(children: [
-                          icon,
-                          title,
-                        ]),
-                        Row(children: [
-                          passEntry.tag != null
-                              ? Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 15),
-                                  child: TagHelper.widgetByTag(passEntry.tag))
-                              : Container(),
-                          Padding(
-                              padding: EdgeInsets.only(left: 1),
-                              child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: _buildRemoveButton(context))),
-                        ]),
-                      ])),
-              Align(alignment: Alignment.bottomLeft, child: usernameField),
-              Align(alignment: Alignment.bottomLeft, child: passwordField),
-            ]))));
+                  Align(
+                      alignment: Alignment.topLeft,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Row(children: [
+                              icon,
+                              title,
+                            ]),
+                            Row(children: [
+                              passEntry.tag != null
+                                  ? Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 15),
+                                      child:
+                                          TagHelper.widgetByTag(passEntry.tag))
+                                  : Container(),
+                              Padding(
+                                  padding: EdgeInsets.only(left: 1),
+                                  child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: _buildRemoveButton(context))),
+                            ]),
+                          ])),
+                  Align(alignment: Alignment.bottomLeft, child: usernameField),
+                  Align(alignment: Alignment.bottomLeft, child: passwordField),
+                ]))));
   }
 
   Widget _buildEntryIcon(BuildContext context) {
@@ -183,12 +186,10 @@ class PassFieldState extends State<PassField> {
   }
 
   Future<void> removeEntry() async {
-    
-
     var isAuth = await authenticate();
     if (isAuth) {
       ResultDialog dialog = ResultDialog("message", type: ResultType.positive);
-    showDialog(context: context, builder: (context) => dialog);
+      showDialog(context: context, builder: (context) => dialog);
       HomePageState.changeDataset(() async {
         // GETTING INDEX OF THIS PAIR(USED FOR POINTING WHAT ELEMENT'S GOTTA BE ANIMATED)
         var index = HomePageState.Pairs.indexOf(passEntry);

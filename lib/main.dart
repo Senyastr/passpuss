@@ -10,11 +10,13 @@ import 'package:PassPuss/logic/auth/local_auth.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../logic/ads/adManager.dart';
-import '../view/message.dart';
-import '../view/pages/settings/settings.dart';
+import 'logic/ads/adManager.dart';
+import 'view/message.dart';
+import 'view/pages/settings/settings.dart';
 
-void main() { runApp(PassPuss());}
+void main() {
+  runApp(PassPuss());
+}
 
 class PassPuss extends StatelessWidget {
   // This widget is the root of your application.
@@ -152,7 +154,7 @@ class PassPuss extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-  
+
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
@@ -212,6 +214,7 @@ class PassEntriesPage extends State<MyHomePage> implements ResetAuthAction {
     super.initState();
     isAuth = false;
   }
+
   // ignore: unused_element
   Future<void> _initAdMob() {
     return FirebaseAdMob.instance.initialize(appId: AdManager.appId);
@@ -417,9 +420,11 @@ class _NotAuthenticatedWidgetState extends State<NotAuthenticatedWidget> {
 
   void verifyCode() async {
     if (tries < 3) {
-      var code = await SettingsManager.getPref<String>(FingerprintBackupState.backupKeySetting);
+      var code = await SettingsManager.getPref<String>(
+          FingerprintBackupState.backupKeySetting);
       if (code == userCode) {
-        SettingsManager.changePref(PrivacySettingsTabState.isVerifyingKey, false);
+        SettingsManager.changePref(
+            PrivacySettingsTabState.isVerifyingKey, false);
         showDialog(
           context: context,
           builder: (context) => ResultDialog("msg", type: ResultType.positive),

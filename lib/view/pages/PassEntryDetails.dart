@@ -18,7 +18,7 @@ import 'package:PassPuss/logic/localization.dart';
 import 'package:PassPuss/logic/Database.dart';
 import '../NewPassEntry.dart';
 import '../PassFieldItem.dart';
-import '../main.dart';
+import '../../main.dart';
 import 'package:PassPuss/logic/notifications.dart';
 
 class PassEntryDetails extends StatefulWidget {
@@ -154,39 +154,34 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
             ),
             Screenshot(
                 controller: screenshotController,
-                child:
-                    Card(color: Theme.of(context).cardColor, child: mainInfo)),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Divider(color: Colors.white),
+                child: Card(
+                  color: Theme.of(context).cardColor,
+                  child: mainInfo,
+                  elevation: 5,
+                )),
+//            Padding(
+//              padding: EdgeInsets.symmetric(horizontal: 20),
+//              child: Divider(color: Colors.white),
+//            ),
+            Card(
+              color: Theme.of(context).cardColor,
+              child: timeBlock,
+              elevation: 5,
             ),
-            timeBlock,
+//            Padding(
+//              padding: EdgeInsets.symmetric(horizontal: 20),
+//              child: Divider(color: Colors.white),
+//            ),
+
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Divider(color: Colors.white),
-            ),
-            Align(
-                alignment: Alignment.center,
-                child: IconButton(
-                    icon: Icon(Icons.lightbulb_outline),
-                    iconSize: 52,
-                    color: Colors.yellow,
-                    onPressed: () {
-                      tryRegeneratePassword(context,
-                          onPositive: regeneratePassword,
-                          onNegative: cancelPasswordRegeneration);
-                    })),
-            SafeArea(
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child:
-                    Align(alignment: Alignment.bottomRight, child: editButton),
-              ),
+              padding: EdgeInsets.all(10),
+              child: Align(alignment: Alignment.bottomRight, child: editButton),
             ),
           ],
         )));
   }
-  Widget _buildMainInfo(BuildContext context){
+
+  Widget _buildMainInfo(BuildContext context) {
     return Column(children: <Widget>[
       Align(
           alignment: Alignment.centerLeft,
@@ -302,6 +297,17 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                       .textTheme
                       .bodyText1
                       .copyWith(color: Colors.white))),
+          IconButton(
+              icon: Icon(
+                Icons.lightbulb_outline,
+                size: 28,
+              ),
+              color: Colors.yellow,
+              onPressed: () {
+                tryRegeneratePassword(context,
+                    onPositive: regeneratePassword,
+                    onNegative: cancelPasswordRegeneration);
+              })
         ]),
       ),
       Align(
@@ -341,6 +347,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
           ])),
     ]);
   }
+
   PassEntryDetailsState(this.entry);
 
   Widget AlignCenterLeft(Widget text, EdgeInsets insets) {
@@ -363,76 +370,75 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
 
     removeShareFile();
   }
-  Widget _buildShareWarningDialog(BuildContext context){
-    return AlertDialog(
-              title: Text(
-                LocalizationTool.of(context).shareWarningTitle,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline6
-                    .copyWith(color: Colors.white),
-              ),
-              content:
-                  Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                Text(
-                  LocalizationTool.of(context).shareWarningContent,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2
-                      .copyWith(color: Colors.white),
-                ),
-                Icon(
-                  Icons.warning,
-                  color: Colors.redAccent,
-                  size: 100,
-                ),
-              ]),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(
-                      LocalizationTool.of(context)
-                          .shareWarningPositive, // Yes, I'm risky.
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2
-                          .copyWith(color: Colors.lightGreenAccent)),
-                  onPressed: () {
-                    setState(() {
-                      isPasswordShown = true;
-                    });
-                    Navigator.pop<AlertDialog>(_context);
 
-                    showDialog(
-                      context: _context,
-                      builder: (context) => ChooseShareTypeDialog(
-                          entry, screenshotController, state),
-                    );
-                    // screenshotController
-                    //     .capture(pixelRatio: 8)
-                    //     .then((File image) async {
-                    //   await Share.file(entry.getUsername(), "password.png",
-                    //       await image.readAsBytes(), 'image/png');
-                    //   setState(() {
-                    //     isPasswordShown = false;
-                    //   });
-                    // });
-                  },
-                ),
-                FlatButton(
-                  child: Text(
-                      LocalizationTool.of(context)
-                          .shareWarningNegative, // "No, I want to my mummy."
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2
-                          .copyWith(color: Colors.redAccent)),
-                  onPressed: () {
-                    Navigator.pop<AlertDialog>(_context);
-                  },
-                ),
-              ],
+  Widget _buildShareWarningDialog(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        LocalizationTool.of(context).shareWarningTitle,
+        style:
+            Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),
+      ),
+      content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+        Text(
+          LocalizationTool.of(context).shareWarningContent,
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2
+              .copyWith(color: Colors.white),
+        ),
+        Icon(
+          Icons.warning,
+          color: Colors.redAccent,
+          size: 100,
+        ),
+      ]),
+      actions: <Widget>[
+        FlatButton(
+          child: Text(
+              LocalizationTool.of(context)
+                  .shareWarningPositive, // Yes, I'm risky.
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  .copyWith(color: Colors.lightGreenAccent)),
+          onPressed: () {
+            setState(() {
+              isPasswordShown = true;
+            });
+            Navigator.pop<AlertDialog>(_context);
+
+            showDialog(
+              context: _context,
+              builder: (context) =>
+                  ChooseShareTypeDialog(entry, screenshotController, state),
             );
+            // screenshotController
+            //     .capture(pixelRatio: 8)
+            //     .then((File image) async {
+            //   await Share.file(entry.getUsername(), "password.png",
+            //       await image.readAsBytes(), 'image/png');
+            //   setState(() {
+            //     isPasswordShown = false;
+            //   });
+            // });
+          },
+        ),
+        FlatButton(
+          child: Text(
+              LocalizationTool.of(context)
+                  .shareWarningNegative, // "No, I want to my mummy."
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  .copyWith(color: Colors.redAccent)),
+          onPressed: () {
+            Navigator.pop<AlertDialog>(_context);
+          },
+        ),
+      ],
+    );
   }
+
   void removeShareFile() {}
 
   void tryRegeneratePassword(BuildContext context,
