@@ -47,7 +47,8 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
     var upperPart = _buildUpperPart(context);
     var encryptionSetting = _buildEncryptionSetting(context);
     var isVerifyingSetting = _buildIsVeryfyingSetting(context);
-    var removeVerifycationSetting = _buildRemovePassEntryAuthenticationSetting(context);
+    var removeVerifycationSetting =
+        _buildRemovePassEntryAuthenticationSetting(context);
     var temp = Scaffold(
         appBar: AppBar(),
         body: Column(
@@ -55,20 +56,28 @@ class PrivacySettingsTabState extends State<PrivacySettingsTab>
             Padding(padding: EdgeInsets.all(10), child: upperPart),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 50),
-              child: Divider(),
+              child: _buildDivider(),
             ),
-            Column(
-              children: <Widget>[
-                encryptionSetting,
-                Divider(),
-                isVerifyingSetting,
-                Divider(),
-                removeVerifycationSetting,
-              ],
-            )
+            Card(
+                color: Theme.of(context).cardColor,
+                child: Column(
+                  children: <Widget>[
+                    encryptionSetting,
+                    _buildDivider(),
+                    isVerifyingSetting,
+                    _buildDivider(),
+                    removeVerifycationSetting,
+                  ],
+                )),
           ],
         ));
     return temp;
+  }
+
+  _buildDivider() {
+    return Divider(
+      color: Colors.blueAccent,
+    );
   }
 
   Widget _buildUpperPart(BuildContext context) {

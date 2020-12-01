@@ -41,6 +41,8 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>AppLovinSdkKey</key>
+<string>5824xOb-c71dgXJSuES6Qd0T9E_V-RAmH0H33a0UICg5gamFSAtJKtCCti7QToEEV_GLv3khFDeI_U20A1REl3</string>
 
 </dict>
 </plist>

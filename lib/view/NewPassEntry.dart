@@ -1,8 +1,10 @@
+import 'package:PassPuss/logic/autosync.dart';
 import 'package:PassPuss/logic/localization.dart';
 import 'package:PassPuss/view/message.dart';
 import 'package:PassPuss/view/pages/editEntryPage.dart';
 import 'package:PassPuss/view/pages/settings/ForYou.dart';
 import 'package:PassPuss/view/pages/settings/Notification.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -221,17 +223,20 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Row(children: [
-                      Padding(
-                          child: (IconChoiceState.selected != null)
-                              ? SvgPicture.asset(
-                                  IconChoiceState.selected.iconInfo?.path)
-                              : SvgPicture.asset(IconChoiceState.emptyIconPath),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10)),
-                      Text("$title",
-                          style: TextStyle(fontSize: 20, color: Colors.white)),
-                    ]),
+                    Padding(
+                        child: (IconChoiceState.selected != null)
+                            ? SvgPicture.asset(
+                                IconChoiceState.selected.iconInfo?.path)
+                            : SvgPicture.asset(IconChoiceState.emptyIconPath),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
+                    Expanded(
+                        child: AutoSizeText(
+                      "$title",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                      maxLines: 1,
+                      minFontSize: 8,
+                    )),
                     Padding(
                         padding: EdgeInsets.only(right: 15),
                         child: TagHelper.widgetByTag(tag)),
@@ -243,10 +248,16 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                   padding: EdgeInsets.only(left: 27, top: 10, bottom: 10),
                   child: Icon(Icons.person),
                 ),
-                Padding(
-                    child: Text(username,
-                        style: TextStyle(fontSize: 20, color: Colors.white)),
-                    padding: EdgeInsets.only(left: 18, top: 10, bottom: 10)),
+                Expanded(
+                    child: Padding(
+                        child: AutoSizeText(
+                          username,
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                          minFontSize: 8,
+                          maxLines: 1,
+                        ),
+                        padding:
+                            EdgeInsets.only(left: 18, top: 10, bottom: 10))),
                 Padding(
                     padding: EdgeInsets.all(1),
                     child: IconButton(
@@ -279,10 +290,15 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
                         });
                       },
                     )),
+                    Expanded(child: 
                 Padding(
                     padding: EdgeInsets.only(left: 6, top: 10, bottom: 10),
-                    child: Text(passwordPreview,
-                        style: TextStyle(fontSize: 20, color: Colors.white))),
+                    child: AutoSizeText(
+                      passwordPreview,
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                      maxLines: 1,
+                      minFontSize: 8,
+                    ))),
                 Padding(
                     padding: EdgeInsets.only(),
                     child: IconButton(
@@ -473,18 +489,25 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
     if (_formKey.currentState.validate()) {
       ResultDialog dialog = ResultDialog("message");
       showDialog(context: context, builder: (context) => dialog);
-      await DBProvider.DB.addPassEntry(newEntry);
+      var pref = await SettingsManager.getPref(AutoSyncService.AutoSyncSetting)
+          as bool;
+      bool autoSyncPref = pref == null ? false : pref;
+      await DBProvider.DB.addPassEntry(newEntry, isSyncDrive: autoSyncPref);
       HomePageState.changeDataset(() {
         HomePageState.Pairs.add(newEntry);
       });
+      // INSERT ITEM ANIMATION
       var animatedListState = HomePageState.animatedListKey.currentState;
       if (animatedListState != null) {
         animatedListState.insertItem(HomePageState.Pairs.length - 1);
       }
-
+      // EXPIRATION SETTING
       registerExpiration(newEntry);
+      // AUTO SYNC SETTING
 
+      // ADS
       AdManager.tryShowInterstitialAd();
+      // DIALOG WITH A GREEN CHECK
       dialog.state.loaded();
     }
   }

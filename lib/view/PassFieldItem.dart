@@ -1,9 +1,11 @@
+import 'package:PassPuss/logic/autosync.dart';
 import 'package:PassPuss/view/NewPassEntry.dart';
 import 'package:PassPuss/logic/auth/local_auth.dart';
 import 'package:PassPuss/view/message.dart';
 import 'package:PassPuss/view/pages/homePage.dart';
 import 'package:PassPuss/view/pages/settings/Privacy.dart';
 import 'package:PassPuss/view/pages/settings/settings.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -81,7 +83,7 @@ class PassFieldState extends State<PassField> {
                           children: <Widget>[
                             Row(children: [
                               icon,
-                              title,
+                              SizedBox(child: title, width: 125),
                             ]),
                             Row(children: [
                               passEntry.tag != null
@@ -111,8 +113,8 @@ class PassFieldState extends State<PassField> {
   }
 
   Widget _buildTitle(BuildContext context) {
-    return Text(passEntry.getTitle(),
-        style: TextStyle(fontSize: 20, color: Colors.white));
+    return AutoSizeText(passEntry.getTitle(),
+        style: TextStyle(fontSize: 20, color: Colors.white), minFontSize: 8, maxLines: 1,);
   }
 
   Widget _buildUsernameField(BuildContext context) {
@@ -121,10 +123,16 @@ class PassFieldState extends State<PassField> {
         padding: EdgeInsets.only(left: 27, top: 10, bottom: 10),
         child: Icon(Icons.person),
       ),
-      Padding(
-          child: Text(passEntry.getUsername(),
-              style: TextStyle(fontSize: 20, color: Colors.white)),
-          padding: EdgeInsets.only(left: 18, top: 10, bottom: 10)),
+      Expanded(
+          child: Padding(
+              child: AutoSizeText(
+                passEntry.getUsername(),
+                maxLines: 1,
+                style: TextStyle(fontSize: 20, color: Colors.white),
+                minFontSize: 8,
+                stepGranularity: 0.1,
+              ),
+              padding: EdgeInsets.only(left: 18, top: 10, bottom: 10))),
       Padding(
           padding: EdgeInsets.all(1),
           child: IconButton(
@@ -152,13 +160,16 @@ class PassFieldState extends State<PassField> {
               });
             },
           )),
-      Padding(
+      Expanded(child: Padding(
           padding: EdgeInsets.only(left: 6, top: 10, bottom: 10),
-          child: Text(
-              (isPasswordShown)
-                  ? passEntry.getPassword()
-                  : hidePassword(passEntry.getPassword()),
-              style: TextStyle(fontSize: 20, color: Colors.white))),
+          child: AutoSizeText(
+            (isPasswordShown)
+                ? passEntry.getPassword()
+                : hidePassword(passEntry.getPassword()),
+            style: TextStyle(fontSize: 20, color: Colors.white),
+            minFontSize: 6,
+            stepGranularity: 0.1,
+          ))),
       Padding(
           padding: EdgeInsets.all(1),
           child: IconButton(
@@ -189,6 +200,9 @@ class PassFieldState extends State<PassField> {
     var isAuth = await authenticate();
     if (isAuth) {
       ResultDialog dialog = ResultDialog("message", type: ResultType.positive);
+      var pref = await SettingsManager.getPref(AutoSyncService.AutoSyncSetting)
+          as bool;
+      bool isSyncDrive = pref == null ? false : pref;
       showDialog(context: context, builder: (context) => dialog);
       HomePageState.changeDataset(() async {
         // GETTING INDEX OF THIS PAIR(USED FOR POINTING WHAT ELEMENT'S GOTTA BE ANIMATED)
@@ -196,7 +210,7 @@ class PassFieldState extends State<PassField> {
         // REMOVING FROM HOMEPAGE
         HomePageState.Pairs.remove(passEntry);
         // REMOVING FORM DB
-        DBProvider.DB.deletePassEntry(passEntry);
+        DBProvider.DB.deletePassEntry(passEntry, isSyncDrive: isSyncDrive);
         // ANIMATING
         var animatedListState = HomePageState.animatedListKey.currentState;
         if (animatedListState != null) {

@@ -1,10 +1,16 @@
 import 'dart:core';
-import 'dart:io';
+import 'dart:io' as io;
 import 'dart:isolate';
+import 'package:PassPuss/logic/autosync.dart';
 import 'package:PassPuss/logic/passentry.dart';
+import 'package:PassPuss/view/pages/settings/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_sqlcipher/sqlite.dart';
+import 'package:http/http.dart' as http;
+import 'package:googleapis/drive/v3.dart' as drive;
+import 'package:google_sign_in/google_sign_in.dart' as signIn;
 
 class DBProvider {
   DBProvider._();
@@ -42,13 +48,17 @@ class DBProvider {
   static const String createdTimeColumn = "CREATEDTIME";
   static const String emailColumn = "EMAIL";
   static const String tagColumn = "TAG";
-  Future<SQLiteDatabase> initDB() async {
-    Directory databases = await getApplicationDocumentsDirectory();
+  static _getDBPath() async {
+    io.Directory databases = await getApplicationDocumentsDirectory();
     String path = databases.path +
-        "\\" +
+        "/" +
         "PassPairs.db"; // get the path of the future database
+    return path;
+  }
 
-    if (!await File(path).exists()) {
+  Future<SQLiteDatabase> initDB() async {
+    var path = await _getDBPath();
+    if (!await io.File(path).exists()) {
       _database = await SQLiteDatabase.openOrCreateDatabase(path,
           password: "xgWd793VL");
       await (await database).execSQL("CREATE TABLE PassEntries("
@@ -74,7 +84,7 @@ class DBProvider {
 
   static String TABLE_NAME = "PassEntries";
 
-  Future<int> addPassEntry(PassEntry entry) async {
+  Future<int> addPassEntry(PassEntry entry, {bool isSyncDrive = false}) async {
     SQLiteDatabase db = await this.database;
     Map map = entry.toJson();
     map.remove("id");
@@ -100,15 +110,24 @@ class DBProvider {
         "'$email', "
         "'$tag');");
     await this.closeDb();
+    // AUTO SYNC
+    if (isSyncDrive) {
+      AutoSyncService.getService().serve(null);
+    }
     return 1;
   }
 
-  Future<int> deletePassEntry(PassEntry entry) async {
+  Future<int> deletePassEntry(PassEntry entry,
+      {bool isSyncDrive = false}) async {
     var db = await this.database;
     String id = entry.id.toString();
     var result =
         await db.delete(table: TABLE_NAME, where: "id=?", whereArgs: [id]);
     await this.closeDb();
+    // AUTO SYNC
+    if (isSyncDrive) {
+      AutoSyncService.getService().serve(null);
+    }
     return result;
   }
 
@@ -158,7 +177,115 @@ class DBProvider {
     await this.closeDb();
     return passEntries;
   }
+
+  // GOOGLE DRIVE
+  static GoogleAuthClient client;
+  static signIn.GoogleSignInAccount account;
+
+  static driveSignIn() async {
+    final googleSignIn = signIn.GoogleSignIn.standard(
+        scopes: [drive.DriveApi.DriveAppdataScope]);
+    final signIn.GoogleSignInAccount account = await googleSignIn.signIn();
+
+    final authHeaders = await account.authHeaders;
+    client = GoogleAuthClient(authHeaders);
+  }
+
+  static Future<void> saveDrive() async {
+    // SIGN IN
+
+    try {
+      if (client == null) {
+        await driveSignIn();
+      }
+      final driveApi = new drive.DriveApi(client);
+      // HERE WE REMOVE THE LAST BACKUP FILE IF IT EXISTS
+      var fileList = await driveApi.files
+          .list(q: "name = 'PassPairs.db'", spaces: 'appDataFolder');
+      if (fileList.files.length > 0) {
+        var idToRemove = fileList.files.first.id;
+        var removeResult = await driveApi.files.delete(idToRemove);
+        fileList = await driveApi.files
+            .list(q: "name = 'PassPairs.db'", spaces: 'appDataFolder');
+      }
+
+      // HERE WE TRANSFORM DB FILE INTO STREAM
+      final file = await getDatabaseFile();
+
+      final Stream<List<int>> mediaStream = file
+          .openRead()
+          .asBroadcastStream(); // here if is not broadcast stream, it won't send it
+      final media = drive.Media(
+          mediaStream,
+          await file
+              .length()); // getting media cocnver here outa the mediaStream
+      print(
+          "The size of the DB in bytes : " + (await file.length()).toString());
+      var driveFile = new drive.File(); // creating file cover
+      driveFile.name = "PassPairs.db"; // change name
+      driveFile.parents =
+          ["appDataFolder"].toList(); // send it to the app's folder
+      final result = await driveApi.files
+          .create(driveFile, uploadMedia: media); // creating the file
+
+      print("Saved to Google Drive successfully! : ' " +
+          result.toString() +
+          " '");
+    } on PlatformException catch (e) {
+      print("Caught PlatformException : " + e.toString());
+    }
+  }
+
+  static Future<void> exportDrive() async {
+    // SIGN IN
+    if (client == null) {
+      await driveSignIn();
+    }
+    final driveApi = new drive.DriveApi(client);
+    var listFiles = await driveApi.files
+        .list(q: "name = 'PassPairs.db'", spaces: 'appDataFolder');
+    // CHECK IF THE FILE EXISTS
+    if (listFiles.files.length > 0) {
+      // IF EXISTS, THEN EXPORT THE FILE TO THE APP
+      var idDatabase = listFiles.files.first.id;
+      drive.Media fileData = await driveApi.files
+          .get(idDatabase, downloadOptions: drive.DownloadOptions.FullMedia);
+      var file = await getDatabaseFile();
+      if (await file.exists()) {
+        await file.delete();
+        file = await getDatabaseFile();
+      }
+      await file.create();
+      await mediaToFile(fileData, file);
+    }
+  }
+
+  static Future<void> mediaToFile(drive.Media fileData, io.File file) async {
+    List<int> dataStore = [];
+    fileData.stream.listen((data) {
+      print("DataReceived: ${data.length}");
+      dataStore.insertAll(dataStore.length, data);
+    }, onDone: () async {
+      await file.writeAsBytes(
+          dataStore); //Write to that file from the datastore you created from the Media stream; // Read String from the file //Finally you have your text
+      print(await file.length());
+      print("Import Done");
+    }, onError: (error) {
+      print("Some Error in import");
+    });
+    print(await file.length());
+    print(file);
+    await DBProvider.DB.initDB();
+  }
+
+  static Future<io.File> getDatabaseFile() async {
+    io.Directory databases = await getApplicationDocumentsDirectory();
+    String path = databases.path + "/" + "PassPairs.db";
+    return io.File(path);
+  }
 }
+
+class AutoSyncDrive {}
 
 typedef void GotPassEntries(List<PassEntry> entries);
 Future<int> deletePassEntry(PassEntry entry) async {
@@ -168,4 +295,16 @@ Future<int> deletePassEntry(PassEntry entry) async {
       .delete(table: DBProvider.TABLE_NAME, where: "id=?", whereArgs: [id]);
   await DBProvider.DB.closeDb();
   return result;
+}
+
+class GoogleAuthClient extends http.BaseClient {
+  final Map<String, String> _headers;
+
+  final http.Client _client = new http.Client();
+
+  GoogleAuthClient(this._headers);
+
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    return _client.send(request..headers.addAll(_headers));
+  }
 }

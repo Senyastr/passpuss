@@ -66,6 +66,7 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
     var qwertySetting = _buildQwertySetting(context);
     var onlyLettersSetting = _buildOnlyLettersSetting(context);
     var charsSetting = _buildCharsSetting(context);
+    var dividerColor = Colors.indigo;
     return Scaffold(
         appBar: AppBar(),
         body: Column(
@@ -74,22 +75,26 @@ class ForYouSettingsTabState extends State<ForYouSettingsTab>
                 child: Padding(padding: EdgeInsets.all(10), child: upperPart)),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 50),
-              child: Divider(),
+              child: _buildDivider(),
             ),
-            Column(
-              children: <Widget>[
-                qwertySetting,
-                Divider(),
-                onlyLettersSetting,
-                Divider(),
-                charsSetting,
-                Divider(),
-              ],
-            )
+            Card(
+                color: Theme.of(context).cardColor,
+                child: Column(
+                  children: <Widget>[
+                    qwertySetting,
+                    _buildDivider(),
+                    onlyLettersSetting,
+                   _buildDivider(),
+                    charsSetting,
+                    _buildDivider()
+                  ],
+                )),
           ],
         ));
   }
-
+  _buildDivider(){
+    return Divider(color: Colors.indigo, thickness: 1,);
+  }
   Widget _buildUpperPart(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
       Text(

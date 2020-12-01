@@ -74,33 +74,40 @@ class NotificationSettingsTabState extends State<NotificationSettingsTab>
 
   @override
   Widget build(BuildContext context) {
+    
     var upperBody = _buildUpperPart(context);
     var expirationSetting = _buildEntryExpirationSetting(context);
     var soonWidget = _buildSoonWidget(context);
+    var dividerColor = Colors.yellowAccent;
     var layout = Scaffold(
         appBar: AppBar(),
         body: SafeArea(
             child: Column(
           children: <Widget>[
             Padding(padding: EdgeInsets.all(20), child: upperBody),
+            Padding(
+                padding: EdgeInsets.symmetric(horizontal: 50),
+                child: _buildDivider(),),
             SafeArea(
-                child: Column(
-              children: <Widget>[
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50),
-                    child: Divider()),
-                // !!!! HERE ARE SETTINGS !!!!
-                // Password Expiration Notification Days
-                expirationSetting,
-                Divider(),
-                soonWidget,
-              ],
-            )),
+                child: Card(
+                    color: Theme.of(context).cardColor,
+                    child: Column(
+                      children: <Widget>[
+                        // !!!! HERE ARE SETTINGS !!!!
+                        // Password Expiration Notification Days
+                        expirationSetting,
+                        _buildDivider(),
+                        soonWidget,
+                      ],
+                    ))),
           ],
         )));
     return layout;
   }
-
+  _buildDivider(){
+    var dividerColor = Colors.yellowAccent;
+    return  Divider(color: dividerColor);
+  }
   Widget _buildUpperPart(BuildContext context) {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

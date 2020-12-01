@@ -7,20 +7,25 @@ import 'package:PassPuss/logic/passentry.dart';
 import 'package:PassPuss/view/PassFieldItem.dart';
 
 import 'package:PassPuss/view/NewPassEntry.dart';
-import 'package:flutter/src/scheduler/ticker.dart';
 import 'package:tuple/tuple.dart';
-abstract class Disposable{
+
+import '../../main.dart';
+
+abstract class Disposable {
   void dispose();
 }
-class HomePage extends StatefulWidget implements Disposable{
+
+class HomePage extends StatefulWidget implements Disposable {
   HomePageState _state;
   @override
   State<StatefulWidget> createState() {
-    _state =  HomePageState();
+    _state = HomePageState();
     return _state;
   }
-  void dispose(){
-    _state.newPassEntryButtonKey.currentState.newEntryAnimationController.dispose();
+
+  void dispose() {
+    _state.newPassEntryButtonKey.currentState.newEntryAnimationController
+        .dispose();
     _state.dispose();
   }
 }
@@ -50,8 +55,6 @@ class HomePageState extends State<HomePage>
   Map<String, List<String>> iconTags;
   Map<Tags, String> tagsTags;
 
-  
-
   @override
   void initState() {
     super.initState();
@@ -66,18 +69,27 @@ class HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     _page = this;
+
     initFilterChoices(context);
     var construction = _buildContent();
     Widget upperPart = construction.item1;
     Widget content = construction.item2;
-
-    return Column(children: <Widget>[
+    if (loading){
+       return Column(children: <Widget>[
       SafeArea(child: upperPart),
-      !loading ? content : Center(child: CircularProgressIndicator()),
-      loading
-          ? Container()
-          : _buildNewEntryActionButton()
+      Center(child: CircularProgressIndicator()),
     ]);
+    
+    }
+    else{
+      return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
+        SafeArea(child: upperPart),
+        Expanded(child: SafeArea(child: Stack(children: [
+          SizedBox(child: content),
+          Align(alignment: Alignment.bottomRight, child: _buildNewEntryActionButton()),
+        ]))),
+      ]);
+    }   
   }
 
   String timeSortName;
@@ -85,8 +97,6 @@ class HomePageState extends State<HomePage>
 
   // upperpart, content
   Tuple2<Widget, Widget> _buildContent() {
-    
-
     Widget upperPart;
 
     switch (mode) {
@@ -101,16 +111,14 @@ class HomePageState extends State<HomePage>
         break;
     }
     var listView = _buildListView(context);
-    var content = Pairs.length == 0
-        ? _buildEmptyListView(context)
-        : listView;
+    var content = Pairs.length == 0 ? _buildEmptyListView(context) : listView;
     return Tuple2<Widget, Widget>(upperPart, content);
   }
 
   Widget _buildListView(BuildContext context) {
     var pairs = filterChoices[sortIndex].sort(Pairs);
-    return Expanded(
-        child: mode == InteractMode.def
+    return 
+        mode == InteractMode.def
             ? AnimatedList(
                 key: animatedListKey,
                 initialItemCount: viewItemsCount,
@@ -132,11 +140,10 @@ class HomePageState extends State<HomePage>
                   }
                   return null;
                 },
-              ));
+              );
   }
 
   Widget _buildDefUpperPart(BuildContext context) {
-    
     return Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,10 +164,11 @@ class HomePageState extends State<HomePage>
                       width: 20,
                       height: 18,
                       child: Text(Pairs.length.toString(),
+                      
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyText1
                               .copyWith(color: Colors.white)),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.white),
@@ -249,70 +257,69 @@ class HomePageState extends State<HomePage>
               ],
             ))));
   }
-  
-  Widget _buildEmptyListView(BuildContext context){
+
+  Widget _buildEmptyListView(BuildContext context) {
     var flareActor = FlareActor(
       "assets/animations/lock.flr",
       fit: BoxFit.scaleDown,
       alignment: Alignment.center,
       animation: 'loop',
     );
-    return Expanded(
-            child: SafeArea(
-                child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 90),
-                                child: TweenAnimationBuilder(
-                                  curve: Curves.easeIn,
-                                  builder: (_, double pos, __) {
-                                    return Transform.translate(
-                                        offset: Offset(pos, 0),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Center(
-                                                child: Container(
-                                                    width: 80,
-                                                    height: 80,
-                                                    child: flareActor)),
-                                            Center(
-                                              child: Icon(Icons.list,
-                                                  size: 100,
-                                                  color: Theme.of(context)
-                                                      .accentColor),
-                                            )
-                                          ],
-                                        ));
-                                  },
-                                  duration: Duration(milliseconds: 300),
-                                  tween: Tween<double>(begin: -200, end: 0),
-                                )),
-                            Center(
-                              child: Text(
-                                LocalizationTool.of(context).passEntriesEmpty,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline6
-                                    .copyWith(color: Colors.white),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
-                        )))));
+    return Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 90),
+                            child: TweenAnimationBuilder(
+                              curve: Curves.easeIn,
+                              builder: (_, double pos, __) {
+                                return Transform.translate(
+                                    offset: Offset(pos, 0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Center(
+                                            child: Container(
+                                                width: 80,
+                                                height: 80,
+                                                child: flareActor)),
+                                        Center(
+                                          child: Icon(Icons.list,
+                                              size: 100,
+                                              color: Theme.of(context)
+                                                  .accentColor),
+                                        )
+                                      ],
+                                    ));
+                              },
+                              duration: Duration(milliseconds: 300),
+                              tween: Tween<double>(begin: -200, end: 0),
+                            )),
+                        Center(
+                          child: Text(
+                            LocalizationTool.of(context).passEntriesEmpty,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline6
+                                .copyWith(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    )));
   }
-  
+
   Widget _buildNewEntryActionButton() {
-    
-    
     return NewPassEntryButton(key: newPassEntryButtonKey);
   }
+
   void assignPairs() async {
     loading = true;
-    var pairs = await DBProvider.DB.getPassEntries((entries){HomePageState.Pairs = entries;});
+    var pairs = await DBProvider.DB.getPassEntries((entries) {
+      HomePageState.Pairs = entries;
+    });
     setState(() {
       Pairs = pairs;
       loading = false;
@@ -735,8 +742,6 @@ class HomePageState extends State<HomePage>
     Pairs = await DBProvider.DB.getPassEntries(null);
     _page.setState(() => _page.loading = false);
   }
-
-  
 }
 
 List<SortOption> filterChoices;
@@ -775,6 +780,7 @@ class SortOption<T> {
     return sort(items);
   }
 }
+
 class NewPassEntryButton extends StatefulWidget {
   NewPassEntryButton({Key key}) : super(key: key);
 
@@ -782,42 +788,48 @@ class NewPassEntryButton extends StatefulWidget {
   _NewPassEntryButtonState createState() => _NewPassEntryButtonState();
 }
 
-class _NewPassEntryButtonState extends State<NewPassEntryButton> with SingleTickerProviderStateMixin{
+class _NewPassEntryButtonState extends State<NewPassEntryButton>
+    with SingleTickerProviderStateMixin {
   Animation newEntryAnimation;
   AnimationController newEntryAnimationController;
-  initNewPassEntryAnimation(){
+  initNewPassEntryAnimation() {
     var tween = Tween<double>(begin: 0, end: 50);
-    newEntryAnimationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 700));
-    
-    var curvedAnim = CurvedAnimation(parent: newEntryAnimationController, curve: Curves.easeOutSine);
-    newEntryAnimation = tween.animate(curvedAnim)..addListener(() { setState((){});});
-    
+    newEntryAnimationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 700));
+
+    var curvedAnim = CurvedAnimation(
+        parent: newEntryAnimationController, curve: Curves.easeOutSine);
+    newEntryAnimation = tween.animate(curvedAnim)
+      ..addListener(() {
+        setState(() {});
+      });
+
     newEntryAnimationController.forward();
     newEntryAnimationController.repeat(reverse: true);
   }
+
   @override
   void initState() {
     super.initState();
     initNewPassEntryAnimation();
   }
+
   @override
   Widget build(BuildContext context) {
     return Align(
-              alignment: Alignment.bottomCenter,
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 600), child: Padding(padding: EdgeInsets.only(bottom: newEntryAnimation.value),
-              child: 
-                
-                FloatingActionButton(
-                child: Icon(Icons.add),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewPassEntryPage()));
-                },
-              ))));
+        alignment: Alignment.bottomCenter,
+        child: AnimatedContainer(
+            duration: Duration(milliseconds: 600),
+            child: Padding(
+                padding: EdgeInsets.only(bottom: newEntryAnimation.value),
+                child: FloatingActionButton(
+                  child: Icon(Icons.add),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NewPassEntryPage()));
+                  },
+                ))));
   }
-
-  
 }

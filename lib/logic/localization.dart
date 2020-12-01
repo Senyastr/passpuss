@@ -185,6 +185,19 @@ class LocalizationTool {
 
   String get deleteEntryWarningNegativeButton => getValue("deleteEntryWarningNegativeButton");
 
+  String get googleDriveImportSettingTitle => getValue("googleDriveImportSettingTitle");
+
+  String get import => getValue("import");
+
+  String get export => getValue("export");
+
+  String get data => getValue("data");
+
+  String get autosync => getValue("autoSync"); 
+
+  String get googleDrive => getValue("googleDrive"); 
+  
+
   String getValue(String key) {
     return _localizedValues[locale.languageCode][key];
   }
@@ -266,7 +279,7 @@ class LocalizationTool {
       "fingerprintStartDialogReason":
           'Please authenticate in order to turn on/off Fingerprint Authentication',
       "fingerprintLogin": "Please authenticate to see your passwords.",
-      "qwertySetting": "Remind of using a popular password",
+      "qwertySetting": "Warn me of using a popular password",
       "charsSetting": "Characters allowed for passwords",
       "backupFingerprintKeyTitle": "Save the backup code",
       "proceed": "Continue",
@@ -283,7 +296,7 @@ class LocalizationTool {
           "Always verify the identity when removing password entries",
       "removeEntryFingerprintPrompt":
           "Are you sure about removing the password entry? If so, scan your fingerprint.",
-      "onlyLettersSetting": "Remind of using only letters in the password",
+      "onlyLettersSetting": "Warn of using only letters in the password",
       "entrySearchHint": "Search an entry",
       "regenerateDialogWarningTitle":
           "Are you sure you want to regenerate password?",
@@ -298,7 +311,13 @@ class LocalizationTool {
       "deleteEntryWarningDialogTitle" : "You are trying to remove an entry",
       "deleteEntryWarningPositiveButton" : "Yep, we're good to go.",
       "deleteEntryWarningNegativeButton" : "Nope, get back",
-      "deleteEntryWarningDialogContent" : "Are you sure about removing the password entry?"
+      "deleteEntryWarningDialogContent" : "Are you sure about removing the password entry?",
+      "googleDriveImportSettingTitle" : "Import data from Google Drive",
+      "import" : "Import",
+      "data" : "Data",
+      "export" : "Export",
+      "autoSync": "Automatic synchronization",
+      "googleDrive" : "Google Drive"
     },
     'ru': {
       'home': 'Главная',
@@ -357,14 +376,14 @@ class LocalizationTool {
       "shareTypeText": "Текст",
       "share": "Поделиться",
       "cancel": "Отменить",
-      "privacy": "Конфиденциальность",
+      "privacy": "Приватность",
       "privacySettingsEncryption": "Хранить пароли зашифроваными",
       "fingerprintAuthentication": "Верификация по отпечатку пальца.",
       "fingerprintStartDialogReason":
           "Пожалуйста, прикоснитесь к сканеру, чтобы включить/выключить аутентификацию.",
       "fingerprintLogin":
           "Пожалуйста, прикоснитесь к сканеру, чтобы увидеть свои пароли",
-      "qwertySetting": "Нагадать о использовании популярных паролей",
+      "qwertySetting": "Предупредить о использовании популярных паролей",
       "charsSetting": "Кол-во символов разрешенных для паролей",
       "backupFingerprintKeyTitle": "Сохраните код восстановления паролей",
       "proceed": "Продолжить",
@@ -382,10 +401,10 @@ class LocalizationTool {
           "Всегда удостовериваться в личности при удалении записей паролей.",
       "removeEntryFingerprintPrompt":
           "Вы уверенны, что хотите удалить запись пароля? Если да, просканируйте отпечаток пальца.",
-      "onlyLettersSetting": "Напоминать о использовании только букв в пароле.",
+      "onlyLettersSetting": "Предупредить о использовании только букв в пароле.",
       "entrySearchHint": "Искать запись",
       "regenerateDialogWarningTitle":
-          "Вы уверенны, что хотите регенерировтаь пароль?",
+          "Вы уверенны, что хотите сгенерировать пароль и заменить старый?",
       "regenerateDialogWarningPositiveAnswer": "Да, я готов",
       "regenerateDialogWarningNegativeAnswer": "Нет, верните меня назад",
       "regenerateDialogWarningContent":
@@ -397,7 +416,13 @@ class LocalizationTool {
       "deleteEntryWarningDialogTitle" : "Вы пытаетесь удалить запись пароля",
       "deleteEntryWarningPositiveButton" : "Да, погнали",
       "deleteEntryWarningNegativeButton" : "Нет, давайте назад",
-      "deleteEntryWarningDialogContent" : "Вы уверенны, что хотите удалить запись пароля?"
+      "deleteEntryWarningDialogContent" : "Вы уверенны, что хотите удалить запись пароля?",
+      "googleDriveImportSettingTitle" : "Импорт с Google Диска",
+      "import" : "Импорт",
+      "data" : "Данные",
+      "export" : "Экспорт",
+      "autoSync": "Автоматическая синхронизация",
+      "googleDrive" : "Google Диск"
     },
     'ua': {
       'home': "Головна",
@@ -465,7 +490,7 @@ class LocalizationTool {
           "Будь ласка, доторкніться до сканеру, щоб ввімкнути/вимкнути аутентифікацію по відбитку пальця.",
       "fingerprintLogin":
           "Будь ласка, доторкніться до сканеру, щоб побачити свої паролі.",
-      "qwertySetting": "Нагадати про використання популярних паролей",
+      "qwertySetting": "Попередити про використання популярних паролей",
       "charsSetting": "Кількість символів дозволених для паролей",
       "backupFingerprintKeyTitle": "Збережіть код для відновлення паролей",
       "proceed": "Продовжити",
@@ -484,7 +509,7 @@ class LocalizationTool {
           "Завжди запевнятися в особі при видаленні записів паролей",
       "removeEntryFingerprintPrompt":
           "Ви впевнені, що хочете видалити запис паролю? Якщо так, то проскануйте відбиток пальца.",
-      "onlyLettersSetting": "Нагадувати про використання тільки букв в паролі.",
+      "onlyLettersSetting": "Попередити про використання тільки букв в паролі.",
       "entrySearchHint": "Шукати запис",
       "regenerateDialogWarningTitle":
           "Ви впевнені, що хочете регенерувати пароль?",
@@ -499,7 +524,13 @@ class LocalizationTool {
       "deleteEntryWarningDialogTitle" : "Ви намагаєтесь видалити запис паролю",
       "deleteEntryWarningPositiveButton" : "Так, полетіли",
       "deleteEntryWarningNegativeButton" : "Ні, давайте назад",
-      "deleteEntryWarningDialogContent" : "Ви впевнені, що хочете видалити запис паролю?"
+      "deleteEntryWarningDialogContent" : "Ви впевнені, що хочете видалити запис паролю?",
+      "googleDriveImportSettingTitle" : "Імпорт з Google Диску",
+      "import" : "Імпорт",
+      "data" : "Дані",
+      "export" : "Експорт",
+      "autoSync" : "Автоматична синхронізація",
+      "googleDrive" : "Google Диск"
     }
   };
 }

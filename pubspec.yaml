@@ -42,8 +42,9 @@ dependencies:
   firebase_core: ^0.4.0+9
   firebase_analytics: ^5.0.2
   firebase_admob: ^0.9.3
-
-
+  googleapis: any
+  google_sign_in: any
+  auto_size_text: ^2.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -99,6 +100,8 @@ flutter:
     - assets/animations/failed.flr
     - assets/animations/lock.flr
     - assets/animations/loading.flr
+    - assets/images/storage-black-48dp.svg
+    - assets/images/Logo_of_Google_Drive.svg
 
 
   # To add assets to your application, add an assets section, like this:

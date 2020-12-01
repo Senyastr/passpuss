@@ -327,6 +327,7 @@ class PassEntriesPage extends State<MyHomePage> implements ResetAuthAction {
       body: isAuth
           ? pages.elementAt(_selectedPageIndex)
           : NotAuthenticatedWidget(this),
+      
       bottomNavigationBar: BottomNavigationBar(
         items: bottomItems,
         currentIndex: _selectedPageIndex,

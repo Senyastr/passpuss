@@ -5,6 +5,7 @@ import 'package:PassPuss/view/pages/homePage.dart';
 import 'package:PassPuss/view/pages/settings/ForYou.dart';
 import 'package:PassPuss/view/pages/settings/settings.dart';
 import 'package:PassPuss/logic/passentry.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,6 +48,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
   var password;
   var email;
   var expiration;
+  var title;
   Tags tag;
   DateFormat timeCreated;
   PassEntryDetailsState state;
@@ -59,6 +61,7 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
     username = entry.getUsername();
     password = entry.getPassword();
     email = entry.getEmail();
+    title = entry.getTitle();
     tag = entry.tag;
     id = entry.id;
     state = this;
@@ -195,26 +198,31 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                     .copyWith(color: Colors.white),
               ))),
       Align(
-        alignment: Alignment.topLeft,
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Row(children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: Hero(
-                    tag: "entryIcon$id",
-                    child: SvgPicture.asset(entry.getIconId()),
-                  ),
-                ),
-                Text(entry.getTitle(),
-                    style: TextStyle(fontSize: 20, color: Colors.white)),
-              ]),
-              Padding(
-                  padding: EdgeInsets.only(right: 10),
-                  child: TagHelper.widgetByTag(entry.tag)),
-            ]),
+        alignment: Alignment.bottomLeft,
+        child: Row(children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Hero(
+                tag: "entryIcon$id",
+                child: SvgPicture.asset(entry.getIconId()),
+              ),
+            ),
+           
+            Expanded(
+                child: Padding(
+                    padding: EdgeInsets.all(5),
+                    child: AutoSizeText(
+                      this.title,
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                      stepGranularity: 0.1,
+                      minFontSize: 8,
+                      maxLines: 1,
+                    ))),
+                     Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: TagHelper.widgetByTag(entry.tag)),
+            
+          ]),
       ),
       Align(
           alignment: Alignment.bottomLeft,
@@ -223,10 +231,15 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
               padding: EdgeInsets.only(left: 27, top: 10, bottom: 10),
               child: Icon(Icons.person, color: Theme.of(context).accentColor),
             ),
-            Padding(
-                child: Text(username,
-                    style: TextStyle(fontSize: 20, color: Colors.white)),
-                padding: EdgeInsets.only(top: 10, bottom: 10, left: 18)),
+            Expanded(
+                child: Padding(
+                    child: AutoSizeText(
+                      username,
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                      minFontSize: 6,
+                      maxLines: 1,
+                    ),
+                    padding: EdgeInsets.only(top: 10, bottom: 10, left: 18))),
             Padding(
                 padding: EdgeInsets.all(1),
                 child: IconButton(
@@ -266,14 +279,19 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
                   });
                 },
               )),
-          Padding(
-              padding: EdgeInsets.only(
-                left: 6,
-                top: 10,
-                bottom: 10,
-              ),
-              child: Text((isPasswordShown) ? password : hidePassword(password),
-                  style: TextStyle(fontSize: 20, color: Colors.white))),
+          Expanded(
+              child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 6,
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  child: AutoSizeText(
+                    (isPasswordShown) ? password : hidePassword(password),
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    minFontSize: 6,
+                    maxLines: 1,
+                  ))),
           Padding(
               padding: EdgeInsets.all(1),
               child: IconButton(
@@ -317,10 +335,13 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
               padding: EdgeInsets.only(left: 27, top: 10, bottom: 10),
               child: Icon(Icons.email, color: Theme.of(context).accentColor),
             ),
-            Padding(
-                child: Text(email,
-                    style: TextStyle(fontSize: 20, color: Colors.white)),
-                padding: EdgeInsets.only(top: 10, bottom: 10, left: 18)),
+            Expanded(
+                child: Padding(
+                    child: AutoSizeText(email,
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                        minFontSize: 6,
+                        maxLines: 1),
+                    padding: EdgeInsets.only(top: 10, bottom: 10, left: 18))),
             Padding(
                 padding: EdgeInsets.all(1),
                 child: IconButton(

@@ -1,6 +1,9 @@
+import 'package:PassPuss/logic/autosync.dart';
 import 'package:PassPuss/view/message.dart';
 import 'package:PassPuss/view/pages/settings/ForYou.dart';
 import 'package:PassPuss/logic/passentry.dart';
+import 'package:PassPuss/view/pages/settings/settings.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -243,16 +246,19 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Row(children: [
-                    Padding(
-                        child: (this.selected != null)
-                            ? SvgPicture.asset(this.selected.path)
-                            : SvgPicture.asset(IconChoiceState.emptyIconPath),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
-                    Text("$title",
-                        style: TextStyle(fontSize: 20, color: Colors.white))
-                  ]),
+                  Padding(
+                      child: (this.selected != null)
+                          ? SvgPicture.asset(this.selected.path)
+                          : SvgPicture.asset(IconChoiceState.emptyIconPath),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
+                  Expanded(
+                      child: AutoSizeText(
+                    "$title",
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    maxLines: 1,
+                    minFontSize: 8,
+                  )),
                   Padding(
                       padding: EdgeInsets.only(right: 15),
                       child: TagHelper.widgetByTag(tag)),
@@ -265,10 +271,16 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
                   padding: EdgeInsets.only(left: 27, top: 10, bottom: 10),
                   child: Icon(Icons.person),
                 ),
-                Padding(
-                    child: Text(username_txt.text,
-                        style: TextStyle(fontSize: 20, color: Colors.white)),
-                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 5)),
+                Expanded(
+                    child: Padding(
+                        child: AutoSizeText(
+                          username_txt.text,
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                          maxLines: 1,
+                          minFontSize: 8,
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 18, vertical: 5))),
                 Padding(
                     padding: EdgeInsets.all(1),
                     child: IconButton(
@@ -301,10 +313,15 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
                         });
                       },
                     )),
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 7),
-                    child: Text(password_preview,
-                        style: TextStyle(fontSize: 20, color: Colors.white))),
+                Expanded(
+                    child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 7),
+                        child: AutoSizeText(
+                          password_preview,
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                          minFontSize: 8,
+                          maxLines: 1,
+                        ))),
                 Padding(
                     padding: EdgeInsets.only(),
                     child: IconButton(
@@ -423,22 +440,20 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
 
         Padding(
             padding: EdgeInsets.all(15),
-            child: 
-                ListTile(
-                    title: Text("Tag",
-                        style: Theme.of(context).textTheme.bodyText2),
-                    trailing: DropdownButton(
-                      value: tag,
-                      onChanged: (value) {
-                        tag = value;
-                        setState(() {});
-                      },
-                      items:
-                          Tags.values.map<DropdownMenuItem<Tags>>((Tags value) {
-                        return DropdownMenuItem<Tags>(
-                            value: value, child: TagHelper.widgetByTag(value));
-                      }).toList(),
-                    ))),
+            child: ListTile(
+                title:
+                    Text("Tag", style: Theme.of(context).textTheme.bodyText2),
+                trailing: DropdownButton(
+                  value: tag,
+                  onChanged: (value) {
+                    tag = value;
+                    setState(() {});
+                  },
+                  items: Tags.values.map<DropdownMenuItem<Tags>>((Tags value) {
+                    return DropdownMenuItem<Tags>(
+                        value: value, child: TagHelper.widgetByTag(value));
+                  }).toList(),
+                ))),
         // TITLE
         Padding(
             padding: EdgeInsets.only(bottom: 30, left: 14, right: 14),
@@ -449,13 +464,20 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
 
   Future<void> updateEntry(BuildContext context) async {
     if (_formKey.currentState.validate()) {
+      // AUTO SYNC PREF
+      password = generate_mode
+        ? PassEntry.generatePass(_genChars.toInt())
+        : password_txt.text;
+      var pref = await SettingsManager.getPref(AutoSyncService.AutoSyncSetting)
+          as bool;
+      bool autoSyncService = pref == null ? false : pref;
       var dialog = ResultDialog("");
       showDialog(context: context, builder: (context) => dialog);
       var newEntry = PassEntry.withIcon(username, password, title, email,
           selected.path, tag, entry.createdTime);
       await DBProvider.DB.deletePassEntry(entry);
       HomePageState.Pairs.remove(entry);
-      await DBProvider.DB.addPassEntry(newEntry);
+      await DBProvider.DB.addPassEntry(newEntry, isSyncDrive: autoSyncService);
       HomePageState.changeDataset(() {
         HomePageState.Pairs.add(newEntry);
       });
