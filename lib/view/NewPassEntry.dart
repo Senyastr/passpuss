@@ -5,7 +5,6 @@ import 'package:PassPuss/view/pages/editEntryPage.dart';
 import 'package:PassPuss/view/pages/settings/ForYou.dart';
 import 'package:PassPuss/view/pages/settings/Notification.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -139,7 +138,7 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
 
   Widget _buildUsernameForm(BuildContext context) {
     return TextFormField(
-      autovalidate: true,
+      autovalidateMode: AutovalidateMode.always,
       validator: (value) =>
           username.isEmpty ? LocalizationTool.of(context).usernameBlank : null,
       onChanged: (String changed) {
@@ -158,22 +157,29 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
   Widget _buildPasswordForm(BuildContext context) {
     return TextFormField(
       enabled: !generate_mode,
-      autovalidate: true,
-      validator: (value) => password.length < 8
-          ? LocalizationTool.of(context).newPasswordMore8Chars
+      autovalidateMode: AutovalidateMode.always,
+      validator: (value) =>
+      password.length < 8
+          ? LocalizationTool
+          .of(context)
+          .newPasswordMore8Chars
           : null,
       controller: password_txt,
       obscureText: true,
       decoration: InputDecoration(
           icon: Icon(Icons.lock),
-          hintText: LocalizationTool.of(context).newPasswordFormHint,
-          labelText: LocalizationTool.of(context).password),
+          hintText: LocalizationTool
+              .of(context)
+              .newPasswordFormHint,
+          labelText: LocalizationTool
+              .of(context)
+              .password),
     );
   }
 
   Widget _buildEmailForm(BuildContext context) {
     return TextFormField(
-        autovalidate: true,
+        autovalidateMode: AutovalidateMode.always,
         onChanged: (String changed) {
           email = changed;
 
@@ -195,9 +201,12 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
 
   Widget _buildTitleForm(BuildContext context) {
     return TextFormField(
-        autovalidate: true,
-        validator: (val) => (val.isEmpty)
-            ? LocalizationTool.of(context).newPasswordTitleNotEmpty
+        autovalidateMode: AutovalidateMode.always,
+        validator: (val) =>
+        (val.isEmpty)
+            ? LocalizationTool
+            .of(context)
+            .newPasswordTitleNotEmpty
             : null,
         onChanged: (String changed) {
           setState(() {
@@ -206,8 +215,12 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
         },
         key: _titleKey,
         decoration: InputDecoration(
-            hintText: LocalizationTool.of(context).newPasswordTitleHint,
-            labelText: LocalizationTool.of(context).title,
+            hintText: LocalizationTool
+                .of(context)
+                .newPasswordTitleHint,
+            labelText: LocalizationTool
+                .of(context)
+                .title,
             icon: Icon(Icons.title)));
   }
 
@@ -686,10 +699,10 @@ class TagHelper {
     assert(initialList != null);
 
     var tags = Tags.values;
-    List<PassEntry> result = List<PassEntry>();
+    List<PassEntry> result = [];
     for (var i = 0; i < tags.length; i++) {
       var addition =
-          initialList.where((entry) => entry.tag == tags[i]).toList();
+      initialList.where((entry) => entry.tag == tags[i]).toList();
       result.addAll(addition);
     }
     return result;

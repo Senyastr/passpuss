@@ -1,16 +1,14 @@
 import 'dart:core';
 import 'dart:io' as io;
-import 'dart:isolate';
 import 'package:PassPuss/logic/autosync.dart';
 import 'package:PassPuss/logic/passentry.dart';
-import 'package:PassPuss/view/pages/settings/settings.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_sqlcipher/sqlite.dart';
 import 'package:http/http.dart' as http;
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:google_sign_in/google_sign_in.dart' as signIn;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DBProvider {
   DBProvider._();
@@ -147,7 +145,7 @@ class DBProvider {
         tagColumn,
       ],
     );
-    List<PassEntry> passEntries = new List<PassEntry>();
+    List<PassEntry> passEntries = [];
     Set set = Set.from(result); // we use set for convenience(forEach method)
     set.forEach((v) {
       var id = v[idColumn];
@@ -178,25 +176,28 @@ class DBProvider {
     return passEntries;
   }
 
-  // GOOGLE DRIVE
   static GoogleAuthClient client;
   static signIn.GoogleSignInAccount account;
 
-  static driveSignIn() async {
-    final googleSignIn = signIn.GoogleSignIn.standard(
+  // GOOGLE DRIVE
+  static driveSignIn({bool signOutFirst = false}) async {
+    var googleSignIn = signIn.GoogleSignIn.standard(
         scopes: [drive.DriveApi.DriveAppdataScope]);
-    final signIn.GoogleSignInAccount account = await googleSignIn.signIn();
+    if (signOutFirst) {
+      await googleSignIn.signOut();
+    }
+    signIn.GoogleSignInAccount account = await googleSignIn.signIn();
 
     final authHeaders = await account.authHeaders;
     client = GoogleAuthClient(authHeaders);
   }
 
-  static Future<void> saveDrive() async {
+  static Future<void> saveDrive({bool showAccounts = false}) async {
     // SIGN IN
 
     try {
       if (client == null) {
-        await driveSignIn();
+        await driveSignIn(signOutFirst: true);
       }
       final driveApi = new drive.DriveApi(client);
       // HERE WE REMOVE THE LAST BACKUP FILE IF IT EXISTS
@@ -204,7 +205,8 @@ class DBProvider {
           .list(q: "name = 'PassPairs.db'", spaces: 'appDataFolder');
       if (fileList.files.length > 0) {
         var idToRemove = fileList.files.first.id;
-        var removeResult = await driveApi.files.delete(idToRemove);
+        var removeResult = await driveApi.files
+            .delete(idToRemove); // for debug, never used in code
         fileList = await driveApi.files
             .list(q: "name = 'PassPairs.db'", spaces: 'appDataFolder');
       }
@@ -236,11 +238,20 @@ class DBProvider {
     }
   }
 
+  // here we export the data from google drive to the app
   static Future<void> exportDrive() async {
     // SIGN IN
-    if (client == null) {
-      await driveSignIn();
+    try {
+      if (account != null) {
+        Firestore.instance.settings(persistenceEnabled: false);
+        await account.clearAuthCache();
+      }
+    } on FormatException catch (e) {
+      print(e);
     }
+
+    await driveSignIn(signOutFirst: true);
+
     final driveApi = new drive.DriveApi(client);
     var listFiles = await driveApi.files
         .list(q: "name = 'PassPairs.db'", spaces: 'appDataFolder');

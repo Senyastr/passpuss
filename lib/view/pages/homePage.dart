@@ -9,7 +9,6 @@ import 'package:PassPuss/view/PassFieldItem.dart';
 import 'package:PassPuss/view/NewPassEntry.dart';
 import 'package:tuple/tuple.dart';
 
-import '../../main.dart';
 
 abstract class Disposable {
   void dispose();
@@ -41,6 +40,7 @@ class HomePageState extends State<HomePage>
   static Sorts sortType = Sorts.none;
   static int sortIndex = 1;
   static HomePageState _page;
+
   // MODES OF INTERACTION WITH THE DATA
   // DEF - JUST SHOWING DATA
   // SEARCHING - SEARCHING FOR A SPECIFIC PIECE OF DATA
@@ -49,7 +49,7 @@ class HomePageState extends State<HomePage>
   GlobalKey<_NewPassEntryButtonState> newPassEntryButtonKey;
   String searchInquery;
 
-  List<PassEntry> entriesFound = List<PassEntry>();
+  List<PassEntry> entriesFound = [];
 
   // TAGS
   Map<String, List<String>> iconTags;
@@ -69,7 +69,6 @@ class HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     _page = this;
-
     initFilterChoices(context);
     var construction = _buildContent();
     Widget upperPart = construction.item1;
@@ -335,7 +334,7 @@ class HomePageState extends State<HomePage>
   }
 
   List<PassEntry> search(String inquery) {
-    List<PassEntry> result = List<PassEntry>();
+    List<PassEntry> result = [];
     for (int i = 0; i < Pairs.length; i++) {
       var curPair = Pairs[i];
       if (concur(inquery, curPair)) {
