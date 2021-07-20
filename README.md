@@ -6,9 +6,9 @@ A cross-platform(planned) application to store and share safely sign-in informat
 
 Pass Puss is not a simple password manager. It's a complex management system made for those who crave to keep their passwords safe and back it up in the safe place.
 
-Our goal is to:
+## Our goal is to
 
-1. Keep your passwords safe on your device encrypted by AES-256.
+1. Keep your passwords safe on your device encrypted by <b>AES-256</b>.
 2. Help you with generating passwords easily with whatever pattern you like.
 3. Back up data on your Google Drive or other storage systems.
 4. Encrypt the data by the biometrics systems like the fingerprint scanning or facial recognition. 
