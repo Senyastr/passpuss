@@ -1,3 +1,4 @@
+import 'package:PassPuss/view/page.dart' as Page;
 import 'package:PassPuss/view/pages/homePage.dart';
 import 'package:PassPuss/logic/localization.dart';
 import 'package:PassPuss/view/pages/recommendation.dart';
@@ -5,15 +6,11 @@ import 'package:PassPuss/view/pages/settings/Privacy.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:PassPuss/logic/auth/local_auth.dart';
 import 'package:package_info/package_info.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'logic/ads/adManager.dart';
 import 'view/message.dart';
 import 'view/pages/settings/settings.dart';
-
 void main() {
   runApp(PassPuss());
 }
@@ -25,6 +22,7 @@ class PassPuss extends StatelessWidget {
   static String appName;
   static String appVersion;
   static String appBuildNumber;
+
   @override
   Widget build(BuildContext context) {
     assignInfo();
@@ -56,7 +54,7 @@ class PassPuss extends StatelessWidget {
         backgroundColor: Color.fromARGB(255, 40, 40, 40),
         canvasColor: Color.fromARGB(255, 40, 40, 40),
         dividerColor: Color.fromARGB(225, 82, 172, 117),
-        // APPLY THIS THEME TO EVERY TEXT ELEMENT
+        // APPLY THIS THEME TO EVERdY TEXT ELEMENT
         accentTextTheme: TextTheme(
           headline1: TextStyle(
               fontFamily: 'NotoSans',
@@ -152,7 +150,7 @@ class PassPuss extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends StatefulWidget implements Page.Page {
   MyHomePage({Key key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -192,6 +190,7 @@ class PassEntriesPage extends State<MyHomePage> implements ResetAuthAction {
     color: Colors.white,
   );
   bool isAuth = true;
+
   @override
   Widget build(BuildContext context) {
     initBottomNavigation();
@@ -327,7 +326,6 @@ class PassEntriesPage extends State<MyHomePage> implements ResetAuthAction {
       body: isAuth
           ? pages.elementAt(_selectedPageIndex)
           : NotAuthenticatedWidget(this),
-      
       bottomNavigationBar: BottomNavigationBar(
         items: bottomItems,
         currentIndex: _selectedPageIndex,
@@ -346,7 +344,9 @@ class PassEntriesPage extends State<MyHomePage> implements ResetAuthAction {
 // ignore: must_be_immutable
 class NotAuthenticatedWidget extends StatefulWidget {
   ResetAuthAction callback;
+
   NotAuthenticatedWidget(this.callback);
+
   @override
   _NotAuthenticatedWidgetState createState() =>
       _NotAuthenticatedWidgetState(callback);
@@ -359,7 +359,9 @@ class _NotAuthenticatedWidgetState extends State<NotAuthenticatedWidget> {
   bool isWrong = true;
   int tries = 0;
   Icon warningIcon = Icon(Icons.warning, color: Colors.redAccent, size: 72);
+
   _NotAuthenticatedWidgetState(this.callback);
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

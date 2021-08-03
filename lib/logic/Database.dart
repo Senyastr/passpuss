@@ -2,6 +2,7 @@ import 'dart:core';
 import 'dart:io' as io;
 import 'package:PassPuss/logic/autosync.dart';
 import 'package:PassPuss/logic/passentry.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_sqlcipher/sqlite.dart';
@@ -10,12 +11,38 @@ import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:google_sign_in/google_sign_in.dart' as signIn;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DBProvider {
+class DBProvider extends ChangeNotifier {
+  static const String idColumn = "id";
+  static const String usernameColumn = "USERNAME";
+  static const String passwordColumn = "PASSWORD";
+  static const String titleColumn = "TITLE";
+  static const String iconPathColumn = "ICONPATH";
+  static const String createdTimeColumn = "CREATEDTIME";
+  static const String emailColumn = "EMAIL";
+  static const String tagColumn = "TAG";
+  int entriesNumber = 0;
+  static SQLiteDatabase _database;
+
+  static bool _disposed = false;
+
   DBProvider._();
 
-  static final DBProvider DB = DBProvider._();
+  static DBProvider DB = DBProvider._();
 
-  static SQLiteDatabase _database;
+  static DBProvider getDB() {
+    // we check if it's disposed first
+    if (_disposed) {
+      DB = DBProvider._();
+      DBProvider._disposed = false;
+    }
+    return DB;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    DBProvider._disposed = true;
+  }
 
   Future<SQLiteDatabase> get database async {
     if (_database != null) {
@@ -38,14 +65,6 @@ class DBProvider {
     }
   }
 
-  static const String idColumn = "id";
-  static const String usernameColumn = "USERNAME";
-  static const String passwordColumn = "PASSWORD";
-  static const String titleColumn = "TITLE";
-  static const String iconPathColumn = "ICONPATH";
-  static const String createdTimeColumn = "CREATEDTIME";
-  static const String emailColumn = "EMAIL";
-  static const String tagColumn = "TAG";
   static _getDBPath() async {
     io.Directory databases = await getApplicationDocumentsDirectory();
     String path = databases.path +
@@ -112,6 +131,9 @@ class DBProvider {
     if (isSyncDrive) {
       AutoSyncService.getService().serve(null);
     }
+    entriesNumber++;
+    notifyListeners();
+
     return 1;
   }
 
@@ -126,6 +148,8 @@ class DBProvider {
     if (isSyncDrive) {
       AutoSyncService.getService().serve(null);
     }
+    entriesNumber--;
+    notifyListeners();
     return result;
   }
 
@@ -173,6 +197,8 @@ class DBProvider {
     }
 
     await this.closeDb();
+    entriesNumber = passEntries.length;
+    notifyListeners();
     return passEntries;
   }
 
@@ -286,7 +312,7 @@ class DBProvider {
     });
     print(await file.length());
     print(file);
-    await DBProvider.DB.initDB();
+    await DBProvider.getDB().initDB();
   }
 
   static Future<io.File> getDatabaseFile() async {
@@ -296,15 +322,15 @@ class DBProvider {
   }
 }
 
-class AutoSyncDrive {}
 
 typedef void GotPassEntries(List<PassEntry> entries);
 Future<int> deletePassEntry(PassEntry entry) async {
-  var db = await DBProvider.DB.database;
+  var db = await DBProvider.getDB().database;
   String id = entry.id.toString();
   var result = await db
       .delete(table: DBProvider.TABLE_NAME, where: "id=?", whereArgs: [id]);
-  await DBProvider.DB.closeDb();
+  await DBProvider.getDB().closeDb();
+
   return result;
 }
 
@@ -319,3 +345,4 @@ class GoogleAuthClient extends http.BaseClient {
     return _client.send(request..headers.addAll(_headers));
   }
 }
+

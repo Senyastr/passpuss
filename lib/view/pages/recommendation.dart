@@ -8,6 +8,7 @@ import 'package:PassPuss/logic/localization.dart';
 import 'package:PassPuss/logic/passentry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
+import 'package:PassPuss/view/page.dart' as Page;
 
 enum PasswordProblem {
   Expired,
@@ -18,16 +19,15 @@ enum PasswordProblem {
   Idiot
 }
 
-class RecommendationTab extends StatefulWidget implements Disposable{
+class RecommendationTab extends StatefulWidget
+    implements Disposable, Page.Page {
   @override
   State<StatefulWidget> createState() {
     return new RecommendationTabState();
   }
 
   @override
-  void dispose() {
-    
-  }
+  void dispose() {}
 }
 
 class RecommendationTabState extends State<RecommendationTab> {

@@ -210,7 +210,7 @@ class PassFieldState extends State<PassField> {
         // REMOVING FROM HOMEPAGE
         HomePageState.Pairs.remove(passEntry);
         // REMOVING FORM DB
-        DBProvider.DB.deletePassEntry(passEntry, isSyncDrive: isSyncDrive);
+        DBProvider.getDB().deletePassEntry(passEntry, isSyncDrive: isSyncDrive);
         // ANIMATING
         var animatedListState = HomePageState.animatedListKey.currentState;
         if (animatedListState != null) {

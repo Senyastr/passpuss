@@ -13,10 +13,13 @@ import 'package:PassPuss/logic/Database.dart';
 import '../NewPassEntry.dart';
 import 'package:PassPuss/logic/localization.dart';
 import 'homePage.dart';
+import 'package:PassPuss/view/page.dart' as Page;
 
-class EditEntryPage extends StatefulWidget {
+class EditEntryPage extends StatefulWidget implements Page.Page {
   EditEntryPage(this.entry);
+
   PassEntry entry;
+
   @override
   State<StatefulWidget> createState() {
     return EditEntryState(entry);
@@ -466,8 +469,8 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
     if (_formKey.currentState.validate()) {
       // AUTO SYNC PREF
       password = generate_mode
-        ? PassEntry.generatePass(_genChars.toInt())
-        : password_txt.text;
+          ? PassEntry.generatePass(_genChars.toInt())
+          : password_txt.text;
       var pref = await SettingsManager.getPref(AutoSyncService.AutoSyncSetting)
           as bool;
       bool autoSyncService = pref == null ? false : pref;
@@ -475,9 +478,10 @@ class EditEntryState extends State<EditEntryPage> implements IconChoiced {
       showDialog(context: context, builder: (context) => dialog);
       var newEntry = PassEntry.withIcon(username, password, title, email,
           selected.path, tag, entry.createdTime);
-      await DBProvider.DB.deletePassEntry(entry);
+      await DBProvider.getDB().deletePassEntry(entry);
       HomePageState.Pairs.remove(entry);
-      await DBProvider.DB.addPassEntry(newEntry, isSyncDrive: autoSyncService);
+      await DBProvider.getDB()
+          .addPassEntry(newEntry, isSyncDrive: autoSyncService);
       HomePageState.changeDataset(() {
         HomePageState.Pairs.add(newEntry);
       });

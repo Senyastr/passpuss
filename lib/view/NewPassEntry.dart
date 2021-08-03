@@ -505,7 +505,8 @@ class NewPassEntry extends State<NewPassEntryPage> implements IconChoiced {
       var pref = await SettingsManager.getPref(AutoSyncService.AutoSyncSetting)
           as bool;
       bool autoSyncPref = pref == null ? false : pref;
-      await DBProvider.DB.addPassEntry(newEntry, isSyncDrive: autoSyncPref);
+      await DBProvider.getDB()
+          .addPassEntry(newEntry, isSyncDrive: autoSyncPref);
       HomePageState.changeDataset(() {
         HomePageState.Pairs.add(newEntry);
       });

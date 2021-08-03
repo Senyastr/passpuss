@@ -8,14 +8,16 @@ import 'package:PassPuss/view/PassFieldItem.dart';
 
 import 'package:PassPuss/view/NewPassEntry.dart';
 import 'package:tuple/tuple.dart';
-
+import 'package:provider/provider.dart';
+import 'package:PassPuss/view/page.dart' as Page;
 
 abstract class Disposable {
   void dispose();
 }
 
-class HomePage extends StatefulWidget implements Disposable {
+class HomePage extends StatefulWidget implements Disposable, Page.Page {
   HomePageState _state;
+
   @override
   State<StatefulWidget> createState() {
     _state = HomePageState();
@@ -73,22 +75,32 @@ class HomePageState extends State<HomePage>
     var construction = _buildContent();
     Widget upperPart = construction.item1;
     Widget content = construction.item2;
-    if (loading){
-       return Column(children: <Widget>[
-      SafeArea(child: upperPart),
-      Center(child: CircularProgressIndicator()),
-    ]);
-    
-    }
-    else{
-      return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
+    if (loading) {
+      return Column(children: <Widget>[
         SafeArea(child: upperPart),
-        Expanded(child: SafeArea(child: Stack(children: [
-          SizedBox(child: content),
-          Align(alignment: Alignment.bottomRight, child: _buildNewEntryActionButton()),
-        ]))),
+        Center(child: CircularProgressIndicator()),
       ]);
-    }   
+    } else {
+      return _buildDBProvider(
+          Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+        SafeArea(child: upperPart),
+        Expanded(
+            child: SafeArea(
+                child: Stack(children: [
+          SizedBox(child: content),
+          Align(
+              alignment: Alignment.bottomRight,
+              child: _buildNewEntryActionButton()),
+        ]))),
+      ]));
+    }
+  }
+
+  Widget _buildDBProvider(Widget child) {
+    return ChangeNotifierProvider(
+      create: (context) => DBProvider.getDB(),
+      child: child,
+    );
   }
 
   String timeSortName;
@@ -116,30 +128,29 @@ class HomePageState extends State<HomePage>
 
   Widget _buildListView(BuildContext context) {
     var pairs = filterChoices[sortIndex].sort(Pairs);
-    return 
-        mode == InteractMode.def
-            ? AnimatedList(
-                key: animatedListKey,
-                initialItemCount: viewItemsCount,
-                itemBuilder: (context, index, animation) {
-                  return buildItem(pairs[index], animation);
-                })
-            : ListView.builder(
-                itemCount: viewItemsCount,
-                itemBuilder: (context, index) {
-                  switch (mode) {
-                    case InteractMode.def:
-                      break;
-                    case InteractMode.searching:
-                      return PassField(entriesFound[index], GlobalKey());
-                      break;
-                    default:
-                      return null;
-                      break;
-                  }
+    return mode == InteractMode.def
+        ? AnimatedList(
+            key: animatedListKey,
+            initialItemCount: viewItemsCount,
+            itemBuilder: (context, index, animation) {
+              return buildItem(pairs[index], animation);
+            })
+        : ListView.builder(
+            itemCount: viewItemsCount,
+            itemBuilder: (context, index) {
+              switch (mode) {
+                case InteractMode.def:
+                  break;
+                case InteractMode.searching:
+                  return PassField(entriesFound[index], GlobalKey());
+                  break;
+                default:
                   return null;
-                },
-              );
+                  break;
+              }
+              return null;
+            },
+          );
   }
 
   Widget _buildDefUpperPart(BuildContext context) {
@@ -163,7 +174,6 @@ class HomePageState extends State<HomePage>
                       width: 20,
                       height: 18,
                       child: Text(Pairs.length.toString(),
-                      
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme
@@ -265,49 +275,48 @@ class HomePageState extends State<HomePage>
       animation: 'loop',
     );
     return Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 90),
-                            child: TweenAnimationBuilder(
-                              curve: Curves.easeIn,
-                              builder: (_, double pos, __) {
-                                return Transform.translate(
-                                    offset: Offset(pos, 0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Center(
-                                            child: Container(
-                                                width: 80,
-                                                height: 80,
-                                                child: flareActor)),
-                                        Center(
-                                          child: Icon(Icons.list,
-                                              size: 100,
-                                              color: Theme.of(context)
-                                                  .accentColor),
-                                        )
-                                      ],
-                                    ));
-                              },
-                              duration: Duration(milliseconds: 300),
-                              tween: Tween<double>(begin: -200, end: 0),
-                            )),
-                        Center(
-                          child: Text(
-                            LocalizationTool.of(context).passEntriesEmpty,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline6
-                                .copyWith(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    )));
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 90),
+                    child: TweenAnimationBuilder(
+                      curve: Curves.easeIn,
+                      builder: (_, double pos, __) {
+                        return Transform.translate(
+                            offset: Offset(pos, 0),
+                            child: Row(
+                              children: <Widget>[
+                                Center(
+                                    child: Container(
+                                        width: 80,
+                                        height: 80,
+                                        child: flareActor)),
+                                Center(
+                                  child: Icon(Icons.list,
+                                      size: 100,
+                                      color: Theme.of(context).accentColor),
+                                )
+                              ],
+                            ));
+                      },
+                      duration: Duration(milliseconds: 300),
+                      tween: Tween<double>(begin: -200, end: 0),
+                    )),
+                Center(
+                  child: Text(
+                    LocalizationTool.of(context).passEntriesEmpty,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        .copyWith(color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            )));
   }
 
   Widget _buildNewEntryActionButton() {
@@ -316,7 +325,7 @@ class HomePageState extends State<HomePage>
 
   void assignPairs() async {
     loading = true;
-    var pairs = await DBProvider.DB.getPassEntries((entries) {
+    var pairs = await DBProvider.getDB().getPassEntries((entries) {
       HomePageState.Pairs = entries;
     });
     setState(() {
@@ -738,12 +747,13 @@ class HomePageState extends State<HomePage>
   static void changeDataset(VoidCallback callback) async {
     _page.loading = true;
     callback();
-    Pairs = await DBProvider.DB.getPassEntries(null);
+    Pairs = await DBProvider.getDB().getPassEntries(null);
     _page.setState(() => _page.loading = false);
   }
 }
 
 List<SortOption> filterChoices;
+
 void initFilterChoices(BuildContext context) {
   filterChoices = [
     SortOption(LocalizationTool.of(context).sortTags, (items) {
@@ -766,6 +776,7 @@ enum Sorts {
   byTime,
   byTags,
 }
+
 typedef SortItems<T1> = List<T1> Function(List<T1> value);
 
 class SortOption<T> {
@@ -774,7 +785,9 @@ class SortOption<T> {
   Icon icon;
 
   Sorts sortType;
+
   SortOption(this.name, this.sort, this.icon, this.sortType);
+
   List<PassEntry> sortItems(List<PassEntry> items) {
     return sort(items);
   }
@@ -789,8 +802,12 @@ class NewPassEntryButton extends StatefulWidget {
 
 class _NewPassEntryButtonState extends State<NewPassEntryButton>
     with SingleTickerProviderStateMixin {
+  bool animated = true;
+
+  // ANIMATION BEGIN
   Animation newEntryAnimation;
   AnimationController newEntryAnimationController;
+
   initNewPassEntryAnimation() {
     var tween = Tween<double>(begin: 0, end: 50);
     newEntryAnimationController = AnimationController(
@@ -807,6 +824,8 @@ class _NewPassEntryButtonState extends State<NewPassEntryButton>
     newEntryAnimationController.repeat(reverse: true);
   }
 
+  // ANIMATION END
+
   @override
   void initState() {
     super.initState();
@@ -815,20 +834,44 @@ class _NewPassEntryButtonState extends State<NewPassEntryButton>
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-        alignment: Alignment.bottomCenter,
-        child: AnimatedContainer(
-            duration: Duration(milliseconds: 600),
-            child: Padding(
-                padding: EdgeInsets.only(bottom: newEntryAnimation.value),
-                child: FloatingActionButton(
-                  child: Icon(Icons.add),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => NewPassEntryPage()));
-                  },
-                ))));
+    return Consumer<DBProvider>(
+        builder: (context, provider, child) => Align(
+            alignment: Alignment.bottomCenter,
+            child: provider.entriesNumber == 0
+                ? _buildAnimated(context)
+                : _buildNotAnimated(context)));
+  }
+
+  // ANIMATED WIDGET
+  Widget _buildAnimated(BuildContext context) {
+    return AnimatedContainer(
+        duration: Duration(milliseconds: 600),
+        child: Padding(
+            padding: EdgeInsets.only(bottom: newEntryAnimation.value),
+            child: FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NewPassEntryPage()));
+              },
+            )));
+  }
+
+  // NOT ANIMATED WIDGET(AFTER ADDING ONE PASS ENTRY)
+  Widget _buildNotAnimated(BuildContext context) {
+    return Container(
+        child: Padding(
+            padding: EdgeInsets.only(),
+            child: FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NewPassEntryPage()));
+              },
+            )));
   }
 }

@@ -21,8 +21,9 @@ import '../NewPassEntry.dart';
 import '../PassFieldItem.dart';
 import '../../main.dart';
 import 'package:PassPuss/logic/notifications.dart';
+import 'package:PassPuss/view/page.dart' as Page;
 
-class PassEntryDetails extends StatefulWidget {
+class PassEntryDetails extends StatefulWidget implements Page.Page {
   PassEntry entry;
 
   @override
@@ -491,11 +492,11 @@ class PassEntryDetailsState extends State<PassEntryDetails> {
     var createdTime = entry.createdTime;
     // FOR DEBUG PURPOSES
     // ignore: unused_local_variable
-    var removedNumber = await DBProvider.DB.deletePassEntry(entry);
+    var removedNumber = await DBProvider.getDB().deletePassEntry(entry);
     HomePageState.Pairs.remove(entry);
     var newEntry = PassEntry.withIcon(
         username, password, title, email, icon, tag, createdTime);
-    await DBProvider.DB.addPassEntry(newEntry);
+    await DBProvider.getDB().addPassEntry(newEntry);
     await HomePageState.changeDataset(() {
       HomePageState.Pairs.add(newEntry);
     });
